@@ -11,67 +11,7 @@ import Foundation
 import SwiftUI
 
 
-// These are the colors to use to represent different times of the day.
-extension Color {
-    static var midnight = Color(hue: 0.668944, saturation: 1.0, brightness: 0.267304)
-    static var sunrise = Color(hue: 0.105191, saturation: 0.763661, brightness: 1.0)
-    static var morning = Color(hue: 0.544171, saturation: 0.579690, brightness: 1.0)
-    static var noon = Color(hue: 0.544171, saturation: 0.223588, brightness: 1.0)
-    static var evening = Color(hue: 0.610656, saturation: 0.546903, brightness: 0.819217)
-    static var sunset = Color(hue: 0.824681, saturation: 0.420310, brightness: 0.964025)
-}
 
-extension Color {
-    
-    func parts () -> (hue: Double, saturation: Double, brightness: Double) {
-        let cgColor = self.cgColor
-        let uiColor = UIColor(cgColor: cgColor!)
-        var (h,s,b,a) = (CGFloat.zero,CGFloat.zero,CGFloat.zero,CGFloat.zero)
-        let _ = uiColor.getHue(&h, saturation: &s, brightness: &b, alpha: &a)
-        return (hue: Double(h), saturation: Double(s), brightness: Double(b))
-    }
-}
-
-
-
-// These will be user-set settings for the app. Not sure where to put them. For now there's only one.
-struct Settings {
-    static let maxTimeInDays = 14 // Number of days into the future the calendar can display.
-}
-
-
-
-// This initializes values needed to construct the calendar view.
-
-struct Days {
-    static var calendar = Calendar.current
-    static var initialTrailingDate: Double {
-        self.calendar.date(byAdding: .day, value: 1, to: Date())!.timeIntervalSince1970
-    }
-}
-
-
-// These are the types of color stop.
-// Will add a function to return the time for each stop as a percentage of the day.
-
-enum ColorStop {
-    case dawn
-    case sunrise
-    case morning
-    case noon
-    case evening
-    case sunset
-    case dusk
-    case midnight
-}
-
-
-// Temporary solution to provide testing data.
-// Day.stopsArray returns an array of "stops" representing a single generic day.
-// A stop at this point is a regular tuple - will turn into actual stops later...
-// Times are represented as percentages of the day.
-// Once I figure out how to grab SunEvents, we need the function to return stops for a specific day.
-// The progression is: Single day (this function) -> Multiple days -> actual stops that fit the screen
 
 func dayStops(_ day:Date) -> [(Color,Double)] {
     
@@ -136,20 +76,21 @@ func calendarStops() -> [(Color,Double)] {
 
 
 
-func screenStops(trailingDate: Double) -> [Gradient.Stop] {
+func screenStops(span: TimeInterval, now: Date) -> [Gradient.Stop] {
     
     // Set up initial values
-    let now = Date().timeIntervalSince1970
-    let leadingDate = now - (trailingDate - now) / 4
-    let calendar = Days.calendar
+    let time = Time(span: span)
+    let leadingTime = time.leadingTime
+    let trailingTime = time.trailingTime
+    let calendar = Time.calendar
     // Array of stops to return
     var screenStops: [Gradient.Stop] = []
     
     // Begin with the first day
-    var day: Date = calendar.startOfDay(for:Date(timeIntervalSince1970: leadingDate))
+    var day: Date = calendar.startOfDay(for:Date(timeIntervalSince1970: leadingTime))
     
     // Iterate until the last day
-    dayLoop: while day <= calendar.startOfDay(for:Date(timeIntervalSince1970: trailingDate)) {
+    dayLoop: while day <= calendar.startOfDay(for:Date(timeIntervalSince1970: trailingTime)) {
         
         let stops = dayStops(day) // Get a list of this day's stops: will incorporate sunrise and sunset
         let nextDay = calendar.date(byAdding: .day, value: 1, to: day)!
@@ -172,15 +113,15 @@ func screenStops(trailingDate: Double) -> [Gradient.Stop] {
             let nextStopTime = day.timeIntervalSince1970 + lengthOfDay * nextStop.1
             
             // Check if stop is left of the screen
-            if stopTime < leadingDate {
+            if stopTime < leadingTime {
                 
                 // Check if next stop is the first stop on screen
-                if nextStopTime > leadingDate {
+                if nextStopTime > leadingTime {
                     
                    // interpolate the first stop
                     let color1 = stop.0
                     let color2 = nextStop.0
-                    let percent = (leadingDate - stopTime)/(nextStopTime - stopTime)
+                    let percent = (leadingTime - stopTime)/(nextStopTime - stopTime)
                     
                     let a = color1.parts().hue; let b = color1.parts().saturation; let c = color1.parts().brightness
                     let x = color2.parts().hue; let y = color2.parts().saturation; let z = color2.parts().brightness
@@ -191,12 +132,12 @@ func screenStops(trailingDate: Double) -> [Gradient.Stop] {
                 }
                 
                 // Check if stop is right of screen
-            } else if stopTime > trailingDate {
+            } else if stopTime > trailingTime {
                 
                 // interpolate final stop
                 let color1 = stop.0
                 let color2 = nextStop.0
-                let percent = 1.0 - (stopTime - trailingDate)/(stopTime - trailingDate)
+                let percent = 1.0 - (stopTime - trailingTime)/(stopTime - trailingTime)
                 
                 let a = color1.parts().hue; let b = color1.parts().saturation; let c = color1.parts().brightness
                 let x = color2.parts().hue; let y = color2.parts().saturation; let z = color2.parts().brightness
@@ -225,7 +166,8 @@ func screenStops(trailingDate: Double) -> [Gradient.Stop] {
     func dateToStop(_ x:Double) -> Double {
         
         // linear transformation changing a given date x into a percent length of the screen.
-        return (0.8 * x + 0.2 * trailingDate - now) / (trailingDate - now)
+        let currentTime = now.timeIntervalSince1970
+        return ((1.0 - Settings.nowLocation) * x + Settings.nowLocation * trailingTime - currentTime) / (trailingTime - currentTime)
     }
     
 } // end of screenStops function
