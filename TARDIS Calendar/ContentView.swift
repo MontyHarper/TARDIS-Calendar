@@ -28,8 +28,10 @@ struct ContentView: View {
             
             ZStack {
                 
+                // Backdrop showing time of day by color
                 LinearGradient(gradient: Gradient(stops: screenStops(span: span, now: currentTime)), startPoint: .leading, endPoint: .trailing).ignoresSafeArea()
-                    
+                
+                // Zoom in and out by changing span
                     .gesture(DragGesture().onChanged { gesture in
                         let change = (gesture.translation.width / screen.size.width) * span * 0.05
                         let newSpan = span - change
@@ -43,12 +45,27 @@ struct ContentView: View {
                     })
                 
                 
-                NowView(time: currentTime).position(x: 0.2 * screen.size.width, y: 0.5 * screen.size.height).foregroundColor(.gray)
+                // Timeline
+                Color(.black).frame(width: screen.size.width, height: 2)
+                    .shadow(color: .white, radius: 3)
                 
+                // Circle representing current time
+                NowView(time: currentTime).position(x: 0.2 * screen.size.width, y: 0.5 * screen.size.height)
+                
+                // Label bar along top of screen
+                Color(.white).frame(width: screen.size.width, height: 0.065 * screen.size.height)
+                    .position(x: 0.5 * screen.size.width, y: 0.078 * screen.size.height)
+                
+                // Date and time labels
                 ForEach(dateLabelArray(span: span, now: currentTime), id: \.self.xLocation) {label in
                     
-                    label.position(x: label.xLocation * screen.size.width, y: 0.1 * screen.size.height)
+                    label.position(x: label.xLocation * screen.size.width, y: 0.085 * screen.size.height)
+                }
+                
+                // Circles representing events along the time line
+                ForEach(eventViewArray(span: span), id: \.self.xLocation) {event in
                     
+                    event.position(x: event.xLocation * screen.size.width, y: 0.5 * screen.size.height)
                 }
             }
             .onReceive(updateTimer) { time in
@@ -59,6 +76,7 @@ struct ContentView: View {
             }
             
         }.ignoresSafeArea()
+            .onAppear{Events().loadEvents()}
         
     }
     
@@ -96,18 +114,21 @@ struct ContentView: View {
         
         var body: some View {
           
-                    VStack {
-                        Text(" ")
+                    
                         ZStack {
                             Circle().frame(width: 75, height: 75).foregroundColor(.yellow).shadow(color: .white, radius: 20)
                             Settings.userImage.resizable().aspectRatio(contentMode:.fit).frame(width:70, height:70, alignment:.center).clipShape(Circle())
                         }
+                        .overlay(
                         Text(time, format: .dateTime.hour().minute())
-                            .fontWeight(.bold)
-                        Text(" ")
+                            .offset(y: 75)
+                            .fontWeight(.bold),
+                        alignment: .top)
+                        .foregroundColor(.white)
+                            
                     
                 
-            }
+            
         }
     }
 }

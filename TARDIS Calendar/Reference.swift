@@ -61,6 +61,13 @@ struct Time {
         trailingTime = trailingDate.timeIntervalSince1970
     }
     
+    func dateToDouble(_ x:Double) -> Double {
+        
+        // linear transformation changing a given date x into a percent length of the screen.
+        
+        return ((1.0 - Settings.nowLocation) * x + Settings.nowLocation * trailingTime - now) / (trailingTime - now)
+    }
+    
 }
 
 
@@ -88,9 +95,6 @@ extension Color {
 
 
 
-
-
-
 // These are the types of color stop.
 // Will add a function to return the time for each stop as a percentage of the day.
 
@@ -106,9 +110,8 @@ enum ColorStop {
 }
 
 
-// Temporary solution to provide testing data.
-// Day.stopsArray returns an array of "stops" representing a single generic day.
-// A stop at this point is a regular tuple - will turn into actual stops later...
-// Times are represented as percentages of the day.
-// Once I figure out how to grab SunEvents, we need the function to return stops for a specific day.
-// The progression is: Single day (this function) -> Multiple days -> actual stops that fit the screen
+
+
+
+
+

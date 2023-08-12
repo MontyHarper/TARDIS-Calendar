@@ -14,12 +14,16 @@ struct DateLabelView: View {
     var xLocation: Double
     
     var body: some View {
-        VStack {
-            Text(labelText).padding([.top,.leading,.trailing], 5).background(.white).foregroundColor(.blue)
-            Text("▼").foregroundColor(.white).offset(y:-5)
-        }
+        
+            VStack {
+                Text(labelText).background(.white).foregroundColor(.blue)
+                    .overlay(
+                        Text("▼").foregroundColor(.white)
+                            .offset(y:15.5))
+            }
     }
 }
+
 
 
 func dateLabelArray(span: TimeInterval, now: Date) -> [DateLabelView] {
