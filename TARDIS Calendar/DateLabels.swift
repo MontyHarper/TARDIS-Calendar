@@ -20,6 +20,7 @@ struct DateLabelView: View {
                 Text(labelText)
                     .background(.white)
                     .foregroundColor(labelText.count > 1 ? .blue : .white)
+                    .opacity(0.5)
                     .overlay(
                         Text("▼").foregroundColor(.white)
                             .offset(y:15.5))
@@ -45,20 +46,19 @@ func dateLabelArray(span: TimeInterval, now: Date) -> [DateLabelView] {
     // Show hours or days with the labels, depending on the number of hours on screen.
     switch onScreenHours {
         
-    case 0...Int(24/(1.0 - Settings.nowLocation)):
+    case 0...Int(24/(1.0 - Settings.shared.nowLocation)):
         // labels will show hours of the day
         
         // Begin at the start of the first hour beyond the leading date
         let dayHour = calendar.dateComponents([.year, .month, .day, .hour], from: leadingDate)
         var hour = calendar.date(from: dayHour)!
-        var skip: Int = 60
+        let skip: Int = 60
         
         // Iterate until the last hour
         while hour <= trailingDate {
 
             // Calculate location of label
             let x = dateToStop(hour.timeIntervalSince1970)
-            if x > 0.9 {break}
             
             // Calculate content of label
             let formatter = DateFormatter()
@@ -70,7 +70,7 @@ func dateLabelArray(span: TimeInterval, now: Date) -> [DateLabelView] {
             
             // Erase previous view's text
             // (Only the rightmost view will get a text label)
-            if dateLabelArray.count > 0 {
+            if dateLabelArray.count > 1 {
                 dateLabelArray[dateLabelArray.count - 1].labelText = "◉"
             }
             
@@ -93,7 +93,6 @@ func dateLabelArray(span: TimeInterval, now: Date) -> [DateLabelView] {
             // Calculate location of label
             let noon = calendar.date(byAdding: .hour, value: 12, to: day)!.timeIntervalSince1970
             let x = dateToStop(noon)
-            if x > 0.9 {break}
             
             // Calculate content of label
             let formatter = DateFormatter()
@@ -105,7 +104,7 @@ func dateLabelArray(span: TimeInterval, now: Date) -> [DateLabelView] {
             
             // Erase previous view's text
             // (Only the rightmost view will get a text label)
-            if dateLabelArray.count > 0 {
+            if dateLabelArray.count > 1 {
                 dateLabelArray[dateLabelArray.count - 1].labelText = "◉"
             }
             
@@ -125,7 +124,7 @@ func dateLabelArray(span: TimeInterval, now: Date) -> [DateLabelView] {
         
         // linear transformation changing a given date x into a percent length of the screen.
         let currentTime = now.timeIntervalSince1970
-        return ((1.0 - Settings.nowLocation) * x + Settings.nowLocation * trailingTime - currentTime) / (trailingTime - currentTime)
+        return ((1.0 - Settings.shared.nowLocation) * x + Settings.shared.nowLocation * trailingTime - currentTime) / (trailingTime - currentTime)
     }
 }
 
@@ -151,7 +150,7 @@ func dateLabelArrayOriginal(span: TimeInterval, now: Date) -> [DateLabelView] {
     // Show hours or days with the labels, depending on the number of hours on screen.
     switch onScreenHours {
         
-    case 0...Int(20/(1.0 - Settings.nowLocation)):
+    case 0...Int(20/(1.0 - Settings.shared.nowLocation)):
         // labels will show hours of the day
         
         // Begin at the start of the first hour beyond the leading date
@@ -222,17 +221,34 @@ func dateLabelArrayOriginal(span: TimeInterval, now: Date) -> [DateLabelView] {
         
         // linear transformation changing a given date x into a percent length of the screen.
         let currentTime = now.timeIntervalSince1970
-        return ((1.0 - Settings.nowLocation) * x + Settings.nowLocation * trailingTime - currentTime) / (trailingTime - currentTime)
+        return ((1.0 - Settings.shared.nowLocation) * x + Settings.shared.nowLocation * trailingTime - currentTime) / (trailingTime - currentTime)
     }
 }
 
 
 // returns a label for current date
-func dateLabel(_ date:Date) -> String {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "EEEE MMM d"
-    return formatter.string(from: date)
+struct DateLabel: View {
+    
+    var formatter:DateFormatter {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEEE MMM d"
+        return formatter
+    }
+    
+    var body: some View {
+        
+        VStack {
+            Text(Date(), format: .dateTime.hour().minute())
+            Text(formatter.string(from: Date()))
+        }
+        .padding(2)
+        .background(.white)
+        .foregroundColor(.blue)
+        .fontWeight(.black)
+        .clipShape(RoundedRectangle(cornerSize: CGSize(width: 10, height: 5)))
+    }
 }
+ 
 
 // returns a label for span of time
 func timeSpanLabel(_ timespan:TimeInterval) -> String {
@@ -240,7 +256,7 @@ func timeSpanLabel(_ timespan:TimeInterval) -> String {
     var labelText = ""
     let futureSpan = timespan * 0.8
     let components:Set<Calendar.Component> = [.day, .hour, .minute]
-    let result = Settings.calendar.dateComponents(components, from: Date(), to: Date() + futureSpan)
+    let result = Settings.shared.calendar.dateComponents(components, from: Date(), to: Date() + futureSpan)
     
     var days = result.day ?? 0
     var hours = result.hour ?? 0

@@ -11,19 +11,6 @@ import Foundation
 import SwiftUI
 
 
- /*
-  User-settable parameters for the app.
-  For now these values are set here, but they should become accessible to users at some point.
-  In the meantime it's convenient for me to play with changes from here.
-  */
-
-struct Settings {
-    static let maxFutureDays: Int = 14 // Number of days into the future the calendar can display.
-    static let hoursOnScreen: Double = 12 // Number of hours to show on screen when calendar reverts to default mode.
-    static let nowLocation: Double = 0.2 // Percentage of the screen to the left of now.
-    static let calendar = Calendar.autoupdatingCurrent // Sets the app's calendar to the user's chosen calendar for the device.
-    static let userImage = Image("Mom")
-}
 
 
 
@@ -32,16 +19,16 @@ struct Settings {
 
 struct Time {
     
-    static var calendar = Settings.calendar
+    static var calendar = Settings.shared.calendar
     static var minSpan: TimeInterval = 3600 // minimum time shown on screen is one hour, in seconds
     static var maxSpan: TimeInterval {
         // Calculating maximum time span using the calendar.
         let now = Date().timeIntervalSince1970
-        let maxDay2 = Time.calendar.date(byAdding: .day, value: Settings.maxFutureDays, to: Date())!.timeIntervalSince1970
-        let maxDay1 = now - Settings.nowLocation * (maxDay2 - now)/(1.0 - Settings.nowLocation)
+        let maxDay2 = Time.calendar.date(byAdding: .day, value: Settings.shared.maxFutureDays, to: Date())!.timeIntervalSince1970
+        let maxDay1 = now - Settings.shared.nowLocation * (maxDay2 - now)/(1.0 - Settings.shared.nowLocation)
         return maxDay2 - maxDay1
     }
-    static var defaultSpan: TimeInterval = Settings.hoursOnScreen * 3600
+    static var defaultSpan: TimeInterval = Settings.shared.hoursOnScreen * 3600
     
 
     
@@ -55,8 +42,8 @@ struct Time {
     
     init(span: TimeInterval) {
         self.span = span
-        leadingDate = Date(timeIntervalSince1970: now - Settings.nowLocation * span)
-        trailingDate = Date(timeIntervalSince1970: now + (1.0 - Settings.nowLocation) * span)
+        leadingDate = Date(timeIntervalSince1970: now - Settings.shared.nowLocation * span)
+        trailingDate = Date(timeIntervalSince1970: now + (1.0 - Settings.shared.nowLocation) * span)
         leadingTime = leadingDate.timeIntervalSince1970
         trailingTime = trailingDate.timeIntervalSince1970
     }
@@ -65,7 +52,7 @@ struct Time {
         
         // linear transformation changing a given date x into a percent length of the screen.
         
-        return ((1.0 - Settings.nowLocation) * x + Settings.nowLocation * trailingTime - now) / (trailingTime - now)
+        return ((1.0 - Settings.shared.nowLocation) * x + Settings.shared.nowLocation * trailingTime - now) / (trailingTime - now)
     }
     
 }

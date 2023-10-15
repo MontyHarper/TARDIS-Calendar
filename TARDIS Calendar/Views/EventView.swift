@@ -36,11 +36,13 @@ struct EventView: View {
                 Text(title).fixedSize().offset(y: -size), alignment: .bottom)
             .overlay(
                 Image(systemName: "arrow.right")
-                    .offset(x: -size*0.6),
+                    .offset(x: -size*0.61),
                 alignment: .init(horizontal: .center, vertical: .center))
         
     }
 }
+
+// This is ViewModel Stuff
     
     struct Events {
         static var onView: [EKEvent] = []

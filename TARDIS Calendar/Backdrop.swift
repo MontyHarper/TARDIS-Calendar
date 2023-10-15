@@ -11,6 +11,10 @@ import Foundation
 import SwiftUI
 
 
+func sunriseSunset(date: Date, lat: Double, lng: Double, completion:(SolarDay)->()) {
+    
+    
+}
 
 
 func dayStops(_ day:Date) -> [(Color,Double)] {
@@ -167,7 +171,7 @@ func screenStops(span: TimeInterval, now: Date) -> [Gradient.Stop] {
         
         // linear transformation changing a given date x into a percent length of the screen.
         let currentTime = now.timeIntervalSince1970
-        return ((1.0 - Settings.nowLocation) * x + Settings.nowLocation * trailingTime - currentTime) / (trailingTime - currentTime)
+        return ((1.0 - Settings.shared.nowLocation) * x + Settings.shared.nowLocation * trailingTime - currentTime) / (trailingTime - currentTime)
     }
     
 } // end of screenStops function
