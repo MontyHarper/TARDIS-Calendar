@@ -23,13 +23,10 @@ struct NowView: View {
                     .frame(width: 250, height: 250)
                     .foregroundColor(.yellow)
                     .shadow(color: .white, radius: 20)
-                    .opacity(0.90)
+                    .opacity(0.70)
                     .overlay(
                         VStack {
-                            Text(time, format: .dateTime.hour().minute().month().day().year())
-                                .foregroundColor(.black)
-                                .font(.headline)
-                            Text("Next activity: figure this out")
+                            Text("Next activity: working on this")
                             
                         }
                     )

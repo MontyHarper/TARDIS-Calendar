@@ -10,7 +10,9 @@
 import Foundation
 import SwiftUI
 
-
+// As I refactor things...
+// This is a way of calculating handy values for doing screen calculations necessary in generating arrays of views and that sort of thing. Let's just make it more concice. Keep in mind Now and end time should be passed as parameters into an array generator and then into here. Everything should rest on those two numbers, pluse use of user settings or my own internal settings.
+// Time is a bad name for this thing. Think of something else.
 
 
 

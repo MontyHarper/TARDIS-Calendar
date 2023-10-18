@@ -28,7 +28,7 @@ class Settings {
 
    private init() {
        maxFutureDays = 14 // Number of days into the future the calendar can display.
-       hoursOnScreen = 12 // Number of hours to show on screen when calendar reverts to default mode.
+       hoursOnScreen = 4 // Number of hours to show on screen when calendar reverts to default mode.
        nowLocation = 0.2  // Percentage of the screen to the left of now.
        userImage = Image("Mom") // Sets an image to use for the Now icon
        calendar = Calendar.autoupdatingCurrent // Sets the app's calendar to the user's chosen calendar for the device.
