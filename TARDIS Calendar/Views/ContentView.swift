@@ -13,8 +13,10 @@ import SwiftUI
 struct ContentView: View {
     
     // TODO: - span should not be a @State variable; use now and endtime
-    // TODO: - initialize instances of each class needed to generate view arrays: EventManager, 
+    // TODO: - initialize instances of each class needed to generate view arrays: EventManager,
+    
     @State private var span: Double = Time.defaultSpan
+    private var timeline = Timeline(span: Time.defaultSpan, now: Date().timeIntervalSince1970)
     @State private var currentTime: Date = Date()
     @State private var animateSpan = false
     @State private var inactivityTimer: Timer?
@@ -31,6 +33,8 @@ struct ContentView: View {
     let updateTimer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
     let spanTimer = Timer.publish(every: 0.04, on: .main, in: .common).autoconnect()
     
+    let eventManager = EventManager()
+    
     var body: some View {
         
         GeometryReader { screen in
@@ -46,7 +50,7 @@ struct ContentView: View {
                     .gesture(DragGesture().onChanged { gesture in
                         let change = (gesture.translation.width / screen.size.width) * span * 0.05
                         let newSpan = span - change
-                        if newSpan > Time.minSpan && newSpan < Time.maxSpan {
+                        if newSpan > timeline.minSpan && newSpan < timeline.maxSpan {
                             span = newSpan
                             animateSpan = false
                             inactivityTimer?.invalidate()
@@ -89,7 +93,7 @@ struct ContentView: View {
                 // Circles representing events along the time line
                 
                 // TODO: - update this function call to include now and end time as parameters
-                ForEach(eventViewArray(span: span), id: \.self.xLocation) { event in
+                ForEach(eventManager.eventViewArray(span: span), id: \.self.xLocation) { event in
                     event
                         .position(x: event.xLocation * screen.size.width, y: yOfTimeline * screen.size.height)
                 }
@@ -115,7 +119,7 @@ struct ContentView: View {
                 
             } // End of main ZStack
             .ignoresSafeArea()
-            .onAppear{Events().loadEvents()}
+            .onAppear{eventManager.updateEvents()}
             .onReceive(updateTimer) { time in
                 currentTime = Date()
             }
@@ -135,12 +139,12 @@ struct ContentView: View {
             
             if abs(Time.defaultSpan - span) > 0.01 {
                 var base = 1.0
-                if span < Time.defaultSpan {
+                if span < timeline.defaultSpan {
                     base = 0.99
                 } else {
                     base = 0.95
                 }
-                let newSpan = Time.defaultSpan + base * (span - Time.defaultSpan)
+                let newSpan = timeline.defaultSpan + base * (span - timeline.defaultSpan)
                 print(newSpan)
                 return newSpan
                 
