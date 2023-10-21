@@ -27,18 +27,17 @@ class EventManager {
     // This function should return an array of event views for display in the main calendar view.
     
     // TODO: - Refactor so the array function takes both EndDate and Now as parameters instead of span.
-    func eventViewArray(span: Double) -> [EventView] {
+    func eventViewArray(timeline: Timeline) -> [EventView] {
         
-        let time = Time(span: span)
         var viewsArray = [EventView]()
         
         
         for event in events {
             
-            if (time.leadingDate ... time.trailingDate).contains(event.startDate) {
+            if (timeline.leadingDate ... timeline.trailingDate).contains(event.startDate) {
                 
                 var view = EventView(startDate: event.startDate, endDate: event.endDate, title: event.title)
-                view.xLocation = time.dateToDouble(event.startDate.timeIntervalSince1970)
+                view.xLocation = timeline.unitX(fromTime: event.startDate.timeIntervalSince1970)
                 
                 viewsArray.append(view)
             }

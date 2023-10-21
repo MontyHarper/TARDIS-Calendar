@@ -80,7 +80,7 @@ func calendarStops() -> [(Color,Double)] {
 
 
 
-func screenStops(span: TimeInterval, now: Date) -> [Gradient.Stop] {
+func screenStops(span: TimeInterval, now: TimeInterval) -> [Gradient.Stop] {
     
     // Set up initial values
     let time = Time(span: span)
@@ -170,8 +170,7 @@ func screenStops(span: TimeInterval, now: Date) -> [Gradient.Stop] {
     func dateToStop(_ x:Double) -> Double {
         
         // linear transformation changing a given date x into a percent length of the screen.
-        let currentTime = now.timeIntervalSince1970
-        return ((1.0 - Settings.shared.nowLocation) * x + Settings.shared.nowLocation * trailingTime - currentTime) / (trailingTime - currentTime)
+        return ((1.0 - Settings.shared.nowLocation) * x + Settings.shared.nowLocation * trailingTime - now) / (trailingTime - now)
     }
     
 } // end of screenStops function

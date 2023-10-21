@@ -25,52 +25,107 @@
     */
 
 import Foundation
+import SwiftUI
 
-struct Timeline {
+class Timeline: ObservableObject {
     
-    private var calendar = Calendar.autoupdatingCurrent
+    // These two values define any give timeline.
+    @Published var now: Double // current time in seconds
+    @Published var trailingTime: Double // time at the right edge of the screen in seconds.
     
-    // These constant values are set here.
-    public let minSpan: TimeInterval = 3600 // minimum time shown on screen is one hour, in seconds
-    public let nowLocation: Double = 0.2 // now icon is shown 1/5 of the way from left edge of screen
-    public let maxFutureDays = 7
-    public let hoursOnScreen = 4
+    var calendar = Calendar.autoupdatingCurrent
     
+    // These constant values are set here and made available across instances.
+    static let minSpan: TimeInterval = 3600 // minimum time shown on screen is one hour, in seconds
+    static let nowLocation: Double = 0.2 // now icon is shown 1/5 of the way from left edge of screen
+    static let maxFutureDays = 7
+    static let hoursOnScreen = 4
+    
+    // Calculated values all stem from the variables now & trailing time, plus the constants set up above.
     public var maxSpan: TimeInterval {
         let now = Date().timeIntervalSince1970
-        let maxDay2 = calendar.date(byAdding: .day, value: maxFutureDays, to: Date())!.timeIntervalSince1970
-        let maxDay1 = now - nowLocation * (maxDay2 - now)/(1.0 - nowLocation)
+        let maxDay2 = calendar.date(byAdding: .day, value: Timeline.maxFutureDays, to: Date())!.timeIntervalSince1970
+        let maxDay1 = now - Timeline.nowLocation * (maxDay2 - now)/(1.0 - Timeline.nowLocation)
         return maxDay2 - maxDay1
     }
-    
     public var defaultSpan: TimeInterval {
-        Double (self.hoursOnScreen * 3600)
+        Double (Timeline.hoursOnScreen * 3600)
+    }
+    public var leadingTime: Double {
+        return (now - Timeline.nowLocation * trailingTime) / (1 - Timeline.nowLocation)
+    }
+    public var span: TimeInterval {
+        return trailingTime - leadingTime
+    }
+    public var leadingDate: Date {
+        return Date(timeIntervalSince1970: leadingTime)
+    }
+    public var trailingDate: Date {
+        Date(timeIntervalSince1970: trailingTime)
     }
     
-    public var now: Double // current time in seconds
-    public var span: TimeInterval // amount of time shown on screen in seconds; adjustable by user in real time.
-    public var leadingDate: Date // Date and time represented by the left edge of the screen.
-    public var trailingDate: Date // Date and time represented by the right edge of the screen.
-    public var leadingTime: Double // time at the left edge of the screen in seconds.
-    public var trailingTime: Double // time at the right edge of the screen in seconds.
-
+    convenience init() {
+        self.init(
+            now: Date().timeIntervalSince1970, // default now
+            trailingTime: Date().timeIntervalSince1970 + Double (Timeline.hoursOnScreen * 3600) // default trailingTime
+        )
+    }
     
-    init(span: TimeInterval, now: Double) {
+    // Two values, now and trailingTime, completely determine a given timeline.
+    init (now: TimeInterval, trailingTime: TimeInterval) {
+        self.trailingTime = trailingTime
         self.now = now
-        self.span = span
-        leadingDate = Date(timeIntervalSince1970: now - Settings.shared.nowLocation * span)
-        trailingDate = Date(timeIntervalSince1970: now + (1.0 - Settings.shared.nowLocation) * span)
-        leadingTime = leadingDate.timeIntervalSince1970
-        trailingTime = trailingDate.timeIntervalSince1970
     }
     
     
+    // linear transformation from time space to unit space.
+    func unitX (fromTime time: Double) -> Double {
+        let m = (1 - Timeline.nowLocation) / (trailingTime - now)
+        let b = 1 - m * trailingTime
+        return m * time + b
+    }
     
-    func dateToDouble(_ x:Double) -> Double {
+    // linear transformation from unit space to time space.
+    func timeX (fromUnit x: Double) -> Double {
+        let m = (1 - Timeline.nowLocation) / (trailingTime - now)
+        let b = 1 - m * trailingTime
+        return (x - b) / m
+    }
+    
+    // linear transformation from screen space to unit space. Note screen width must be an input; we only have access to that from ContentView.
+    func unitX (fromScreen x: Double, width: Double) -> Double {
+        return x / width
+    }
+    
+    // linear transformation from screen space to unit space. Note screen width must be an input; we only have access to that from ContentView.
+    
+    func screenX (fromUnit x: Double, width: Double) -> Double {
+        return x * width
+    }
+    
+    func newTrailingTime(start: Double, end: Double, completion: (Bool)->Void) {
         
-        // linear transformation changing a given date x into a percent length of the screen.
+        // Calculating a linear transformation that moves the start point to the end point while keeping now in the same location. The calculation is in unit space, and the resulting trailing time is converted and stored in time space.
         
-        return ((1.0 - Settings.shared.nowLocation) * x + Settings.shared.nowLocation * trailingTime - now) / (trailingTime - now)
+        let m = (Timeline.nowLocation - start) / (Timeline.nowLocation - end) // slope
+        
+        let b = start - m * end // y-int
+                
+        let newTTUnitSpace = m + b
+        
+        let newTrailingTime = timeX(fromUnit: newTTUnitSpace)
+        
+        if newTrailingTime > leadingTime + Timeline.minSpan && newTrailingTime < leadingTime + maxSpan {
+            trailingTime = newTrailingTime
+            completion(true)
+        } else {
+            print("out of bounds: \(newTrailingTime)")
+            completion(false)
+        }
+    }
+    
+    func updateNow() {
+        now = Date().timeIntervalSince1970
     }
     
 }

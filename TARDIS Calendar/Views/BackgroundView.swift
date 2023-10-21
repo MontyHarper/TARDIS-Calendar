@@ -14,12 +14,11 @@ import SwiftUI
 
 struct BackgroundView: View {
     
-    var span: Double
-    var now: Date
+    var timeline: Timeline
     
     var body: some View {
         
-        LinearGradient(gradient: Gradient(stops: screenStops(span: span, now: now)), startPoint: .leading, endPoint: .trailing)
+        LinearGradient(gradient: Gradient(stops: screenStops(span: timeline.span, now: timeline.now)), startPoint: .leading, endPoint: .trailing)
             .ignoresSafeArea()
         
     }

@@ -10,8 +10,9 @@ import SwiftUI
 
 
 // Will probably want to keep this but just use it to put the little triangle markers across the screen.
-struct TimeTickView: View {
+struct TimeTickView: View, Identifiable {
     
+    var id = UUID()
     var labelText: String
     var xLocation: Double
     

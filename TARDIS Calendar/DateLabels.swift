@@ -13,14 +13,13 @@ import SwiftUI
 // This is the third approach. New 0ct 15 2023.
 // I want to try relative labels; now, one hour, two hours, etc.
 
-func dateLabelArray(span: TimeInterval, now: Date) -> [TimeTickView] {
+func dateLabelArray(timeline: Timeline) -> [TimeTickView] {
     
     // Set up initial values
-    let time = Time(span: span)
-    let calendar = Time.calendar
-    let leadingDate = time.leadingDate
-    let trailingDate = time.trailingDate
-    let trailingTime = time.trailingTime
+    let calendar = timeline.calendar
+    let leadingDate = timeline.leadingDate
+    let trailingDate = timeline.trailingDate
+    let trailingTime = timeline.trailingTime
     
     // Calculate the number of hours represented on screen.
     let onScreenHours = calendar.dateComponents([.hour], from: leadingDate, to: trailingDate).hour!
@@ -125,8 +124,8 @@ func dateLabelArray(span: TimeInterval, now: Date) -> [TimeTickView] {
     func dateToStop(_ x:Double) -> Double {
         
         // linear transformation changing a given date x into a percent length of the screen.
-        let currentTime = now.timeIntervalSince1970
-        return ((1.0 - Settings.shared.nowLocation) * x + Settings.shared.nowLocation * trailingTime - currentTime) / (trailingTime - currentTime)
+        let currentTime = timeline.now
+        return ((1.0 - Timeline.nowLocation) * x + Timeline.nowLocation * trailingTime - currentTime) / (trailingTime - currentTime)
     }
 }
 
@@ -331,7 +330,8 @@ func dateLabelArrayOriginal(span: TimeInterval, now: Date) -> [TimeTickView] {
 // returns a label for current date
 struct DateLabel: View {
     
-    var now: Date
+    var timeline: Timeline
+    
     var formatter:DateFormatter {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE MMM d"
@@ -340,6 +340,7 @@ struct DateLabel: View {
     
     var body: some View {
         
+        let now = Date(timeIntervalSince1970: timeline.now)
         VStack {
             Text(now, format: .dateTime.hour().minute())
             Text(formatter.string(from: now))
