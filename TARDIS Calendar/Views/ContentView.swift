@@ -17,6 +17,7 @@ struct ContentView: View {
     
     @StateObject private var timeline = Timeline()
     @StateObject private var eventManager = EventManager()
+    @StateObject private var solarEventManager = SolarEventManager()
     @State private var animateSpan = false
     @State private var inactivityTimer: Timer?
     

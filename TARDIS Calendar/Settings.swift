@@ -18,6 +18,8 @@ class Settings {
     let nowLocation: Double
     let userImage: Image
     let calendar: Calendar
+    let latitude: Double
+    let longitude: Double
     // let locationManager: CLLocationManager
     
     /*
@@ -32,6 +34,8 @@ class Settings {
        nowLocation = 0.2  // Percentage of the screen to the left of now.
        userImage = Image("Mom") // Sets an image to use for the Now icon
        calendar = Calendar.autoupdatingCurrent // Sets the app's calendar to the user's chosen calendar for the device.
+       latitude = 36.110170
+       longitude = -97.058570
        // locationManager tracks the user's location in order to deliver accurate sunrise and sunset times.
        // let locationManager = CLLocationManager()
        // locationManager.delegate = LocationManagerDelegate
