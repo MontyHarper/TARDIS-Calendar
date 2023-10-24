@@ -13,23 +13,21 @@ import EventKit
 
 struct EventView: View {
     
-    @State private var isSelected = false
-    
-    var startDate: Date
-    var endDate: Date
-    var title: String
-    
-    var size: Double = 25.0
-    var xLocation: Double = 0.0
-    
-    init(startDate: Date, endDate: Date, title: String) {
-        self.startDate = startDate
-        self.endDate = endDate
-        self.title = title
+    @State var isSelected = false {
+        didSet {
+        }
     }
     
+    var event: EKEvent
+    
+    init (event: EKEvent) {
+        self.event = event
+    }
+    
+    var size: Double = 25.0
+    
     var timeToEvent: TimeInterval {
-        startDate.timeIntervalSince1970 - Date().timeIntervalSince1970
+        event.startDate.timeIntervalSince1970 - Date().timeIntervalSince1970
     }
     
     var body: some View {
@@ -41,7 +39,7 @@ struct EventView: View {
                     .fill(.yellow)
                     .frame(width: size*3, height: size*3)
                 VStack {
-                    Text(title)
+                    Text(event.title)
                     Text("\(timeToEvent.formatted())")
                 }
             }
@@ -55,15 +53,18 @@ struct EventView: View {
                 .fill(.yellow)
                 .frame(width: size, height: size)
                 .overlay(
-                    Text(title).fixedSize().offset(y: -size), alignment: .bottom)
+                    Text(event.title).fixedSize().offset(y: -size), alignment: .bottom)
                 .overlay(
                     Image(systemName: "arrow.right")
                         .offset(x: -size*0.61),
                     alignment: .init(horizontal: .center, vertical: .center))
+                .overlay(
+                    Text(event.startDate.formatted()).fixedSize().offset(y: size), alignment: .bottom)
                 .onTapGesture {
                     isSelected.toggle()
                 }
         }
-    }
+    } // End of body
+ 
 }
 

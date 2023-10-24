@@ -16,7 +16,7 @@ import SwiftUI
 func dateLabelArray(timeline: Timeline) -> [TimeTickView] {
     
     // Set up initial values
-    let calendar = timeline.calendar
+    let calendar = Timeline.calendar
     let leadingDate = timeline.leadingDate
     let trailingDate = timeline.trailingDate
     let trailingTime = timeline.trailingTime

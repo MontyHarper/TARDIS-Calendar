@@ -16,6 +16,7 @@ struct ContentView: View {
     // TODO: - initialize instances of each class needed to generate view arrays: EventManager,
     
     @StateObject private var timeline = Timeline()
+    @StateObject private var eventManager = EventManager()
     @State private var animateSpan = false
     @State private var inactivityTimer: Timer?
     
@@ -29,10 +30,11 @@ struct ContentView: View {
     // Josh says use timeline view
     let updateTimer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
     let spanTimer = Timer.publish(every: 0.04, on: .main, in: .common).autoconnect()
+    @State private var currentDay = Timeline.calendar.dateComponents([.day], from: Date())
     
-    let eventManager = EventManager()
     
-    static var dragStart = 0.0
+    
+    static private var dragStart = 0.0
     
     var body: some View {
         
@@ -47,29 +49,39 @@ struct ContentView: View {
                 // Zoom in and out by changing trailingTime
                     .gesture(DragGesture()
                         .onChanged { gesture in
+                            // If this is a new drag starting, save the location.
                             if ContentView.dragStart == 0.0 {
                                 ContentView.dragStart = gesture.startLocation.x
                             }
                             let width = screen.size.width
-                            // divide by width to convert to unit space
+                            // Divide by width to convert to unit space.
                             let start = ContentView.dragStart / width
                             let end = gesture.location.x / width
+                            // Save the location of this drag for the next event.
                             ContentView.dragStart = gesture.location.x
-                            print("0, \(end), \(start), \(screen.size.width)")
+                            // Make sure we aren't "out of bounds"; if we allow dragging across "now", bad things happen.
                             guard end > Timeline.nowLocation && start > Timeline.nowLocation else {
                                 return
                             }
+                            // This call actually changes the trailing time in our timeline, if we haven't gone beyond the boundaries.
                             timeline.newTrailingTime(start: start, end: end, completion: {
                                 trailingTimeChanged in
                                 if trailingTimeChanged {
+                                    // This indicates user interaction, so reset the inactivity timer.
                                     animateSpan = false
                                     inactivityTimer?.invalidate()
                                 }
                             })
                         } .onEnded { _ in
+                            // When the drag ends, reset the starting value to zero to indicate no drag is happening at the moment.
                             ContentView.dragStart = 0.0
-                            inactivityTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: false, block: {_ in animateSpan = true})
+                            // And reset the inactivity timer, since this indicates the end of user interaction.
+                            // When this timer goes off, the screen animates back to default zoom position.
+                            inactivityTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: false, block: {_ in
+                                animateSpan = true
+                            })
                         })
+
                 
                 
                 // View on top of background is arranged into three groups; label bar, timeline for events, and a box showing current information. Grouping is just conceptual. Individual elements are placed exactly.
@@ -103,10 +115,9 @@ struct ContentView: View {
                 
                 // Circles representing events along the time line
                 
-                // TODO: - update this function call to include now and end time as parameters
-                ForEach(eventManager.eventViewArray(timeline: timeline), id: \.self.xLocation) { event in
-                    event
-                        .position(x: event.xLocation * screen.size.width, y: yOfTimeline * screen.size.height)
+                ForEach(eventManager.eventViews, id: \.self.event.startDate) { view in
+                    view
+                        .position(x: timeline.unitX(fromTime: view.event.startDate.timeIntervalSince1970) * screen.size.width, y: yOfTimeline * screen.size.height)
                 }
                 
                 
@@ -134,43 +145,43 @@ struct ContentView: View {
             .onReceive(updateTimer) { time in
                 timeline.updateNow()
                 print(timeline.now)
+                // Every new day update the calendar events and solar events for backdrop.
+                let today = Timeline.calendar.dateComponents([.day], from: Date())
+                if today != currentDay {
+                    eventManager.updateEvents()
+                    currentDay = today
+                }
             }
             .onReceive(spanTimer) { time in
-               // TODO: - update animation bringing calendar back to home zoom.
-               // trailingTime = spanCalc(timeline: Timeline(now: now, trailingTime: trailingTime))
+                if animateSpan {changeSpan()}
             }
+            .onTapGesture {
+                print("TAP")
+                eventManager.closeAll()
+            }
+
+
             
         } // Close Geometry Reader
         
     } // Close View
     
     
-    func spanCalc(timeline: Timeline) -> Double {
+    func changeSpan() {
         
+        // Represents one frame - changes trailingTime toward the default time.
+        // Maybe I can get swift to animate this?
         
-        if animateSpan {
-            
-            
-            if abs(timeline.defaultSpan - timeline.span) > 0.05 {
-                var base = 1.0
-                if timeline.span < timeline.defaultSpan {
-                    base = 0.99
-                } else {
-                    base = 0.95
-                }
-                let newSpan = timeline.defaultSpan + base * (timeline.span - timeline.defaultSpan)
-                let newTrailingTime = timeline.leadingTime + newSpan
-                print(newTrailingTime)
-                return newTrailingTime
-                
-            } else {
-                animateSpan = false
-                return timeline.trailingTime
-            }
+        if abs(Timeline.defaultSpan - timeline.span) > 1 {
+            let newSpan = timeline.span + 0.02 * (Timeline.defaultSpan - timeline.span)
+            print(newSpan)
+            let newTrailingTime = timeline.leadingTime + newSpan
+            timeline.trailingTime = newTrailingTime
             
         } else {
-            return timeline.trailingTime
+            animateSpan = false
         }
+        
     }
     
     

@@ -33,23 +33,23 @@ class Timeline: ObservableObject {
     @Published var now: Double // current time in seconds
     @Published var trailingTime: Double // time at the right edge of the screen in seconds.
     
-    var calendar = Calendar.autoupdatingCurrent
+    static var calendar = Calendar.autoupdatingCurrent
     
     // These constant values are set here and made available across instances.
     static let minSpan: TimeInterval = 3600 // minimum time shown on screen is one hour, in seconds
     static let nowLocation: Double = 0.2 // now icon is shown 1/5 of the way from left edge of screen
     static let maxFutureDays = 7
     static let hoursOnScreen = 4
+    static var defaultSpan: TimeInterval { // represents seconds onscreen: 14400
+        Double (Timeline.hoursOnScreen * 3600)
+    }
     
     // Calculated values all stem from the variables now & trailing time, plus the constants set up above.
     public var maxSpan: TimeInterval {
         let now = Date().timeIntervalSince1970
-        let maxDay2 = calendar.date(byAdding: .day, value: Timeline.maxFutureDays, to: Date())!.timeIntervalSince1970
+        let maxDay2 = Timeline.calendar.date(byAdding: .day, value: Timeline.maxFutureDays, to: Date())!.timeIntervalSince1970
         let maxDay1 = now - Timeline.nowLocation * (maxDay2 - now)/(1.0 - Timeline.nowLocation)
         return maxDay2 - maxDay1
-    }
-    public var defaultSpan: TimeInterval {
-        Double (Timeline.hoursOnScreen * 3600)
     }
     public var leadingTime: Double {
         return (now - Timeline.nowLocation * trailingTime) / (1 - Timeline.nowLocation)
@@ -63,6 +63,7 @@ class Timeline: ObservableObject {
     public var trailingDate: Date {
         Date(timeIntervalSince1970: trailingTime)
     }
+    
     
     convenience init() {
         self.init(
@@ -124,8 +125,14 @@ class Timeline: ObservableObject {
         }
     }
     
+    // This is called once per second by a timer.
+    // Now is set exactly.
+    // Trailing time increases by one second; recalculating would create circular dependencies, I think?
+    // Because trailingTime would depend on span, which depends on trailingTime.
+    // This should keep the span roughly the same over time, within one second.
     func updateNow() {
         now = Date().timeIntervalSince1970
+        trailingTime += 1.0
     }
     
 }
