@@ -12,7 +12,6 @@ import SwiftUI
 
 struct ContentView: View {
     
-    // TODO: - span should not be a @State variable; use now and endtime
     // TODO: - initialize instances of each class needed to generate view arrays: EventManager,
     
     @StateObject private var timeline = Timeline()
@@ -33,9 +32,9 @@ struct ContentView: View {
     let spanTimer = Timer.publish(every: 0.04, on: .main, in: .common).autoconnect()
     @State private var currentDay = Timeline.calendar.dateComponents([.day], from: Date())
     
-    
-    
     static private var dragStart = 0.0
+    
+    
     
     var body: some View {
         
@@ -45,7 +44,7 @@ struct ContentView: View {
             ZStack {
                 
                 // Background shows time of day by color
-                BackgroundView(timeline: timeline)
+                BackgroundView(timeline: timeline, solarEventManager: solarEventManager)
                 
                 // Zoom in and out by changing trailingTime
                     .gesture(DragGesture()
@@ -64,7 +63,7 @@ struct ContentView: View {
                             guard end > Timeline.nowLocation && start > Timeline.nowLocation else {
                                 return
                             }
-                            // This call actually changes the trailing time in our timeline, if we haven't gone beyond the boundaries.
+                            // This call changes the trailing time in our timeline, if we haven't gone beyond the boundaries.
                             timeline.newTrailingTime(start: start, end: end, completion: {
                                 trailingTimeChanged in
                                 if trailingTimeChanged {
@@ -116,9 +115,9 @@ struct ContentView: View {
                 
                 // Circles representing events along the time line
                 
-                ForEach(eventManager.eventViews, id: \.self.event.startDate) { view in
-                    view
-                        .position(x: timeline.unitX(fromTime: view.event.startDate.timeIntervalSince1970) * screen.size.width, y: yOfTimeline * screen.size.height)
+                ForEach(eventManager.events, id: \.self.id) { event in
+                    EventView(event: event)
+                        .position(x: timeline.unitX(fromTime: event.startDate.timeIntervalSince1970) * screen.size.width, y: yOfTimeline * screen.size.height)
                 }
                 
                 
@@ -141,8 +140,6 @@ struct ContentView: View {
                 
                 
             } // End of main ZStack
-            .ignoresSafeArea()
-            .onAppear{eventManager.updateEvents()}
             .onReceive(updateTimer) { time in
                 timeline.updateNow()
                 print(timeline.now)
@@ -150,6 +147,7 @@ struct ContentView: View {
                 let today = Timeline.calendar.dateComponents([.day], from: Date())
                 if today != currentDay {
                     eventManager.updateEvents()
+                    solarEventManager.updateSolarDays()
                     currentDay = today
                 }
             }
@@ -164,6 +162,7 @@ struct ContentView: View {
 
             
         } // Close Geometry Reader
+        .ignoresSafeArea()
         
     } // Close View
     

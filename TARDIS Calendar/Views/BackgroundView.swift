@@ -15,10 +15,11 @@ import SwiftUI
 struct BackgroundView: View {
     
     var timeline: Timeline
+    var solarEventManager: SolarEventManager
     
     var body: some View {
         
-        LinearGradient(gradient: Gradient(stops: screenStops(span: timeline.span, now: timeline.now)), startPoint: .leading, endPoint: .trailing)
+        LinearGradient(gradient: Gradient(stops: solarEventManager.screenStops(timeline: timeline)), startPoint: .leading, endPoint: .trailing)
             .ignoresSafeArea()
         
     }

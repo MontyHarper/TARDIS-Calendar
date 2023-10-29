@@ -45,12 +45,29 @@ class Timeline: ObservableObject {
     }
     
     // Calculated values all stem from the variables now & trailing time, plus the constants set up above.
+    
+    // Maximum amount of time that can be depicted on screen in seconds.
     public var maxSpan: TimeInterval {
         let now = Date().timeIntervalSince1970
-        let maxDay2 = Timeline.calendar.date(byAdding: .day, value: Timeline.maxFutureDays, to: Date())!.timeIntervalSince1970
-        let maxDay1 = now - Timeline.nowLocation * (maxDay2 - now)/(1.0 - Timeline.nowLocation)
-        return maxDay2 - maxDay1
+        let maxDate = Timeline.calendar.date(byAdding: .day, value: Timeline.maxFutureDays, to: Date())!.timeIntervalSince1970
+        let minDate = now - Timeline.nowLocation * (maxDate - now)/(1.0 - Timeline.nowLocation)
+        return maxDate - minDate
     }
+    
+    // For calculating screen stops we may need to reach one caledar day earlier and one later than the edges of the screen permit.
+    // Start of day on the latest date that could show on the calendar, plus one.
+    static var maxDay: Date {
+        return Timeline.calendar.startOfDay(for: Timeline.calendar.date(byAdding: .day, value: Timeline.maxFutureDays + 1, to: Date())!)
+    }
+    
+    // Start of day on the earliest day that can show on the calendar, minus one.
+    static var minDay: Date {
+        let now = Date().timeIntervalSince1970
+        let maxDate = Timeline.calendar.date(byAdding: .day, value: Timeline.maxFutureDays, to: Date())!.timeIntervalSince1970
+        let minDate = Timeline.calendar.startOfDay(for: Date(timeIntervalSince1970: now - Timeline.nowLocation * (maxDate - now)/(1.0 - Timeline.nowLocation)))
+        return Timeline.calendar.date(byAdding: .day, value: -1, to: minDate)!
+    }
+    
     public var leadingTime: Double {
         return (now - Timeline.nowLocation * trailingTime) / (1 - Timeline.nowLocation)
     }
@@ -112,10 +129,11 @@ class Timeline: ObservableObject {
         
         let b = start - m * end // y-int
                 
-        let newTTUnitSpace = m + b
+        let newTrailingTimeUnitSpace = m * 1.0 + b
         
-        let newTrailingTime = timeX(fromUnit: newTTUnitSpace)
+        let newTrailingTime = timeX(fromUnit: newTrailingTimeUnitSpace)
         
+        // Before changing the trailingTime, make sure the new trailingTime lies within the boundaries of time the calendar is capable of showing on screen.
         if newTrailingTime > leadingTime + Timeline.minSpan && newTrailingTime < leadingTime + maxSpan {
             trailingTime = newTrailingTime
             completion(true)
@@ -125,8 +143,9 @@ class Timeline: ObservableObject {
         }
     }
     
+    
     // This is called once per second by a timer.
-    // Now is set exactly.
+    // Now is set exactly to current time.
     // Trailing time increases by one second; recalculating would create circular dependencies, I think?
     // Because trailingTime would depend on span, which depends on trailingTime.
     // This should keep the span roughly the same over time, within one second.

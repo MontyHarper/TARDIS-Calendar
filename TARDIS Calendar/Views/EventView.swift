@@ -12,27 +12,18 @@ import EventKit
 
 
 struct EventView: View {
-    
-    @State var isSelected = false {
-        didSet {
-        }
-    }
-    
-    var event: EKEvent
-    
-    init (event: EKEvent) {
-        self.event = event
-    }
+        
+    var event: Event
     
     var size: Double = 25.0
     
     var timeToEvent: TimeInterval {
-        event.startDate.timeIntervalSince1970 - Date().timeIntervalSince1970
+        event.event.startDate.timeIntervalSince1970 - Date().timeIntervalSince1970
     }
     
     var body: some View {
         
-        if isSelected {
+        if event.isSelected {
             
             ZStack {
                 Circle()
@@ -44,8 +35,9 @@ struct EventView: View {
                 }
             }
             .onTapGesture {
-                isSelected.toggle()
+                event.isSelected.toggle()
             }
+
             
         } else {
             
@@ -61,8 +53,9 @@ struct EventView: View {
                 .overlay(
                     Text(event.startDate.formatted()).fixedSize().offset(y: size), alignment: .bottom)
                 .onTapGesture {
-                    isSelected.toggle()
+                    event.isSelected.toggle()
                 }
+
         }
     } // End of body
  

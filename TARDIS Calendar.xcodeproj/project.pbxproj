@@ -18,8 +18,7 @@
 		F122A30E2AE02A54002E82AE /* Timeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A30D2AE02A54002E82AE /* Timeline.swift */; };
 		F19149272AD2649000A31D5A /* SolarDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19149262AD2649000A31D5A /* SolarDay.swift */; };
 		F19149292AD267A400A31D5A /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19149282AD267A400A31D5A /* Settings.swift */; };
-		F1ABD1DC2A6778E5001D8743 /* Backdrop.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1ABD1DB2A6778E5001D8743 /* Backdrop.swift */; };
-		F1B5FE182A735D2200CBBCE6 /* Reference.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B5FE172A735D2200CBBCE6 /* Reference.swift */; };
+		F1B5FE182A735D2200CBBCE6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B5FE172A735D2200CBBCE6 /* Extensions.swift */; };
 		F1D15B422A5FA758006F6A4E /* TARDIS_CalendarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D15B412A5FA758006F6A4E /* TARDIS_CalendarApp.swift */; };
 		F1D15B442A5FA758006F6A4E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D15B432A5FA758006F6A4E /* ContentView.swift */; };
 		F1D15B462A5FA75B006F6A4E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F1D15B452A5FA75B006F6A4E /* Assets.xcassets */; };
@@ -39,8 +38,7 @@
 		F122A30D2AE02A54002E82AE /* Timeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timeline.swift; sourceTree = "<group>"; };
 		F19149262AD2649000A31D5A /* SolarDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolarDay.swift; sourceTree = "<group>"; };
 		F19149282AD267A400A31D5A /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
-		F1ABD1DB2A6778E5001D8743 /* Backdrop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Backdrop.swift; sourceTree = "<group>"; };
-		F1B5FE172A735D2200CBBCE6 /* Reference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reference.swift; sourceTree = "<group>"; };
+		F1B5FE172A735D2200CBBCE6 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		F1D15B3E2A5FA758006F6A4E /* TARDIS Calendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TARDIS Calendar.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1D15B412A5FA758006F6A4E /* TARDIS_CalendarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TARDIS_CalendarApp.swift; sourceTree = "<group>"; };
 		F1D15B432A5FA758006F6A4E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -105,10 +103,9 @@
 				F1D15B412A5FA758006F6A4E /* TARDIS_CalendarApp.swift */,
 				F122A2C12ADA3F2B002E82AE /* Views */,
 				F122A3062ADF1782002E82AE /* ViewModel */,
-				F1ABD1DB2A6778E5001D8743 /* Backdrop.swift */,
 				F122A2BB2AD2FB0F002E82AE /* LocationManagerDelegate.swift */,
 				F1102AF92A6DDCA6007534C1 /* DateLabels.swift */,
-				F1B5FE172A735D2200CBBCE6 /* Reference.swift */,
+				F1B5FE172A735D2200CBBCE6 /* Extensions.swift */,
 				F19149282AD267A400A31D5A /* Settings.swift */,
 				F1D15B452A5FA75B006F6A4E /* Assets.xcassets */,
 				F1D15B472A5FA75B006F6A4E /* Preview Content */,
@@ -199,12 +196,11 @@
 				F122A2C72ADA4B10002E82AE /* NowView.swift in Sources */,
 				F122A2C02AD82A7C002E82AE /* SolarEventManager.swift in Sources */,
 				F119C6672A7B59A200B183F5 /* EventView.swift in Sources */,
-				F1B5FE182A735D2200CBBCE6 /* Reference.swift in Sources */,
+				F1B5FE182A735D2200CBBCE6 /* Extensions.swift in Sources */,
 				F122A2BC2AD2FB0F002E82AE /* LocationManagerDelegate.swift in Sources */,
 				F19149292AD267A400A31D5A /* Settings.swift in Sources */,
 				F122A2C32ADA4AD1002E82AE /* BackgroundView.swift in Sources */,
 				F1102AFA2A6DDCA6007534C1 /* DateLabels.swift in Sources */,
-				F1ABD1DC2A6778E5001D8743 /* Backdrop.swift in Sources */,
 				F19149272AD2649000A31D5A /* SolarDay.swift in Sources */,
 				F122A2C92ADA4B20002E82AE /* TimeTickView.swift in Sources */,
 				F1D15B442A5FA758006F6A4E /* ContentView.swift in Sources */,
@@ -343,11 +339,13 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "TARDIS-Calendar-Info.plist";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app displays events from Calendar.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We use your approximate location to display accurate sunrise and sunset times in the background of the calendar.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -373,11 +371,13 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "TARDIS-Calendar-Info.plist";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app displays events from Calendar.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We use your approximate location to display accurate sunrise and sunset times in the background of the calendar.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
