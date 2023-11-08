@@ -242,7 +242,6 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
         
         } // end of dayLoop
         
-        print("screenStops: \(screenStops)")
         return screenStops
         
     } // end of screenStops function

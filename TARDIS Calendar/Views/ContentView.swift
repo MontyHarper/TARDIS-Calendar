@@ -35,7 +35,6 @@ struct ContentView: View {
     static private var dragStart = 0.0
     
     
-    
     var body: some View {
         
         GeometryReader { screen in
@@ -114,11 +113,12 @@ struct ContentView: View {
                 
                 
                 // Circles representing events along the time line
-                
-                ForEach(eventManager.events, id: \.self.id) { event in
-                    EventView(event: event)
-                        .position(x: timeline.unitX(fromTime: event.startDate.timeIntervalSince1970) * screen.size.width, y: yOfTimeline * screen.size.height)
+            
+                ForEach(eventManager.events.indices, id: \.self) { index in
+                    EventView(event: eventManager.events[index], isExpanded: $eventManager.isExpanded[index])
+                        .position(x: timeline.unitX(fromTime: eventManager.events[index].startDate.timeIntervalSince1970) * screen.size.width, y: yOfTimeline * screen.size.height)
                 }
+                
                 
                 
                 // Circle representing current time.
