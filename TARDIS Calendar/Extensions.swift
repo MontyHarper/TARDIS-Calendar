@@ -115,8 +115,47 @@ extension Int {
         default: return "Many"
         }
     }
+    
+    func lowerName() -> String {
+        self.name().lowercased()
+    }
 }
 
-
+enum CalendarType: String {
+    case meals, medical, daily, special, banner
+    
+    func icon() -> Image {
+        
+        switch self {
+        case .meals:
+           return Image(systemName: "fork.knife.circle.fill")
+        case .medical:
+           return Image(systemName: "cross.case.circle.fill")
+        case .daily:
+           return Image(systemName: "calendar.circle.fill")
+        case .special:
+           return Image(systemName: "face.smiling")
+        default:
+           return Image(systemName: "calendar.circle.fill")
+        }
+    }
+    
+    func priority() -> Int {
+        
+        // higher value takes precidence over lower value
+        switch self {
+        case .meals:
+            return 2
+        case .medical:
+            return 4
+        case .daily:
+            return 1
+        case .special:
+            return 3
+        default:
+            return 0
+        }
+    }
+}
 
 

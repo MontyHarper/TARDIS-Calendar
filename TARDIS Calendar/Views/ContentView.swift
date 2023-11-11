@@ -81,7 +81,15 @@ struct ContentView: View {
                             })
                         })
 
-                
+                // Hidden button in upper right hand corner allows caregivers to change preferences.
+                Color(.clear)
+                    .frame(width: 80, height: 80)
+                    .contentShape(Rectangle())
+                    .position(x: screen.size.width - 40, y: 40)
+                    .onTapGesture(count: 3, perform: {
+                        print("TRIPLE TAP")
+                    })
+                    
                 
                 // View on top of background is arranged into three groups; label bar, timeline for events, and a box showing current information. Grouping is just conceptual. Individual elements are placed exactly.
                 
@@ -117,7 +125,9 @@ struct ContentView: View {
                 ForEach(eventManager.events.indices, id: \.self) { index in
                     EventView(event: eventManager.events[index], isExpanded: $eventManager.isExpanded[index])
                         .position(x: timeline.unitX(fromTime: eventManager.events[index].startDate.timeIntervalSince1970) * screen.size.width, y: yOfTimeline * screen.size.height)
+
                 }
+                
                 
                 
                 

@@ -41,12 +41,16 @@ class Event: Identifiable, Comparable {
     var title: String {
         event.title
     }
-    var calendar: String {
+    var calendarTitle: String {
         event.calendar.title
+    }
+    var calendarColor: Color {
+        let cg = event.calendar.cgColor ?? CGColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 1.0)
+        return Color(cgColor: cg)
     }
     var priority: Int {
         let calendars = UserDefaults.standard.dictionary(forKey: "calendars")
-        return calendars?[calendar] as! Int
+        return CalendarType(rawValue: calendars?[calendarTitle] as! String)?.priority() ?? 0
     }
     
     
@@ -55,8 +59,10 @@ class Event: Identifiable, Comparable {
     static func < (lhs: Event, rhs: Event) -> Bool {
         if lhs.startDate < rhs.startDate {
             return true
+        } else if lhs.startDate > rhs.startDate {
+            return false
         } else {
-            return lhs.priority > rhs.priority
+            return lhs.priority < rhs.priority
         }
     }
     
@@ -80,7 +86,13 @@ class EventManager: ObservableObject {
     // Start with a freshly fetched list of events from the user's Apple Calendar app.
     init() {
         // TODO: - Hardcoding this for now; will need to allow user to set this up
-        UserDefaults.standard.set(["Bena":1], forKey: "calendars")
+        UserDefaults.standard.set(
+            ["BenaDaily": CalendarType.daily.rawValue,
+             "BenaMedical": CalendarType.medical.rawValue,
+             "BenaMeals": CalendarType.meals.rawValue,
+             "BenaSpecial": CalendarType.special.rawValue
+            ],
+            forKey: "calendars")
         updateEvents()
         // Notification will update the events list any time an event is changed in the user's calendar app.
         NotificationCenter.default.addObserver(self, selector: #selector(self.updateEvents), name: .EKEventStoreChanged, object: eventStore)
@@ -96,7 +108,6 @@ class EventManager: ObservableObject {
     // Also is called whenever the user adds or updates events in the calendar.
     // Updates all events, replacing the current list with a new list.
     
-    // TODO: - Get calendar name from user defaults
     @objc func updateEvents() {
         
         print("update events is called")
@@ -150,7 +161,7 @@ class EventManager: ObservableObject {
             return
         }
         
-        // Cycle through events from last to first to remove any that have been deleted.
+        // Cycle through events from last to first to remove any that have been deleted and update any that already exist.
         if events.count > 0 {
             let last = events.count - 1
             for index in stride(from: last, through: 0, by: -1) {
