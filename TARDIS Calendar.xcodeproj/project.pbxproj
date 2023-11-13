@@ -16,6 +16,7 @@
 		F122A2C92ADA4B20002E82AE /* TimeTickView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A2C82ADA4B20002E82AE /* TimeTickView.swift */; };
 		F122A3082ADF17C1002E82AE /* EventManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A3072ADF17C1002E82AE /* EventManager.swift */; };
 		F122A30E2AE02A54002E82AE /* Timeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A30D2AE02A54002E82AE /* Timeline.swift */; };
+		F18D04F52B0009D300E5C91E /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = F18D04F42B0009D300E5C91E /* README.md */; };
 		F19149272AD2649000A31D5A /* SolarDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19149262AD2649000A31D5A /* SolarDay.swift */; };
 		F19149292AD267A400A31D5A /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19149282AD267A400A31D5A /* Settings.swift */; };
 		F1B5FE182A735D2200CBBCE6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B5FE172A735D2200CBBCE6 /* Extensions.swift */; };
@@ -36,6 +37,7 @@
 		F122A2C82ADA4B20002E82AE /* TimeTickView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTickView.swift; sourceTree = "<group>"; };
 		F122A3072ADF17C1002E82AE /* EventManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventManager.swift; sourceTree = "<group>"; };
 		F122A30D2AE02A54002E82AE /* Timeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timeline.swift; sourceTree = "<group>"; };
+		F18D04F42B0009D300E5C91E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = "TARDIS Calendar/README.md"; sourceTree = SOURCE_ROOT; };
 		F19149262AD2649000A31D5A /* SolarDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolarDay.swift; sourceTree = "<group>"; };
 		F19149282AD267A400A31D5A /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		F1B5FE172A735D2200CBBCE6 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -108,6 +110,7 @@
 				F1B5FE172A735D2200CBBCE6 /* Extensions.swift */,
 				F19149282AD267A400A31D5A /* Settings.swift */,
 				F1D15B452A5FA75B006F6A4E /* Assets.xcassets */,
+				F18D04F42B0009D300E5C91E /* README.md */,
 				F1D15B472A5FA75B006F6A4E /* Preview Content */,
 			);
 			path = "TARDIS Calendar";
@@ -179,6 +182,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F18D04F52B0009D300E5C91E /* README.md in Resources */,
 				F1D15B492A5FA75B006F6A4E /* Preview Assets.xcassets in Resources */,
 				F1D15B462A5FA75B006F6A4E /* Assets.xcassets in Resources */,
 			);

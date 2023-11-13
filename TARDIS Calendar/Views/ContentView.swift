@@ -45,41 +45,6 @@ struct ContentView: View {
                 // Background shows time of day by color
                 BackgroundView(timeline: timeline, solarEventManager: solarEventManager)
                 
-                // Zoom in and out by changing trailingTime
-                    .gesture(DragGesture()
-                        .onChanged { gesture in
-                            // If this is a new drag starting, save the location.
-                            if ContentView.dragStart == 0.0 {
-                                ContentView.dragStart = gesture.startLocation.x
-                            }
-                            let width = screen.size.width
-                            // Divide by width to convert to unit space.
-                            let start = ContentView.dragStart / width
-                            let end = gesture.location.x / width
-                            // Save the location of this drag for the next event.
-                            ContentView.dragStart = gesture.location.x
-                            // Make sure we aren't "out of bounds"; if we allow dragging across "now", bad things happen.
-                            guard end > Timeline.nowLocation && start > Timeline.nowLocation else {
-                                return
-                            }
-                            // This call changes the trailing time in our timeline, if we haven't gone beyond the boundaries.
-                            timeline.newTrailingTime(start: start, end: end, completion: {
-                                trailingTimeChanged in
-                                if trailingTimeChanged {
-                                    // This indicates user interaction, so reset the inactivity timer.
-                                    animateSpan = false
-                                    inactivityTimer?.invalidate()
-                                }
-                            })
-                        } .onEnded { _ in
-                            // When the drag ends, reset the starting value to zero to indicate no drag is happening at the moment.
-                            ContentView.dragStart = 0.0
-                            // And reset the inactivity timer, since this indicates the end of user interaction.
-                            // When this timer goes off, the screen animates back to default zoom position.
-                            inactivityTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: false, block: {_ in
-                                animateSpan = true
-                            })
-                        })
 
                 // Hidden button in upper right hand corner allows caregivers to change preferences.
                 Color(.clear)
@@ -122,10 +87,9 @@ struct ContentView: View {
                 
                 // Circles representing events along the time line
             
-                ForEach(eventManager.events.indices, id: \.self) { index in
+                ForEach(eventManager.events.indices.sorted(by: {$0 > $1}), id: \.self) { index in
                     EventView(event: eventManager.events[index], isExpanded: $eventManager.isExpanded[index])
                         .position(x: timeline.unitX(fromTime: eventManager.events[index].startDate.timeIntervalSince1970) * screen.size.width, y: yOfTimeline * screen.size.height)
-
                 }
                 
                 
@@ -150,26 +114,63 @@ struct ContentView: View {
                 
                 
             } // End of main ZStack
-            .onReceive(updateTimer) { time in
-                timeline.updateNow()
-                print(timeline.now)
-                // Every new day update the calendar events and solar events for backdrop.
-                let today = Timeline.calendar.dateComponents([.day], from: Date())
-                if today != currentDay {
-                    eventManager.updateEvents()
-                    solarEventManager.updateSolarDays()
-                    currentDay = today
+            
+            // Zoom in and out by changing trailingTime
+                .highPriorityGesture(DragGesture()
+                    .onChanged { gesture in
+                        // If this is a new drag starting, save the location.
+                        if ContentView.dragStart == 0.0 {
+                            ContentView.dragStart = gesture.startLocation.x
+                        }
+                        let width = screen.size.width
+                        // Divide by width to convert to unit space.
+                        let start = ContentView.dragStart / width
+                        let end = gesture.location.x / width
+                        // Save the location of this drag for the next event.
+                        ContentView.dragStart = gesture.location.x
+                        // Make sure we aren't "out of bounds"; if we allow dragging across "now", bad things happen.
+                        guard end > Timeline.nowLocation && start > Timeline.nowLocation else {
+                            return
+                        }
+                        // This call changes the trailing time in our timeline, if we haven't gone beyond the boundaries.
+                        timeline.newTrailingTime(start: start, end: end, completion: {
+                            trailingTimeChanged in
+                            if trailingTimeChanged {
+                                // This indicates user interaction, so reset the inactivity timer.
+                                animateSpan = false
+                                inactivityTimer?.invalidate()
+                            }
+                        })
+                    } .onEnded { _ in
+                        // When the drag ends, reset the starting value to zero to indicate no drag is happening at the moment.
+                        ContentView.dragStart = 0.0
+                        // And reset the inactivity timer, since this indicates the end of user interaction.
+                        // When this timer goes off, the screen animates back to default zoom position.
+                        inactivityTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: false, block: {_ in
+                            animateSpan = true
+                        })
+                    })
+            
+                .onReceive(updateTimer) { time in
+                    timeline.updateNow()
+                    print(timeline.now)
+                    // Every new day update the calendar events and solar events for backdrop.
+                    let today = Timeline.calendar.dateComponents([.day], from: Date())
+                    if today != currentDay {
+                        eventManager.updateEvents()
+                        solarEventManager.updateSolarDays()
+                        currentDay = today
+                    }
                 }
-            }
-            .onReceive(spanTimer) { time in
-                if animateSpan {changeSpan()}
-            }
-            .onTapGesture {
-                print("TAP")
-                eventManager.closeAll()
-            }
-
-
+                .onReceive(spanTimer) { time in
+                    if animateSpan {changeSpan()}
+                }
+                .onTapGesture {
+                    print("TAP")
+                    eventManager.closeAll()
+                }
+            
+            
             
         } // Close Geometry Reader
         .ignoresSafeArea()
@@ -193,6 +194,7 @@ struct ContentView: View {
         }
         
     }
+    
     
     
 }
