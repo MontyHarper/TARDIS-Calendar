@@ -15,6 +15,7 @@ struct EventView: View {
     
     let event: Event
     @Binding var isExpanded: Bool
+    let shrinkFactor: Double
     
     // Adjust to change the size of an event icon (unexpanded view)
     let size: Double = 60.0
@@ -99,16 +100,18 @@ struct EventView: View {
             default:
                 description += "less than \((minutes + 1).lowerName()) minute" + plural
             }
-            
         }
-        
         return description
     }
     
+    // Makes dictionary of user calendars available; used to determine the calendar type for this event.
+    // Each calendar has a type that is user-defined, not inherent to the event's calendar in EKEvents.
     var calendars: [String: String] {
         UserDefaults.standard.dictionary(forKey: "calendars") as! [String: String]
     }
     
+    // Each calendar type has an associated icon in the CalendarType enum.
+    // Use the "daily" icon as a default in case something goes wrong.
     var icon: Image {
         if let icon = CalendarType(rawValue: calendars[event.calendarTitle] ?? CalendarType.daily.rawValue)?.icon() {
             return icon
@@ -121,17 +124,23 @@ struct EventView: View {
         event.calendarColor
     }
     
+    // Only shrink low-priority event icons.
+    var shrink: Double {
+        print("shrink factor \(shrinkFactor)")
+       return event.priority <= 2 ? shrinkFactor : 1.0
+    }
+    
     var iconView: some View {
         
         ZStack {
             
             Circle()
                 .foregroundColor(.yellow)
-                .frame(width: size, height: size)
+                .frame(width: size * shrink, height: size * shrink)
             icon
                 .resizable()
                 .foregroundColor(color)
-                .frame(width: size * 0.95, height: size * 0.95, alignment: .center)
+                .frame(width: size * 0.95 * shrink, height: size * 0.95 * shrink, alignment: .center)
         }
         .onTapGesture {
             withAnimation {
@@ -145,10 +154,10 @@ struct EventView: View {
         
         Circle()
             .foregroundColor(.clear)
-            .frame(width: size, height: size)
+            .frame(width: size * shrink, height: size * shrink)
             .overlay(
                 Image(systemName: "arrow.right")
-                    .offset(x: -size * 0.5 + arrowOffset)
+                    .offset(x: -size * 0.5 * shrink + arrowOffset)
                     .foregroundColor(.black)
                     .shadow(color: .white, radius: 3),
                 alignment: .init(horizontal: .center, vertical: .center))

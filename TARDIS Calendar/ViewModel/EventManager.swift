@@ -202,11 +202,13 @@ class EventManager: ObservableObject {
     func autoExpand() {
         if let index = events.firstIndex(where: {
             let wait = $0.startDate.timeIntervalSince1970 - Date().timeIntervalSince1970
-            return 0 <= wait && wait <= 2}) {
+            // View will expand fifteen minutes before start time; adjust this by changing the 15 to a different number of minutes.
+            return 15 * 60 <= wait && wait <= 15 * 60 + 2}) {
             self.isExpanded[index] = true
         }
         if let index = events.firstIndex(where: {
             let wait = Date().timeIntervalSince1970 - $0.endDate.timeIntervalSince1970
+            // View will un-expand at the end time. 
             return 0 <= wait && wait <= 2}) {
             self.isExpanded[index] = false
         }

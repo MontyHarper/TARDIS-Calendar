@@ -126,7 +126,7 @@ struct ContentView: View {
                 // Circles representing events along the time line
             
                 ForEach(eventManager.events.indices.sorted(by: {$0 > $1}), id: \.self) { index in
-                    EventView(event: eventManager.events[index], isExpanded: $eventManager.isExpanded[index])
+                    EventView(event: eventManager.events[index], isExpanded: $eventManager.isExpanded[index], shrinkFactor: shrinkFactor())
                         .position(x: timeline.unitX(fromTime: eventManager.events[index].startDate.timeIntervalSince1970) * screen.size.width, y: yOfTimeline * screen.size.height)
                 }
                 .gesture(oneFingerZoom)
@@ -207,6 +207,29 @@ struct ContentView: View {
         
     }
     
+    func shrinkFactor() -> Double {
+        
+        // This function provides a factor by which to re-size low priority event views, shrinking them as the calendar zooms out. This allows high priority events to stand out from the crowd.
+        
+        let x = timeline.span
+
+        // min seconds on screen to trigger shrink effect; set for 12 hours
+        let min = 12.0 * 60 * 60
+        let max = timeline.maxSpan // seconds on screen where target size is reached
+        let b = 0.2 // target size
+        
+        switch x {
+        case 0.0..<min:
+            return 1.0
+        case min..<max:
+            let result = (b - 1) * (x - min)/(max - min) + 1
+            print("Function Call Shrink Factor: \(result)")
+            return Double(result)
+        default:
+            return b
+        }
+        
+    }
     
     
 }
