@@ -197,4 +197,18 @@ class EventManager: ObservableObject {
             isExpanded[i] = false
         }
     }
+    
+    func autoExpand() {
+        if let index = events.firstIndex(where: {
+            let wait = $0.startDate.timeIntervalSince1970 - Date().timeIntervalSince1970
+            return 15 * 60 - 2 <= wait && wait <= 15 * 60}) {
+            self.isExpanded[index] = true
+        }
+        if let index = events.firstIndex(where: {
+            let wait = Date().timeIntervalSince1970 - $0.endDate.timeIntervalSince1970
+            return 0 <= wait && wait <= 2}) {
+            self.isExpanded[index] = false
+        }
+        
+    }
 }

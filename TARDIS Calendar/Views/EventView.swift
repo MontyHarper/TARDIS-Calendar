@@ -81,10 +81,10 @@ struct EventView: View {
                 description += "\(hours.lowerName()) hour" + plural
             }
         } else {
-            let plural = (minutes == 1) ? "." : "s."
+            let plural = (minutes == 0) ? "." : "s."
             switch minutes {
             case 0..<20:
-                description += "less than \(minutes) minute" + plural
+                description += "less than \((minutes + 1).lowerName()) minute" + plural
             case 20..<40:
                 description += "about half an hour."
             case 40..<55:
@@ -92,7 +92,7 @@ struct EventView: View {
             case 55..<60:
                 description += "about an hour."
             default:
-                description += "\(minutes) minute" + plural
+                description += "less than \((minutes + 1).lowerName()) minute" + plural
             }
             
         }
@@ -179,9 +179,9 @@ struct EventView: View {
                             .font(.caption)
                         Text(timerInterval: now...event.startDate)
                     } else if now < event.endDate {
-                        Text("HAPPENING NOW!")
+                        Text("HAPPENING NOW!\n")
                     } else {
-                        Text("Done!")
+                        Text("Done!\n")
                     }
                 }
                 .frame(width: size * sizeMultiplyer * 0.75, height: size * sizeMultiplyer * 0.8)
@@ -197,6 +197,6 @@ struct EventView: View {
             }
         }
     } // End of body
-    
+        
 }
 

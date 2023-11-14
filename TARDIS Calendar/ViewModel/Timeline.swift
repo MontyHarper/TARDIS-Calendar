@@ -121,7 +121,7 @@ class Timeline: ObservableObject {
         return x * width
     }
     
-    func newTrailingTime(start: Double, end: Double, completion: (Bool)->Void) {
+    func newTrailingTime(start: Double, end: Double) {
         
         // Calculating a linear transformation that moves the start point to the end point while keeping now in the same location. The calculation is in unit space, and the resulting trailing time is converted and stored in time space.
         
@@ -136,10 +136,14 @@ class Timeline: ObservableObject {
         // Before changing the trailingTime, make sure the new trailingTime lies within the boundaries of time the calendar is capable of showing on screen.
         if newTrailingTime > leadingTime + Timeline.minSpan && newTrailingTime < leadingTime + maxSpan {
             trailingTime = newTrailingTime
-            completion(true)
         } else {
+            if newTrailingTime <= leadingTime + Timeline.minSpan {
+                trailingTime = leadingTime + Timeline.minSpan
+            }
+            if newTrailingTime >= leadingTime + maxSpan {
+                trailingTime = leadingTime + maxSpan
+            }
             print("out of bounds: \(newTrailingTime)")
-            completion(false)
         }
     }
     
