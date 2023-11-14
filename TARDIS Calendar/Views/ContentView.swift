@@ -49,8 +49,8 @@ struct ContentView: View {
                     }
                     let width = screen.size.width
                     // Divide by width to convert to unit space.
-                    var start = ContentView.dragStart / width
-                    var end = gesture.location.x / width
+                    let start = ContentView.dragStart / width
+                    let end = gesture.location.x / width
                     // Save the location of this drag for the next event.
                     ContentView.dragStart = gesture.location.x
                     // Drag gesture needs to occur on the future side of now, far enough from now that it doesn't cause the zoom to jump wildly
@@ -169,7 +169,7 @@ struct ContentView: View {
                         currentDay = today
                     }
                     
-                    // Expand the EventView for events happening soon and en-expand the EventView for events recently finished.
+                    // Expand the EventView for events happening soon and un-expand the EventView for events recently finished.
                     eventManager.autoExpand()
             
                 }

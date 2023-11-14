@@ -13,12 +13,17 @@ import EventKit
 
 struct EventView: View {
     
-    var event: Event
+    let event: Event
     @Binding var isExpanded: Bool
-    var size: Double = 60.0
-    @State var sizeMultiplyer = 1.0
     
-    var arrowOffset: Double = -7.75
+    // Adjust to change the size of an event icon (unexpanded view)
+    let size: Double = 60.0
+    
+    // Adjust to change the size of an expanded view; used to animate, in theory
+    @State var sizeMultiplyer = 4.0
+    
+    // Each veiw has an arrow on the timeline; this places it correctly. Do not adjust.
+    let arrowOffset: Double = -7.75
     
     // A set now value won't change values while the view renders, risking problems with the logic.
     let now = Date()
@@ -155,7 +160,7 @@ struct EventView: View {
         arrowView
             .zIndex(0.0)
         iconView
-            .zIndex(Double(event.priority))
+            .zIndex((event.endDate > now) ? Double(event.priority) : 0)
         
         
         if isExpanded {
