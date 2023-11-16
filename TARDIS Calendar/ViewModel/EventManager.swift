@@ -191,7 +191,7 @@ class EventManager: ObservableObject {
     }// end of processNewEvents()
     
     
-    
+    // Called when user taps the background; closes any expanded views.
     func closeAll() {
         print("Close All")
         for i in 0..<isExpanded.count {
@@ -199,11 +199,14 @@ class EventManager: ObservableObject {
         }
     }
     
+    // Called once per second; automatically expands any views within range of Now.
+    
     func autoExpand() {
         if let index = events.firstIndex(where: {
             let wait = $0.startDate.timeIntervalSince1970 - Date().timeIntervalSince1970
             // View will expand fifteen minutes before start time; adjust this by changing the 15 to a different number of minutes.
-            return 15 * 60 <= wait && wait <= 15 * 60 + 2}) {
+            // View will also expand AT start time, in case it's been deflated in between.
+            return (15 * 60 <= wait && wait <= 15 * 60 + 2) || (0 <= wait && wait <= 2)}) {
             self.isExpanded[index] = true
         }
         if let index = events.firstIndex(where: {

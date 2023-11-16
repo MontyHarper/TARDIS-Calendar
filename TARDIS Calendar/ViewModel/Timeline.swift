@@ -115,7 +115,7 @@ class Timeline: ObservableObject {
         return x / width
     }
     
-    // linear transformation from screen space to unit space. Note screen width must be an input; we only have access to that from ContentView.
+    // linear transformation from unit space to screen space. Note screen width must be an input; we only have access to that from ContentView.
     
     func screenX (fromUnit x: Double, width: Double) -> Double {
         return x * width

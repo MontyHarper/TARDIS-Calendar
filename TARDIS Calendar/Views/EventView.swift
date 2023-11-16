@@ -16,21 +16,40 @@ struct EventView: View {
     let event: Event
     @Binding var isExpanded: Bool
     let shrinkFactor: Double
+    let screenWidth: Double
+    @EnvironmentObject var timeline:Timeline
     
     // Adjust to change the size of an event icon (unexpanded view)
     let size: Double = 60.0
     
-    // Adjust to change the size of an expanded view; used to animate, in theory
-    @State var sizeMultiplyer = 4.0
+    // TODO: - Figure out how to animate transitions from regular to expanded format and back. I was using sizeMultiplyer, but then when the expansion comes from outside the view, it can end up with the wrong value. Best to keep one value constant for the target size and add a new variable to use when animating?
+    
+    // Adjust to change the size of an expanded view.
+    let sizeMultiplyer = 4.0
     
     // Each veiw has an arrow on the timeline; this places it correctly. Do not adjust.
     let arrowOffset: Double = -7.75
     
-    // A set now value won't change values while the view renders, risking problems with the logic.
+    // Date() will change values while the view renders, risking problems with the logic. Avoiding that by setting a static now value for the view. In theory, this gets updated each second when a new view is rendered.
     let now = Date()
     
+    // I don't think this still gets used.
     var timeToEvent: TimeInterval {
-        event.startDate.timeIntervalSince1970 - Date().timeIntervalSince1970
+        event.startDate.timeIntervalSince1970 - now.timeIntervalSince1970
+    }
+    
+    // Use to automatically Expand the event View and keep it in place while the event is happening, starting 15 minutes beforehand.
+    var eventIsNow: Bool {
+        ((event.startDate - 60 * 15)...event.endDate).contains(now)
+    }
+    
+    // This is to keep the event view centered over now while the event is happening.
+    var offsetAmount: Double {
+        if eventIsNow {
+            return screenWidth * (Timeline.nowLocation - timeline.unitX(fromTime: event.startDate.timeIntervalSince1970))
+        } else {
+            return 0.0
+        }
     }
     
     var descriptionOfTimeRemaining: String {
@@ -126,9 +145,9 @@ struct EventView: View {
     
     // Only shrink low-priority event icons.
     var shrink: Double {
-        print("shrink factor \(shrinkFactor)")
        return event.priority <= 2 ? shrinkFactor : 1.0
     }
+    
     
     var iconView: some View {
         
@@ -143,10 +162,7 @@ struct EventView: View {
                 .frame(width: size * 0.95 * shrink, height: size * 0.95 * shrink, alignment: .center)
         }
         .onTapGesture {
-            withAnimation {
-                sizeMultiplyer = 4.0
-                isExpanded = true
-            }
+            isExpanded = true
         }
     }
     
@@ -162,54 +178,53 @@ struct EventView: View {
                     .shadow(color: .white, radius: 3),
                 alignment: .init(horizontal: .center, vertical: .center))
     }
-    
-    
+        
     var body: some View {
         
-        arrowView
-            .zIndex(0.0)
-        iconView
-            .zIndex((event.endDate > now) ? Double(event.priority) : 0)
-        
-        
-        if isExpanded {
-                        
-            ZStack {
+        Group {
+            arrowView
+                .zIndex(0.0)
+            iconView
+                .zIndex((event.endDate > now) ? Double(event.priority) : 0)
+            
+            
+            if isExpanded || eventIsNow {
                 
-                Circle()
-                    .foregroundColor(.yellow)
-                    .opacity(0.75)
-                    .frame(width: size * sizeMultiplyer, height: size * sizeMultiplyer)
-                
-                VStack {
-                    Text(event.title)
-                        .font(.headline)
-                    Text(event.event.notes ?? "")
-                        .font(.caption)
-                    Spacer()
+                ZStack {
                     
-                    if now < event.startDate {
-                        Text(descriptionOfTimeRemaining)
+                    Circle()
+                        .foregroundColor(.yellow)
+                        .opacity(0.75)
+                        .frame(width: size * sizeMultiplyer, height: size * sizeMultiplyer)
+                    
+                    VStack {
+                        Text(event.title)
+                            .font(.headline)
+                        Text(event.event.notes ?? "")
                             .font(.caption)
-                        Text(timerInterval: now...event.startDate)
-                    } else if now < event.endDate {
-                        Text("HAPPENING NOW!\n")
-                    } else {
-                        Text("Done!\n")
+                        Spacer()
+                        
+                        if now < event.startDate {
+                            Text(descriptionOfTimeRemaining)
+                                .font(.caption)
+                            Text(timerInterval: now...event.startDate)
+                        } else if now < event.endDate {
+                            Text("HAPPENING NOW!\n")
+                        } else {
+                            Text("Done!\n")
+                        }
                     }
+                    .frame(width: size * sizeMultiplyer * 0.75, height: size * sizeMultiplyer * 0.8)
+                    .multilineTextAlignment(.center)
+                    
+                } // End of expanded view ZStack
+                .zIndex(Double(event.priority + 10))
+                .onTapGesture {
+                    isExpanded = false
                 }
-                .frame(width: size * sizeMultiplyer * 0.75, height: size * sizeMultiplyer * 0.8)
-                .multilineTextAlignment(.center)
-                
-            }
-            .zIndex(Double(event.priority + 10))
-            .onTapGesture {
-                isExpanded = false
-                withAnimation {
-                    sizeMultiplyer = 1.0
-                }
-            }
-        }
+            } // End of expanded View
+        } // End of main Group
+        .offset(x:offsetAmount, y:0.0)
     } // End of body
         
 }

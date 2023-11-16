@@ -126,7 +126,7 @@ struct ContentView: View {
                 // Circles representing events along the time line
             
                 ForEach(eventManager.events.indices.sorted(by: {$0 > $1}), id: \.self) { index in
-                    EventView(event: eventManager.events[index], isExpanded: $eventManager.isExpanded[index], shrinkFactor: shrinkFactor())
+                    EventView(event: eventManager.events[index], isExpanded: $eventManager.isExpanded[index], shrinkFactor: shrinkFactor(), screenWidth: screen.size.width)
                         .position(x: timeline.unitX(fromTime: eventManager.events[index].startDate.timeIntervalSince1970) * screen.size.width, y: yOfTimeline * screen.size.height)
                 }
                 .gesture(oneFingerZoom)
@@ -186,6 +186,7 @@ struct ContentView: View {
                                     
         } // End of Geometry Reader
         .ignoresSafeArea()
+        .environmentObject(timeline)
         
     } // End of ContentView
     
@@ -223,7 +224,6 @@ struct ContentView: View {
             return 1.0
         case min..<max:
             let result = (b - 1) * (x - min)/(max - min) + 1
-            print("Function Call Shrink Factor: \(result)")
             return Double(result)
         default:
             return b

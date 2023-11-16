@@ -365,7 +365,7 @@ func timeSpanLabel(_ timespan:TimeInterval) -> String {
     
     var days = result.day ?? 0
     var hours = result.hour ?? 0
-    var minutes = result.minute ?? 0
+    let minutes = result.minute ?? 0
     let totalHours = days * 24 + hours
     
     if totalHours > 12 {
