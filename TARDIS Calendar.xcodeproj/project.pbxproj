@@ -7,16 +7,20 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F1102AFA2A6DDCA6007534C1 /* DateLabels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1102AF92A6DDCA6007534C1 /* DateLabels.swift */; };
+		F1102AFA2A6DDCA6007534C1 /* TimeTicks.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1102AF92A6DDCA6007534C1 /* TimeTicks.swift */; };
 		F119C6672A7B59A200B183F5 /* EventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F119C6662A7B59A200B183F5 /* EventView.swift */; };
 		F122A2BC2AD2FB0F002E82AE /* LocationManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A2BB2AD2FB0F002E82AE /* LocationManagerDelegate.swift */; };
 		F122A2C02AD82A7C002E82AE /* SolarEventManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A2BF2AD82A7C002E82AE /* SolarEventManager.swift */; };
 		F122A2C32ADA4AD1002E82AE /* BackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A2C22ADA4AD1002E82AE /* BackgroundView.swift */; };
 		F122A2C72ADA4B10002E82AE /* NowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A2C62ADA4B10002E82AE /* NowView.swift */; };
-		F122A2C92ADA4B20002E82AE /* TimeTickView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A2C82ADA4B20002E82AE /* TimeTickView.swift */; };
+		F122A2C92ADA4B20002E82AE /* TimeTickViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A2C82ADA4B20002E82AE /* TimeTickViews.swift */; };
 		F122A3082ADF17C1002E82AE /* EventManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A3072ADF17C1002E82AE /* EventManager.swift */; };
 		F122A30E2AE02A54002E82AE /* Timeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A30D2AE02A54002E82AE /* Timeline.swift */; };
 		F18D04F52B0009D300E5C91E /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = F18D04F42B0009D300E5C91E /* README.md */; };
+		F18D04F72B06B35100E5C91E /* ArrowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18D04F62B06B35100E5C91E /* ArrowView.swift */; };
+		F18D04F92B06BA7400E5C91E /* CurrentDateAndTimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18D04F82B06BA7400E5C91E /* CurrentDateAndTimeView.swift */; };
+		F18D04FB2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18D04FA2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift */; };
+		F18D04FD2B0824F500E5C91E /* LayoutValueKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18D04FC2B0824F500E5C91E /* LayoutValueKeys.swift */; };
 		F19149272AD2649000A31D5A /* SolarDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19149262AD2649000A31D5A /* SolarDay.swift */; };
 		F19149292AD267A400A31D5A /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19149282AD267A400A31D5A /* Settings.swift */; };
 		F1B5FE182A735D2200CBBCE6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B5FE172A735D2200CBBCE6 /* Extensions.swift */; };
@@ -27,17 +31,21 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		F1102AF92A6DDCA6007534C1 /* DateLabels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateLabels.swift; sourceTree = "<group>"; };
+		F1102AF92A6DDCA6007534C1 /* TimeTicks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTicks.swift; sourceTree = "<group>"; };
 		F119C6662A7B59A200B183F5 /* EventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventView.swift; sourceTree = "<group>"; };
 		F119C6842A7CA56A00B183F5 /* TARDIS-Calendar-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "TARDIS-Calendar-Info.plist"; sourceTree = SOURCE_ROOT; };
 		F122A2BB2AD2FB0F002E82AE /* LocationManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerDelegate.swift; sourceTree = "<group>"; };
 		F122A2BF2AD82A7C002E82AE /* SolarEventManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolarEventManager.swift; sourceTree = "<group>"; };
 		F122A2C22ADA4AD1002E82AE /* BackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundView.swift; sourceTree = "<group>"; };
 		F122A2C62ADA4B10002E82AE /* NowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowView.swift; sourceTree = "<group>"; };
-		F122A2C82ADA4B20002E82AE /* TimeTickView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTickView.swift; sourceTree = "<group>"; };
+		F122A2C82ADA4B20002E82AE /* TimeTickViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTickViews.swift; sourceTree = "<group>"; };
 		F122A3072ADF17C1002E82AE /* EventManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventManager.swift; sourceTree = "<group>"; };
 		F122A30D2AE02A54002E82AE /* Timeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timeline.swift; sourceTree = "<group>"; };
 		F18D04F42B0009D300E5C91E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = "TARDIS Calendar/README.md"; sourceTree = SOURCE_ROOT; };
+		F18D04F62B06B35100E5C91E /* ArrowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrowView.swift; sourceTree = "<group>"; };
+		F18D04F82B06BA7400E5C91E /* CurrentDateAndTimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentDateAndTimeView.swift; sourceTree = "<group>"; };
+		F18D04FA2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalLayoutNoOverlap.swift; sourceTree = "<group>"; };
+		F18D04FC2B0824F500E5C91E /* LayoutValueKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutValueKeys.swift; sourceTree = "<group>"; };
 		F19149262AD2649000A31D5A /* SolarDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolarDay.swift; sourceTree = "<group>"; };
 		F19149282AD267A400A31D5A /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		F1B5FE172A735D2200CBBCE6 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -65,8 +73,12 @@
 				F1D15B432A5FA758006F6A4E /* ContentView.swift */,
 				F122A2C22ADA4AD1002E82AE /* BackgroundView.swift */,
 				F119C6662A7B59A200B183F5 /* EventView.swift */,
+				F18D04F62B06B35100E5C91E /* ArrowView.swift */,
 				F122A2C62ADA4B10002E82AE /* NowView.swift */,
-				F122A2C82ADA4B20002E82AE /* TimeTickView.swift */,
+				F18D04F82B06BA7400E5C91E /* CurrentDateAndTimeView.swift */,
+				F122A2C82ADA4B20002E82AE /* TimeTickViews.swift */,
+				F18D04FA2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift */,
+				F18D04FC2B0824F500E5C91E /* LayoutValueKeys.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -78,6 +90,7 @@
 				F122A30D2AE02A54002E82AE /* Timeline.swift */,
 				F122A2BF2AD82A7C002E82AE /* SolarEventManager.swift */,
 				F19149262AD2649000A31D5A /* SolarDay.swift */,
+				F1102AF92A6DDCA6007534C1 /* TimeTicks.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -106,7 +119,6 @@
 				F122A2C12ADA3F2B002E82AE /* Views */,
 				F122A3062ADF1782002E82AE /* ViewModel */,
 				F122A2BB2AD2FB0F002E82AE /* LocationManagerDelegate.swift */,
-				F1102AF92A6DDCA6007534C1 /* DateLabels.swift */,
 				F1B5FE172A735D2200CBBCE6 /* Extensions.swift */,
 				F19149282AD267A400A31D5A /* Settings.swift */,
 				F1D15B452A5FA75B006F6A4E /* Assets.xcassets */,
@@ -197,17 +209,21 @@
 			files = (
 				F122A30E2AE02A54002E82AE /* Timeline.swift in Sources */,
 				F122A3082ADF17C1002E82AE /* EventManager.swift in Sources */,
+				F18D04F72B06B35100E5C91E /* ArrowView.swift in Sources */,
 				F122A2C72ADA4B10002E82AE /* NowView.swift in Sources */,
 				F122A2C02AD82A7C002E82AE /* SolarEventManager.swift in Sources */,
+				F18D04F92B06BA7400E5C91E /* CurrentDateAndTimeView.swift in Sources */,
 				F119C6672A7B59A200B183F5 /* EventView.swift in Sources */,
 				F1B5FE182A735D2200CBBCE6 /* Extensions.swift in Sources */,
 				F122A2BC2AD2FB0F002E82AE /* LocationManagerDelegate.swift in Sources */,
 				F19149292AD267A400A31D5A /* Settings.swift in Sources */,
 				F122A2C32ADA4AD1002E82AE /* BackgroundView.swift in Sources */,
-				F1102AFA2A6DDCA6007534C1 /* DateLabels.swift in Sources */,
+				F1102AFA2A6DDCA6007534C1 /* TimeTicks.swift in Sources */,
 				F19149272AD2649000A31D5A /* SolarDay.swift in Sources */,
-				F122A2C92ADA4B20002E82AE /* TimeTickView.swift in Sources */,
+				F122A2C92ADA4B20002E82AE /* TimeTickViews.swift in Sources */,
 				F1D15B442A5FA758006F6A4E /* ContentView.swift in Sources */,
+				F18D04FD2B0824F500E5C91E /* LayoutValueKeys.swift in Sources */,
+				F18D04FB2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift in Sources */,
 				F1D15B422A5FA758006F6A4E /* TARDIS_CalendarApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

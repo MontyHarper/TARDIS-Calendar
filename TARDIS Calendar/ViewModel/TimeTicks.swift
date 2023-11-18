@@ -1,5 +1,5 @@
 //
-//  DateLabels.swift
+//  TimeTicks.swift
 //  TARDIS Calendar
 //
 //  Created by Monty Harper on 7/23/23.
@@ -9,6 +9,108 @@ import Foundation
 import SwiftUI
 
 
+struct TimeTick {
+        
+    var date: Date
+    var xLocation: Double
+    var label: String
+    
+    static func array(timeline: Timeline) -> [TimeTick] {
+        
+        // Initialize an array of TimeTicks to return
+        var array: [TimeTick] = []
+        
+        // Set up initial values
+        let calendar = Timeline.calendar
+        let leadingDate = timeline.leadingDate
+        let trailingDate = timeline.trailingDate
+        let trailingTime = timeline.trailingTime
+        let now = Date(timeIntervalSince1970: timeline.now)
+        
+        // First tick is always "Now"
+        array.append(TimeTick(date: now, xLocation: Timeline.nowLocation, label: "Now"))
+        
+        // Calculate the number of hours represented on screen.
+        let onScreenHours = calendar.dateComponents([.hour], from: leadingDate, to: trailingDate).hour!
+        
+        // Show hours or days with the labels, depending on the number of hours on screen.
+        switch onScreenHours {
+            
+        case 0...18:
+            // labels will show hours
+            
+            // Begin at the current time plus one hour
+            var tickDate = calendar.date(byAdding: .hour, value: 1, to: now)!
+            
+            // Iterate until the last hour
+            while tickDate <= trailingDate {
+
+                // Calculate location of label
+                let xLocation = dateToStop(tickDate.timeIntervalSince1970)
+                
+                // Calculate content of label
+                let hours = calendar.dateComponents([.hour], from: now, to: tickDate).hour!
+                
+                let label = "\(hours.name()) Hour" + (hours == 1 ? "" : "s")
+            
+                // Create the TimeTick
+                let timeTick = TimeTick(date: tickDate, xLocation: xLocation, label: label)
+                                
+                // Add this tick to the array
+                array.append(timeTick)
+                
+                // Advance the hour
+                tickDate = calendar.date(byAdding: .hour, value: 1, to: tickDate)!
+            }
+            
+            default:
+            // labels will show days
+            
+            // Begin with the first day
+            var tickDate: Date = calendar.startOfDay(for: leadingDate)
+            
+            // Iterate until the last day
+            while tickDate <= calendar.startOfDay(for: trailingDate) {
+                
+                // Calculate location of label
+                let noon = calendar.date(byAdding: .hour, value: 12, to: tickDate)!.timeIntervalSince1970
+                let xLocation = dateToStop(noon)
+                
+                // Calculate content of label
+                let formatter = DateFormatter()
+                formatter.dateFormat = "EEE, MMM dd"
+                let label = formatter.string(from: tickDate)
+            
+                // Create the TimeTick
+                let timeTick = TimeTick(date: tickDate, xLocation: xLocation, label: label)
+                
+                // Add this tick to the array, but only if the new tick is to the right of now.
+                if xLocation > Timeline.nowLocation {
+                    array.append(timeTick)
+                }
+                
+                // Advance the day
+                tickDate = calendar.date(byAdding: .day, value: 1, to: tickDate)!
+            }
+            
+        }
+        
+        return array
+        
+        // This function converts an actual date in seconds into a location on the screen.
+        func dateToStop(_ x:Double) -> Double {
+            
+            // linear transformation changing a given date x into a percent length of the screen.
+            let currentTime = timeline.now
+            return ((1.0 - Timeline.nowLocation) * x + Timeline.nowLocation * trailingTime - currentTime) / (trailingTime - currentTime)
+        }
+    }
+    
+}
+
+
+
+// MARK: -- Everything above this line shall replace everything below this line.
 
 // This is the third approach. New 0ct 15 2023.
 // I want to try relative labels; now, one hour, two hours, etc.
@@ -326,60 +428,34 @@ func dateLabelArrayOriginal(span: TimeInterval, now: Date) -> [TimeTickView] {
     }
 }
 
-
-// returns a label for current date
-struct DateLabel: View {
-    
-    var timeline: Timeline
-    
-    var formatter:DateFormatter {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE MMM d"
-        return formatter
-    }
-    
-    var body: some View {
-        
-        let now = Date(timeIntervalSince1970: timeline.now)
-        VStack {
-            Text(now, format: .dateTime.hour().minute())
-            Text(formatter.string(from: now))
-        }
-        .padding(5)
-        .background(.white)
-        .opacity(0.75)
-        .foregroundColor(.blue)
-        .fontWeight(.black)
-        .clipShape(RoundedRectangle(cornerSize: CGSize(width: 10, height: 5)))
-    }
-}
  
 
 // returns a label for span of time
-func timeSpanLabel(_ timespan:TimeInterval) -> String {
-    
-    var labelText = ""
-    let futureSpan = timespan * 0.8
-    let components:Set<Calendar.Component> = [.day, .hour, .minute]
-    let result = Settings.shared.calendar.dateComponents(components, from: Date(), to: Date() + futureSpan)
-    
-    var days = result.day ?? 0
-    var hours = result.hour ?? 0
-    let minutes = result.minute ?? 0
-    let totalHours = days * 24 + hours
-    
-    if totalHours > 12 {
-        days += 1
-        labelText = days == 1 ? "← One Day →" : "← \(days.name()) Days →"
-    } else {
-        if minutes > 30 {
-            hours += 1
-        }
-        labelText = hours == 1 ? "← One Hour →" : "← \(hours.name()) Hours →"
-    }
-    
-    return labelText
-}
+// Not used at the moment; commenting out for removal if I don't miss it.
+//func timeSpanLabel(_ timespan:TimeInterval) -> String {
+//    
+//    var labelText = ""
+//    let futureSpan = timespan * 0.8
+//    let components:Set<Calendar.Component> = [.day, .hour, .minute]
+//    let result = Settings.shared.calendar.dateComponents(components, from: Date(), to: Date() + futureSpan)
+//    
+//    var days = result.day ?? 0
+//    var hours = result.hour ?? 0
+//    let minutes = result.minute ?? 0
+//    let totalHours = days * 24 + hours
+//    
+//    if totalHours > 12 {
+//        days += 1
+//        labelText = days == 1 ? "← One Day →" : "← \(days.name()) Days →"
+//    } else {
+//        if minutes > 30 {
+//            hours += 1
+//        }
+//        labelText = hours == 1 ? "← One Hour →" : "← \(hours.name()) Hours →"
+//    }
+//    
+//    return labelText
+//}
 
 
 // returns a label for time or date at right edge of screen

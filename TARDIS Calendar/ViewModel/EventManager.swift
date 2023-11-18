@@ -200,21 +200,21 @@ class EventManager: ObservableObject {
     }
     
     // Called once per second; automatically expands any views within range of Now.
-    
-    func autoExpand() {
-        if let index = events.firstIndex(where: {
-            let wait = $0.startDate.timeIntervalSince1970 - Date().timeIntervalSince1970
-            // View will expand fifteen minutes before start time; adjust this by changing the 15 to a different number of minutes.
-            // View will also expand AT start time, in case it's been deflated in between.
-            return (15 * 60 <= wait && wait <= 15 * 60 + 2) || (0 <= wait && wait <= 2)}) {
-            self.isExpanded[index] = true
-        }
-        if let index = events.firstIndex(where: {
-            let wait = Date().timeIntervalSince1970 - $0.endDate.timeIntervalSince1970
-            // View will un-expand at the end time. 
-            return 0 <= wait && wait <= 2}) {
-            self.isExpanded[index] = false
-        }
-        
-    }
+    // I think this is no longer needed, with events expanding and sticking to now from within Event view. Commenting out for now - will remove if I don't miss it!
+//    func autoExpand() {
+//        if let index = events.firstIndex(where: {
+//            let wait = $0.startDate.timeIntervalSince1970 - Date().timeIntervalSince1970
+//            // View will expand fifteen minutes before start time; adjust this by changing the 15 to a different number of minutes.
+//            // View will also expand AT start time, in case it's been deflated in between.
+//            return (15 * 60 <= wait && wait <= 15 * 60 + 2) || (0 <= wait && wait <= 2)}) {
+//            self.isExpanded[index] = true
+//        }
+//        if let index = events.firstIndex(where: {
+//            let wait = Date().timeIntervalSince1970 - $0.endDate.timeIntervalSince1970
+//            // View will un-expand at the end time. 
+//            return 0 <= wait && wait <= 2}) {
+//            self.isExpanded[index] = false
+//        }
+//        
+//    }
 }

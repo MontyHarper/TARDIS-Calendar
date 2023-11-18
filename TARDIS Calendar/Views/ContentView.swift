@@ -21,8 +21,8 @@ struct ContentView: View {
     @State private var inactivityTimer: Timer?
     
     // Constants that configure the UI; to mess with the look of the calendar, mess with these
-    let yOfLabelBar = 0.2 // y position of date label bar in unit space
-    let yOfTimeline = 0.5
+    let yOfLabelBar = 0.15 // y position of date label bar in unit space
+    let yOfTimeline = 0.45
     let yOfInfoBox = 0.8
     
     // Timers driving change in the UI
@@ -80,10 +80,11 @@ struct ContentView: View {
                 
                 // Background shows time of day by color
                 BackgroundView(timeline: timeline, solarEventManager: solarEventManager)
+                    .zIndex(-100)
                 // Zoom in and out by changing trailingTime
                     .gesture(oneFingerZoom)
                 
-
+                
                 // Hidden button in upper right hand corner allows caregivers to change preferences.
                 Color(.clear)
                     .frame(width: 80, height: 80)
@@ -92,24 +93,36 @@ struct ContentView: View {
                     .onTapGesture(count: 3, perform: {
                         print("TRIPLE TAP")
                     })
-                    
+                
                 
                 // View on top of background is arranged into three groups; label bar, timeline for events, and a box showing current information. Grouping is just conceptual. Individual elements are placed exactly.
                 
                 
                 // Label Bar
+                
+                // TimeTick Markers
+                ForEach(
+                    TimeTick.array(timeline: timeline), id: \.self.xLocation) {tick in
+                        TimeTickMarkerView(timeTick: tick)
+                            .position(x: screen.size.width * tick.xLocation, y: yOfLabelBar * screen.size.height)
+                    }
+                
+            
                 // Label bar background
                 Color(.white)
                     .frame(width: screen.size.width, height: 0.065 * screen.size.height)
                     .position(x: 0.5 * screen.size.width, y: yOfLabelBar * screen.size.height)
                 
-                // Hour and day markers
-                ForEach(
-                    dateLabelArray(timeline: timeline), id: \.self.xLocation) {label in
-                        
-                        label
-                            .position(x: label.xLocation * screen.size.width, y: yOfLabelBar * screen.size.height)
-                    }
+
+                // TimeTick Labels
+                HorizontalLayoutNoOverlap{
+                    ForEach(
+                        TimeTick.array(timeline: timeline), id: \.self.xLocation) {tick in
+                            TimeTickLabelView(timeTick: tick)
+                                .xPosition(tick.xLocation)
+                        }
+                }
+                .position(x: screen.size.width * 0.5, y: yOfLabelBar * screen.size.height)
                 
                 // End of Label Bar
                 
@@ -121,6 +134,7 @@ struct ContentView: View {
                     .shadow(color: .white, radius: 3)
                     .frame(width: screen.size.width, height: 2)
                     .position(x: 0.5 * screen.size.width, y: yOfTimeline * screen.size.height)
+                    .zIndex(-90)
                 
                 
                 // Circles representing events along the time line
@@ -142,10 +156,10 @@ struct ContentView: View {
                 
                 
                 
-                // Current Information Box
+                // Current Time and Date Box
                 
                 // Current Date Label
-                DateLabel(timeline: timeline)
+                CurrentDateAndTimeView()
                     .position(x: 0.2 * screen.size.width, y: yOfInfoBox * screen.size.height)
                 
                 // End of Information Box
@@ -168,9 +182,6 @@ struct ContentView: View {
                         solarEventManager.updateSolarDays()
                         currentDay = today
                     }
-                    
-                    // Expand the EventView for events happening soon and un-expand the EventView for events recently finished.
-                    eventManager.autoExpand()
             
                 }
             
@@ -214,10 +225,10 @@ struct ContentView: View {
         
         let x = timeline.span
 
-        // min seconds on screen to trigger shrink effect; set for 12 hours
-        let min = 12.0 * 60 * 60
+        // min seconds on screen to trigger shrink effect; set for 8 hours
+        let min = 8.0 * 60 * 60
         let max = timeline.maxSpan // seconds on screen where target size is reached
-        let b = 0.2 // target size
+        let b = 0.35 // target size
         
         switch x {
         case 0.0..<min:

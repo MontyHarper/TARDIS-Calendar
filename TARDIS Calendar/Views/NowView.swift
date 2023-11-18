@@ -20,7 +20,7 @@ struct NowView: View {
         
         let image = Settings.shared.userImage
         
-        ZStack {
+        Group {
             
 //            if detailView {
 //
@@ -40,15 +40,10 @@ struct NowView: View {
 //            }
 //            else {
                 
-                Circle().frame(width: 100, height: 100).foregroundColor(.yellow).shadow(color: .white, radius: 20)
-                .overlay(
-                    Image(systemName: "arrow.right")
-                        .zIndex(0.0)
-                        .offset(x: -50 - 7.75)
-                        .foregroundColor(.black)
-                        .shadow(color: .white, radius: 3),
-                    alignment: .init(horizontal: .center, vertical: .center))
-                image.resizable().aspectRatio(contentMode:.fit).frame(width:90, height:90, alignment:.center).clipShape(Circle())
+            ArrowView(size: 100.0)
+                .zIndex(-90)
+            Circle().frame(width: 100, height: 100).foregroundColor(.yellow).shadow(color: .white, radius: 20)
+            image.resizable().aspectRatio(contentMode:.fit).frame(width:90, height:90, alignment:.center).clipShape(Circle())
                 
             }
 //        }

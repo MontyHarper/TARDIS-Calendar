@@ -10,7 +10,6 @@ import SwiftUI
 import EventKit
 
 
-
 struct EventView: View {
     
     let event: Event
@@ -25,7 +24,7 @@ struct EventView: View {
     // TODO: - Figure out how to animate transitions from regular to expanded format and back. I was using sizeMultiplyer, but then when the expansion comes from outside the view, it can end up with the wrong value. Best to keep one value constant for the target size and add a new variable to use when animating?
     
     // Adjust to change the size of an expanded view.
-    let sizeMultiplyer = 4.0
+    let sizeMultiplyer = 3.5
     
     // Each veiw has an arrow on the timeline; this places it correctly. Do not adjust.
     let arrowOffset: Double = -7.75
@@ -161,31 +160,19 @@ struct EventView: View {
                 .foregroundColor(color)
                 .frame(width: size * 0.95 * shrink, height: size * 0.95 * shrink, alignment: .center)
         }
+        .opacity(eventIsNow ? 0.0 : 1.0)
         .onTapGesture {
             isExpanded = true
         }
-    }
-    
-    var arrowView: some View {
-        
-        Circle()
-            .foregroundColor(.clear)
-            .frame(width: size * shrink, height: size * shrink)
-            .overlay(
-                Image(systemName: "arrow.right")
-                    .offset(x: -size * 0.5 * shrink + arrowOffset)
-                    .foregroundColor(.black)
-                    .shadow(color: .white, radius: 3),
-                alignment: .init(horizontal: .center, vertical: .center))
     }
         
     var body: some View {
         
         Group {
-            arrowView
-                .zIndex(0.0)
+            ArrowView (size: size * shrink)
+                .zIndex(-6)
             iconView
-                .zIndex((event.endDate > now) ? Double(event.priority) : 0)
+                .zIndex((event.endDate > now) ? Double(event.priority) : Double(event.priority) - 5)
             
             
             if isExpanded || eventIsNow {
@@ -207,14 +194,15 @@ struct EventView: View {
                         if now < event.startDate {
                             Text(descriptionOfTimeRemaining)
                                 .font(.caption)
-                            Text(timerInterval: now...event.startDate)
+                            // Mom found the countdown numbers confusing. Commenting out for now
+     //                       Text(timerInterval: now...event.startDate)
                         } else if now < event.endDate {
-                            Text("HAPPENING NOW!\n")
+                            Text("HAPPENING NOW\n")
                         } else {
                             Text("Done!\n")
                         }
                     }
-                    .frame(width: size * sizeMultiplyer * 0.75, height: size * sizeMultiplyer * 0.8)
+                    .frame(width: size * sizeMultiplyer * 0.8, height: size * sizeMultiplyer * 0.85)
                     .multilineTextAlignment(.center)
                     
                 } // End of expanded view ZStack
