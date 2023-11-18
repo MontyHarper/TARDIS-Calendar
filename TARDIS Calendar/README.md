@@ -1,5 +1,6 @@
 # TARDIS Calendar
 This is an experimental "dementia" calendar for iOS, currently in development.
+Unfortunately this app will not yet work for anyone who doesn't have my mom's calendars in their Apple Calendar app! I'm working on adding user preferences that will allow you to sync this app to your own Apple Calendar.
 
 # TARDIS Calendar Concept
 I'm designing this calendar for my mom, who has temporal lobe epilepsy, and cannot conceptualize time very well.
@@ -8,7 +9,7 @@ However, the current time doesn't answer many of her questions. What she really 
 The TARDIS calendar represents the flow of time graphically on screen. 
 (So "Time and Relative Dimension In Space" kind of makes sense. I may change it to TARDOS - Time and Relative Dimension On Screen.)
 In addition, my mom does not work well with technology, and cannot learn to navigate a new app, so 
-the calendar is presented in a single view, and the user controls are very simple and intuative.
+the calendar is presented in a single view, and the user controls are meant to be very simple and intuative.
 
 # Future Plans / Please Contact Me
 I imagine there are others out there whose needs are similar, so I plan to make this app available when it's ready.
