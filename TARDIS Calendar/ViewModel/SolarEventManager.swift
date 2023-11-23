@@ -138,16 +138,12 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
     
     // This method returns an array of stops that matches the timeline currently showing on screen. The leading time and trailing time are each matched to an interpolated color, allowing the user to zoom smoothly without colors jumping around at the edge of the screen.
     func screenStops(timeline: Timeline) -> [Gradient.Stop] {
-        
-        print("screenStops called")
-        
+                
         guard solarDaysAvailable else {
             print("solar days unavailable")
             return [Gradient.Stop(color: Color.noon, location: 0.0)]
         }
-        
-        print("solarDays available")
-        
+                
         // Set up initial values
         let leadingDate = timeline.leadingDate
         let leadingTime = timeline.leadingTime

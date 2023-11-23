@@ -23,8 +23,8 @@ struct TimeTickMarkerView: View, Identifiable {
                 .foregroundColor(.white)
                 .overlay(
                     Text("▼")
-                        .foregroundColor(.blue)
-                        .opacity(0.5)
+                        .foregroundColor(.white)
+                        .opacity(1.0)
                         .offset(y: 15.5))
         }
         .background(.white)
@@ -48,7 +48,7 @@ struct TimeTickLabelView: View, Identifiable {
                 .background(
                     Text("▼")
                         .foregroundColor(.blue)
-                        .opacity(0.5)
+                        .opacity(0.75)
                         .offset(y:15.5))
         }
         .background(.white)

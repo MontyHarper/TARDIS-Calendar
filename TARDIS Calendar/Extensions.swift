@@ -121,8 +121,15 @@ extension Int {
     }
 }
 
-enum CalendarType: String {
-    case meals, medical, daily, special, banner
+enum CalendarType: String, CaseIterable, Identifiable {
+    case meals = "meals"
+    case medical = "medical"
+    case daily = "daily"
+    case special = "special"
+    case banner = "banner"
+    case none = "none"
+    
+    var id: String {self.rawValue}
     
     func icon() -> Image {
         
@@ -130,7 +137,7 @@ enum CalendarType: String {
         case .meals:
            return Image(systemName: "fork.knife.circle.fill")
         case .medical:
-           return Image(systemName: "cross.case.circle.fill")
+           return Image(systemName: "cross.circle.fill")
         case .daily:
            return Image(systemName: "calendar.circle.fill")
         case .special:
@@ -158,4 +165,38 @@ enum CalendarType: String {
     }
 }
 
+enum CalendarError: Error {
+    case noUserDictionary
+    case noAppleCalendars
+    case appleCalendarMissing
+    case permissionDenied
+    
+    // Do we need these functions?
+    // I don't know yet - will come back to this.
+    func title() -> String {
+        switch self {
+        case .noUserDictionary:
+            return "Please Connect With Your Apple Calendar App"
+        case .noAppleCalendars:
+            return "Please Set Up Your Apple Calendar"
+        case .appleCalendarMissing:
+            return "An Apple Calendar Is Missing"
+        case .permissionDenied:
+            return "Permission Required"
+        }
+    }
+    
+    func message() -> String {
+        switch self {
+        case .noUserDictionary:
+            return "This app displays events from your Apple Calendar App. Please select which calendars you wish to display."
+        case .noAppleCalendars:
+            return ""
+        case .appleCalendarMissing:
+            return ""
+        case .permissionDenied:
+            return "Permission Required"
+        }
+    }
+}
 

@@ -12,18 +12,18 @@ import Foundation
 import SwiftUI
 import UIKit
 
-
-
 // Wrapper for EKEvent, providing a unique id for each event.
 // Start time is rounded to the minute; can be used also to identify an event.
 class Event: Identifiable, Comparable {
     
     var event: EKEvent
+    var type: String
     
     // Track this here for persistance as the views themselves get recycled.
     
-    init(event: EKEvent) {
+    init(event: EKEvent, type: String) {
         self.event = event
+        self.type = type
     }
         
     var id: UUID {
@@ -49,13 +49,14 @@ class Event: Identifiable, Comparable {
         return Color(cgColor: cg)
     }
     var priority: Int {
-        let calendars = UserDefaults.standard.dictionary(forKey: "calendars")
-        return CalendarType(rawValue: calendars?[calendarTitle] as! String)?.priority() ?? 0
+        if let number = CalendarType(rawValue:type)?.priority() {
+            return number
+        } else {
+            return 0
+        }
     }
     
-    
-    
-    // Protocol conformance for comparable
+    // Protocol conformance for Comparable
     
     static func < (lhs: Event, rhs: Event) -> Bool {
         if lhs.startDate < rhs.startDate {
@@ -76,11 +77,12 @@ class Event: Identifiable, Comparable {
 class EventManager: ObservableObject {
     
     @Published var events = [Event]() // Upcoming events for the maximum number of days allowed in the display.
-    @Published var isExpanded = [Bool]() // For each event, should the view be rendered as expanded?
-
-    private let eventStore = EKEventStore()
+    @Published var isExpanded = [Bool]() // For each event, should the view be rendered as expanded? This is the source of truth for expansion of event views.
+    @Published var calendarSet = CalendarSet() // Tracks Apple Calendar calendars and user selected calendars.
     
-    // Temporarily stores newly downloaded events used to update the event list.
+    let eventStore = EKEventStore()
+    
+    // newEvents temporarily stores newly downloaded events used to update the event list.
     // This allows updates to preserve event indices so information about the display mode is not overwritten.
     private var newEvents = [Event]()
     
@@ -94,9 +96,9 @@ class EventManager: ObservableObject {
              "BenaSpecial": CalendarType.special.rawValue
             ],
             forKey: "calendars")
-        updateEvents()
-        // Notification will update the events list any time an event is changed in the user's calendar app.
-        NotificationCenter.default.addObserver(self, selector: #selector(self.updateEvents), name: .EKEventStoreChanged, object: eventStore)
+        refreshCalendarsAndEvents()
+        // Notification will update the events list any time an event or calendar is changed in the user's Apple Calendar App.
+        NotificationCenter.default.addObserver(self, selector: #selector(self.refreshCalendarsAndEvents), name: .EKEventStoreChanged, object: eventStore)
     }
     
     deinit {
@@ -104,91 +106,56 @@ class EventManager: ObservableObject {
         NotificationCenter.default.removeObserver(eventStore)
     }
     
-    // This method updates the array of events.
-    // Is called once per day from the content view.
-    // Also is called whenever the user adds or updates events in the calendar.
-    // Updates all events, replacing the current list with a new list.
-    
-    @objc func updateEvents() {
-        
-        print("update events is called")
-        eventStore.requestAccess(to: EKEntityType.event) {granted, error in
-            
-            if granted {
-                
-                // Create a list of calendars to search
-                var calendarsToSearch = [EKCalendar]()
-                let calendars = self.eventStore.calendars(for: .event)
-                if let myCalendars = UserDefaults.standard.dictionary(forKey: "calendars") {
-                    let myCalendarTitles = myCalendars.keys
-                    calendarsToSearch = calendars.filter({myCalendarTitles.contains($0.title)})
-                } else {
-                    print("No calendars found for this user.")
-                    // TODO: - Handle a "no calendars found" event gracefully
-                }
-                
-                // Set up date parameters
-                let start = Timeline.minDay
-                let end = Timeline.maxDay
-                
-                // Set up search predicate
-                let findEKEvents = self.eventStore.predicateForEvents(withStart: start, end: end, calendars: calendarsToSearch)
-                
-                // Store the search results
-                self.newEvents = self.eventStore.events(matching: findEKEvents).map({ekevent in
-                    Event(event: ekevent)
-                })
-                
-                // Filter the search results to remove lower priority events scheduled at the same time as higher priority events...
-                // TODO: - Test this!
-                self.newEvents = self.newEvents.filter({event in
-                    let sameDate = self.newEvents.filter({$0.startDate == event.startDate})
-                    return event == sameDate.max()
-                })
-                
-                DispatchQueue.main.async {self.processNewEvents()}
-                
+    @objc func refreshCalendarsAndEvents() {
+        calendarSet.updateCalendars(eventStore: eventStore) { error in
+            if let error = error {
+                // TODO: - handle errors gracefully
+                fatalError("\(error.title())")
             } else {
-                print(error as Any)
-                print("Permission not granted to fetch events.")
+                self.updateEvents()
             }
         }
     }
+        
+    @objc func updateEvents() {
+                
+        // Set up date parameters
+        let start = Timeline.minDay
+        let end = Timeline.maxDay
+        
+        // Set up search predicate
+        let findEKEvents = eventStore.predicateForEvents(withStart: start, end: end, calendars: calendarSet.calendarsToSearch)
+        
+        // Save the dates that are expanded
+        let expandedDates = Set(isExpanded.indices.filter({isExpanded[$0]}).map({events[$0].startDate}))
+        
+        // Store the search results, converting EKEvents to Events, replacing current events.
+        newEvents = eventStore.events(matching: findEKEvents).map({ekevent in
+            Event(event: ekevent, type: calendarSet.userCalendars[ekevent.calendar.title] ?? "none")
+        })
+        
+        DispatchQueue.main.async {
+            self.updateEventsCompletion(expandedDates)
+        }
+                
+    } // End of updateEvents
     
-    func processNewEvents() {
-        print("Processing New Events.")
+    func updateEventsCompletion(_ expandedDates: Set<Date>) {
         
-        guard newEvents.count > 0 else {
-            return
-        }
+        events = newEvents
         
-        // Cycle through events from last to first to remove any that have been deleted and update any that already exist.
-        if events.count > 0 {
-            let last = events.count - 1
-            for index in stride(from: last, through: 0, by: -1) {
-                let startDate = events[index].startDate
-                if newEvents.firstIndex(where: {$0.startDate == startDate}) != nil {
-                    // This event already exists; update the event.
-                    events[index].event.refresh()
-                }
-                else {
-                    // This event has been deleted so remove it from events.
-                    isExpanded.remove(at: index)
-                    events.remove(at: index)
-                }
-            }
-        }
+        // Filter the results to remove lower priority events scheduled at the same time as higher priority events...
+        // TODO: - Test this!
+            self.events = self.events.filter({event in
+            let sameDate = self.events.filter({$0.startDate == event.startDate})
+            return event == sameDate.max()
+        })
         
-        // Cycle through newEvents to add any that previously didn't exist.
-        for event in newEvents {
-            
-            // If the event doesn't exist, add it.
-            if events.firstIndex(where: {$0.startDate == event.startDate}) == nil {
-                events.append(event)
-                isExpanded.append(false)
-            }
-        }
-    }// end of processNewEvents()
+        // Restore dates that are expanded.
+            self.isExpanded = self.events.indices.map({expandedDates.contains(self.events[$0].startDate)})
+        print("number of events: \(self.events.count)")
+        print("number of isExpanded: \(self.isExpanded.count)")
+    }
     
     
     // Called when user taps the background; closes any expanded views.
@@ -199,22 +166,4 @@ class EventManager: ObservableObject {
         }
     }
     
-    // Called once per second; automatically expands any views within range of Now.
-    // I think this is no longer needed, with events expanding and sticking to now from within Event view. Commenting out for now - will remove if I don't miss it!
-//    func autoExpand() {
-//        if let index = events.firstIndex(where: {
-//            let wait = $0.startDate.timeIntervalSince1970 - Date().timeIntervalSince1970
-//            // View will expand fifteen minutes before start time; adjust this by changing the 15 to a different number of minutes.
-//            // View will also expand AT start time, in case it's been deflated in between.
-//            return (15 * 60 <= wait && wait <= 15 * 60 + 2) || (0 <= wait && wait <= 2)}) {
-//            self.isExpanded[index] = true
-//        }
-//        if let index = events.firstIndex(where: {
-//            let wait = Date().timeIntervalSince1970 - $0.endDate.timeIntervalSince1970
-//            // View will un-expand at the end time. 
-//            return 0 <= wait && wait <= 2}) {
-//            self.isExpanded[index] = false
-//        }
-//        
-//    }
 }

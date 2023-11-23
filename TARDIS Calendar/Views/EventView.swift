@@ -181,7 +181,7 @@ struct EventView: View {
                     
                     Circle()
                         .foregroundColor(.yellow)
-                        .opacity(0.75)
+                        .opacity(0.85)
                         .frame(width: size * sizeMultiplyer, height: size * sizeMultiplyer)
                     
                     VStack {

@@ -17,10 +17,11 @@ struct ContentView: View {
     @StateObject private var timeline = Timeline()
     @StateObject private var eventManager = EventManager()
     @StateObject private var solarEventManager = SolarEventManager()
+    @State private var stateBools = StateBools()
     @State private var animateSpan = false
     @State private var inactivityTimer: Timer?
     
-    // Constants that configure the UI; to mess with the look of the calendar, mess with these
+    // Constants that configure the UI. To mess with the look of the calendar, mess with these.
     let yOfLabelBar = 0.15 // y position of date label bar in unit space
     let yOfTimeline = 0.45
     let yOfInfoBox = 0.8
@@ -91,8 +92,21 @@ struct ContentView: View {
                     .contentShape(Rectangle())
                     .position(x: screen.size.width - 40, y: 40)
                     .onTapGesture(count: 3, perform: {
-                        print("TRIPLE TAP")
+                        stateBools.settingsAlert = true
                     })
+                    .alert("Do you want to change the settings?", isPresented: $stateBools.settingsAlert) {
+                        Button("No - Touch Here to Go Back", role: .cancel, action: {})
+                        Button("Yes", action: {stateBools.settings = true})
+                    }
+                    .sheet(isPresented: $stateBools.settings) {
+                        SettingsView(calendarSet: $eventManager.calendarSet)
+                            .onDisappear {
+                                print("calling update events")
+                                eventManager.updateEvents()
+                            }
+                    }
+
+                    
                 
                 
                 // View on top of background is arranged into three groups; label bar, timeline for events, and a box showing current information. Grouping is just conceptual. Individual elements are placed exactly.
@@ -170,19 +184,19 @@ struct ContentView: View {
             
             // Update timer fires once per second.
                 .onReceive(updateTimer) { time in
-                    
+
                     // Advance the timeline
                     timeline.updateNow()
                     print(timeline.now)
-                    
+
                     // Check for new day; update calendar and solar events once per day.
                     let today = Timeline.calendar.dateComponents([.day], from: Date())
                     if today != currentDay {
-                        eventManager.updateEvents()
+                        eventManager.updateEvents() 
                         solarEventManager.updateSolarDays()
                         currentDay = today
                     }
-            
+
                 }
             
             // Animating zoom's return to default by hand
