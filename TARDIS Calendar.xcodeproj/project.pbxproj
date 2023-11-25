@@ -31,6 +31,7 @@
 		F1D15B442A5FA758006F6A4E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D15B432A5FA758006F6A4E /* ContentView.swift */; };
 		F1D15B462A5FA75B006F6A4E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F1D15B452A5FA75B006F6A4E /* Assets.xcassets */; };
 		F1D15B492A5FA75B006F6A4E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F1D15B482A5FA75B006F6A4E /* Preview Assets.xcassets */; };
+		F1F9E49B2B11220C00DA4026 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1F9E49A2B11220C00DA4026 /* Enums.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +61,7 @@
 		F1D15B432A5FA758006F6A4E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F1D15B452A5FA75B006F6A4E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F1D15B482A5FA75B006F6A4E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		F1F9E49A2B11220C00DA4026 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,18 +92,19 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		F122A3062ADF1782002E82AE /* ViewModel */ = {
+		F122A3062ADF1782002E82AE /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
 				F122A3072ADF17C1002E82AE /* EventManager.swift */,
+				F18D051E2B0BC01C00E5C91E /* CalendarSet.swift */,
 				F122A30D2AE02A54002E82AE /* Timeline.swift */,
 				F122A2BF2AD82A7C002E82AE /* SolarEventManager.swift */,
+				F122A2BB2AD2FB0F002E82AE /* LocationManagerDelegate.swift */,
 				F19149262AD2649000A31D5A /* SolarDay.swift */,
 				F1102AF92A6DDCA6007534C1 /* TimeTicks.swift */,
 				F18D05002B0A99B600E5C91E /* StateBools.swift */,
-				F18D051E2B0BC01C00E5C91E /* CalendarSet.swift */,
 			);
-			path = ViewModel;
+			path = ViewModels;
 			sourceTree = "<group>";
 		};
 		F1D15B352A5FA758006F6A4E = {
@@ -126,10 +129,8 @@
 				F119C6842A7CA56A00B183F5 /* TARDIS-Calendar-Info.plist */,
 				F1D15B412A5FA758006F6A4E /* TARDIS_CalendarApp.swift */,
 				F122A2C12ADA3F2B002E82AE /* Views */,
-				F122A3062ADF1782002E82AE /* ViewModel */,
-				F122A2BB2AD2FB0F002E82AE /* LocationManagerDelegate.swift */,
-				F1B5FE172A735D2200CBBCE6 /* Extensions.swift */,
-				F19149282AD267A400A31D5A /* Settings.swift */,
+				F122A3062ADF1782002E82AE /* ViewModels */,
+				F1F9E4992B111DBF00DA4026 /* Utilities */,
 				F1D15B452A5FA75B006F6A4E /* Assets.xcassets */,
 				F18D04F42B0009D300E5C91E /* README.md */,
 				F1D15B472A5FA75B006F6A4E /* Preview Content */,
@@ -143,6 +144,16 @@
 				F1D15B482A5FA75B006F6A4E /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		F1F9E4992B111DBF00DA4026 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				F1B5FE172A735D2200CBBCE6 /* Extensions.swift */,
+				F1F9E49A2B11220C00DA4026 /* Enums.swift */,
+				F19149282AD267A400A31D5A /* Settings.swift */,
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -226,6 +237,7 @@
 				F18D04F92B06BA7400E5C91E /* CurrentDateAndTimeView.swift in Sources */,
 				F119C6672A7B59A200B183F5 /* EventView.swift in Sources */,
 				F1B5FE182A735D2200CBBCE6 /* Extensions.swift in Sources */,
+				F1F9E49B2B11220C00DA4026 /* Enums.swift in Sources */,
 				F122A2BC2AD2FB0F002E82AE /* LocationManagerDelegate.swift in Sources */,
 				F19149292AD267A400A31D5A /* Settings.swift in Sources */,
 				F122A2C32ADA4AD1002E82AE /* BackgroundView.swift in Sources */,

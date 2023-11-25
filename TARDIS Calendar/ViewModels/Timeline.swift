@@ -4,8 +4,8 @@
 //
 //  Created by Monty Harper on 10/18/23.
 //
-//  For convenience, Timeline makes various constants and calculations available that have to do with
-//  how the timeline is currently represented on screen.
+//  Timeline makes various constants and calculations available that describe
+//  the timeline currently represented on screen.
 //
 
     /*
@@ -39,7 +39,7 @@ class Timeline: ObservableObject {
     static let minSpan: TimeInterval = 3600 // minimum time shown on screen is one hour, in seconds
     static let nowLocation: Double = 0.2 // now icon is shown 1/5 of the way from left edge of screen
     static let maxFutureDays = 7
-    static let hoursOnScreen = 4
+    static let hoursOnScreen = 4 // Default number; screen returns to this when triggered.
     static var defaultSpan: TimeInterval { // represents seconds onscreen: 14400
         Double (Timeline.hoursOnScreen * 3600)
     }
@@ -85,7 +85,7 @@ class Timeline: ObservableObject {
     convenience init() {
         self.init(
             now: Date().timeIntervalSince1970, // default now
-            trailingTime: Date().timeIntervalSince1970 + Double (Timeline.hoursOnScreen * 3600) // default trailingTime
+            trailingTime: Date().timeIntervalSince1970 + Timeline.defaultSpan // default trailingTime
         )
     }
     
@@ -143,7 +143,6 @@ class Timeline: ObservableObject {
             if newTrailingTime >= leadingTime + maxSpan {
                 trailingTime = leadingTime + maxSpan
             }
-            print("out of bounds: \(newTrailingTime)")
         }
     }
     

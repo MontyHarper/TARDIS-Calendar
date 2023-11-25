@@ -4,6 +4,8 @@
 //
 //  Created by Monty Harper on 7/12/23.
 //
+//  This is the calendar view. Mostly this is what we see when the app is running.
+//
 
 import Foundation
 import SwiftUI
@@ -11,28 +13,29 @@ import SwiftUI
 
 
 struct ContentView: View {
-    
-    // TODO: - initialize instances of each class needed to generate view arrays: EventManager,
-    
+        
+    // Access to view models
     @StateObject private var timeline = Timeline()
     @StateObject private var eventManager = EventManager()
     @StateObject private var solarEventManager = SolarEventManager()
+    
+    // State variables
     @State private var stateBools = StateBools()
-    @State private var animateSpan = false
     @State private var inactivityTimer: Timer?
+    @State private var currentDay = Timeline.calendar.dateComponents([.day], from: Date())
     
     // Constants that configure the UI. To mess with the look of the calendar, mess with these.
-    let yOfLabelBar = 0.15 // y position of date label bar in unit space
-    let yOfTimeline = 0.45
-    let yOfInfoBox = 0.8
+    let yOfLabelBar = 0.17 // y position of date label bar in unit space
+    let yOfTimeline = 0.5
+    let yOfInfoBox = 0.09
     
     // Timers driving change in the UI
     // May want to refactor for better efficiency
-    // Josh says use timeline view
+    // Josh says use timeline view?
     let updateTimer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
     let spanTimer = Timer.publish(every: 0.04, on: .main, in: .common).autoconnect()
-    @State private var currentDay = Timeline.calendar.dateComponents([.day], from: Date())
     
+    // Used to track drag gesture for the one-finger zoom function.
     static private var dragStart = 0.0
     
     
@@ -41,7 +44,7 @@ struct ContentView: View {
         GeometryReader { screen in
             
             // Custom Zoom gesture attaches to the background and event views.
-            // As far as I can tell it needs to live here inside the geometry reader.
+            // Needs to live here inside the geometry reader.
             let oneFingerZoom = DragGesture()
                 .onChanged { gesture in
                     // If this is a new drag starting, save the location.
@@ -62,7 +65,7 @@ struct ContentView: View {
                     timeline.newTrailingTime(start: start, end: end)
                     
                     // This indicates user interaction, so reset the inactivity timer.
-                    animateSpan = false
+                    stateBools.animateSpan = false
                     inactivityTimer?.invalidate()
                     
                 } .onEnded { _ in
@@ -71,7 +74,7 @@ struct ContentView: View {
                     // And reset the inactivity timer, since this indicates the end of user interaction.
                     // When this timer goes off, the screen animates back to default zoom position.
                     inactivityTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: false, block: {_ in
-                        animateSpan = true
+                        stateBools.animateSpan = true
                     })
                 }
             
@@ -101,18 +104,19 @@ struct ContentView: View {
                     .sheet(isPresented: $stateBools.settings) {
                         SettingsView(calendarSet: $eventManager.calendarSet)
                             .onDisappear {
-                                print("calling update events")
                                 eventManager.updateEvents()
                             }
                     }
 
-                    
-                
-                
-                // View on top of background is arranged into three groups; label bar, timeline for events, and a box showing current information. Grouping is just conceptual. Individual elements are placed exactly.
+                                    
+                // View on top of background is arranged into three groups; label bar, timeline for events, and banner messages. Grouping is just conceptual. Individual elements are placed exactly.
                 
                 
                 // Label Bar
+                
+                // Current Date
+                CurrentDateAndTimeView()
+                    .position(x: 0.2 * screen.size.width, y: yOfInfoBox * screen.size.height)
                 
                 // TimeTick Markers
                 ForEach(
@@ -143,12 +147,14 @@ struct ContentView: View {
                 
                 // Timeline
                 
-                // Background is a horizontal line across the screen
+                // Background is a horizontal arrow across the screen
                 Color(.black)
                     .shadow(color: .white, radius: 3)
                     .frame(width: screen.size.width, height: 2)
                     .position(x: 0.5 * screen.size.width, y: yOfTimeline * screen.size.height)
                     .zIndex(-90)
+                ArrowView(size: 0.0)
+                    .position(x: screen.size.width, y: yOfTimeline * screen.size.height)
                 
                 
                 // Circles representing events along the time line
@@ -170,13 +176,11 @@ struct ContentView: View {
                 
                 
                 
-                // Current Time and Date Box
+                // Banner Messages will go here
                 
-                // Current Date Label
-                CurrentDateAndTimeView()
-                    .position(x: 0.2 * screen.size.width, y: yOfInfoBox * screen.size.height)
+
                 
-                // End of Information Box
+                // End of Banner Messages
                 
                 
             } // End of main ZStack
@@ -192,7 +196,7 @@ struct ContentView: View {
                     // Check for new day; update calendar and solar events once per day.
                     let today = Timeline.calendar.dateComponents([.day], from: Date())
                     if today != currentDay {
-                        eventManager.updateEvents() 
+                        eventManager.updateCalendarsAndEvents()
                         solarEventManager.updateSolarDays()
                         currentDay = today
                     }
@@ -201,7 +205,7 @@ struct ContentView: View {
             
             // Animating zoom's return to default by hand
                 .onReceive(spanTimer) { time in
-                    if animateSpan {changeSpan()}
+                    if stateBools.animateSpan {changeSpan()}
                 }
             
             // Tapping outside an event view closes all expanded views
@@ -216,6 +220,7 @@ struct ContentView: View {
     } // End of ContentView
     
     
+    // This function animates the calendar back to default zoom level.
     func changeSpan() {
         
         // Represents one frame - changes trailingTime toward the default time.
@@ -228,14 +233,13 @@ struct ContentView: View {
             timeline.trailingTime = newTrailingTime
             
         } else {
-            animateSpan = false
+            stateBools.animateSpan = false
         }
         
     }
     
+    // This function provides a factor by which to re-size low priority event views, shrinking them as the calendar zooms out. This allows high priority events to stand out from the crowd.
     func shrinkFactor() -> Double {
-        
-        // This function provides a factor by which to re-size low priority event views, shrinking them as the calendar zooms out. This allows high priority events to stand out from the crowd.
         
         let x = timeline.span
 

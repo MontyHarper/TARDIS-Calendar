@@ -4,6 +4,10 @@
 //
 //  Created by Monty Harper on 10/7/23.
 //
+//  This sets up the data structure used by SolarEventManager.
+//  A SolarDay receives solar event information from the sunrisesunset api.
+//  The colorsAndTimes method processes this information into an array that
+//  can easily be converted into color stops.
 
 import CoreLocation
 import Foundation
@@ -82,10 +86,10 @@ struct SolarDay: Codable {
             (color: .midnight, time: firstLightTime),
             (color: .morning, time: dawnTime),
             (color: .sunrise, time: sunriseTime),
-            // Noon color spreads over 75% of the gap between sunrise and sunset;
-            // To adjust, change 0.75 to a different percentage.
-            (color: .noon, time: solarNoonTime - 0.75 * (solarNoonTime - sunriseTime)),
-            (color: .noon, time: solarNoonTime + 0.75 * (sunsetTime - solarNoonTime)),
+            // Noon color spreads over 80% of the gap between sunrise and sunset;
+            // To adjust, change 0.80 to a different percentage.
+            (color: .noon, time: solarNoonTime - 0.80 * (solarNoonTime - sunriseTime)),
+            (color: .noon, time: solarNoonTime + 0.80 * (sunsetTime - solarNoonTime)),
             (color: .sunset, time: sunsetTime),
             (color: .evening, time: duskTime),
             (color: .midnight, time: lastLightTime)

@@ -4,6 +4,11 @@
 //
 //  Created by Monty Harper on 10/12/23.
 //
+//  Downloads solar events (sunrise, sunset, etc.) from sunrisesunset api.
+//  Based on that data, the screenstops function provides an array of gradient stops,
+//  which serves as a background to the calendar, representing day and night as colors
+//  spread across the screen.
+//
 
 import CoreLocation
 import Foundation
@@ -13,10 +18,14 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
     
     var solarDays: [SolarDay] = []
     var solarDaysAvailable = false
+    var currentLatitude = 0.0
+    var currentLongitude = 0.0 // Will give these values when needed.
+    
+    // User's location is needed for the sunrisesunset api to return accurate times.
+    // TODO: - handle the case where user does not give permission
     
     private var locationManager = CLLocationManager()
 
-    // TODO: - handle the case where user does not give permission
     override init() {
         super.init()
         locationManager.delegate = self
@@ -36,6 +45,7 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
         if solarDaysAvailable {updateSolarDays()}
     }
     
+    // If location changes, save the new location in UserDefaults.
     override func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         print("update location is called")
         let newLocation = locations[locations.count - 1]
@@ -51,12 +61,15 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
         print("location manager failed with error: \(error)")
     }
     
-    
-    // TODO: - Data is pulled from https://sunrisesunset.io/api/ - I will need to put a credit in the readme file.
-    
+    // This method fetches solar event data for the max number of days possibly shown onscreen.
+    // This is called...
+    // - once from init
+    // - whenever locationManager detects a change in location
+    // - once per day from ContentView
+    // TODO: - call this function whenever internet connection is restored
     func updateSolarDays() {
         
-        solarDaysAvailable = false // Use to avoid running this process more than once concurrently.
+        solarDaysAvailable = false // To avoid running this process more than once concurrently.
         
         print("update solar days was called")
         
@@ -67,11 +80,13 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
         let startDate = Timeline.minDay
         let endDate = Timeline.maxDay
         let date = startDate
-        
-        
+        currentLongitude = UserDefaults.standard.double(forKey:"longitude")
+        currentLatitude = UserDefaults.standard.double(forKey:"latitude")
+        print("lon \(currentLongitude), lat \(currentLatitude)")
+
         // This function will recursively call itself from its own completion handler.
         // It's set up this way so that the solar days will be added to the array in order i.e. for thread safety.
-        // TODO: - I think this can also be done with an async sequence? But I haven't figured that bit of magic out yet. Maybe for a future refactor. For now, this seems to be working great.
+        // TODO: - I think this can also be done with an async sequence? But I haven't figured that bit of magic out yet. Maybe for a future re-factor. For now, this seems to be working great.
         
         fetchSolarDay(date: date, endDate: endDate)
     }
@@ -80,16 +95,14 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
     func fetchSolarDay(date: Date, endDate: Date) {
         
         print("fetching a solar day for \(date)")
+        
         // set up the fetch
-        let longitude = UserDefaults.standard.double(forKey:"longitude")
-        let latitude = UserDefaults.standard.double(forKey:"latitude")
-        print("lon \(longitude), lat \(latitude)")
-
         let formatter = DateFormatter()
         formatter.dateFormat = "YYYY-MM-dd"
         let formattedDate = formatter.string(from: date)
-        let urlString = "https://api.sunrisesunset.io/json?lat=" + String(latitude) + "&lng=" + String(longitude) + "&date=" + formattedDate
+        let urlString = "https://api.sunrisesunset.io/json?lat=" + String(currentLatitude) + "&lng=" + String(currentLongitude) + "&date=" + formattedDate
         guard let url = URL(string: urlString) else {
+            // This should never happen; the urlString is a valid URL
             print("unable to form a URL for fetching solar day \(formattedDate)")
             return }
         let request = URLRequest(url: url)
@@ -106,7 +119,8 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
                 let index = dataString.firstIndex(of: "}")!
                 dataString.insert(contentsOf: ",\"dateString\":\"\(formattedDate)\"", at: index)
                 let newData = Data(dataString.utf8)
-                print(String(decoding: newData, as: UTF8.self))
+                // Print statement to use for debugging purposes; seems to be working well now.
+                // print(String(decoding: newData, as: UTF8.self))
                 
                 // Add results to the array of solar events.
                 let decoder = JSONDecoder()
@@ -116,6 +130,7 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
                     self.solarDays.append(solarDay)
                     
                 } catch {
+                    // This shouldn't happen unless the api changes on me.
                     print("The data doesn't fit our response pattern")
                 }
                 
@@ -125,17 +140,18 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
                     self.fetchSolarDay(date: nextDate, endDate: endDate)
                 } else {
                     self.solarDaysAvailable = true
-                    print("solarDays: \(self.solarDays)")
                 }
+            } else {
+                // No data returned may indicate a bad internet connection
+                // This process is not continued, and solarDaysAvailable remains false.
+                // That means screenStops will return a single stop, so the background will show as a single color.
+                // The calendar can still be used, and the user will not be plagued with messages.
             }
         }
         task.resume()
     } // End of fetchSolarDay()
     
-    
-    // TODO: - The rest of this probably belongs with the BackgroundView, not here
-    // TODO: - Refactor taking into account the information stored in each solar day
-    
+        
     // This method returns an array of stops that matches the timeline currently showing on screen. The leading time and trailing time are each matched to an interpolated color, allowing the user to zoom smoothly without colors jumping around at the edge of the screen.
     func screenStops(timeline: Timeline) -> [Gradient.Stop] {
                 
@@ -167,7 +183,6 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
             }
             let solarEvents = solarDays[index].colorsAndTimes
             let nextDay = calendar.date(byAdding: .day, value: 1, to: day)!
-            let lengthOfDay = nextDay.timeIntervalSince1970 - day.timeIntervalSince1970
             
             // Iterate over stops in the current day.
             stopLoop: for i in 0 ..< solarEvents.count {
@@ -242,7 +257,7 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
         
     } // end of screenStops function
     
-    
+    // This function returns a new color, interpolated to match a new time between two given stops.
     func interpolate(_ stop1: (Color, Double), _ stop2: (Color, Double), to newTime: Double) -> Color {
         
         let color1 = stop1.0
@@ -259,5 +274,6 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
         
         return newColor
     }
-        
 }
+
+

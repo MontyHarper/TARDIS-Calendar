@@ -4,11 +4,17 @@
 //
 //  Created by Monty Harper on 11/20/23.
 //
+//  Provides a list of calendars to search for events, based on user settings.
+//
 
 import EventKit
 import Foundation
 import SwiftUI
 
+
+// This is a wrapper for EventKit's raw EKCalendar Type.
+// - Conforms calendars to identifiable and hashable
+// - Gives each calendar an id and a type
 struct AppleCalendar: Identifiable, Hashable {
     
     var calendar: EKCalendar
@@ -27,18 +33,18 @@ struct AppleCalendar: Identifiable, Hashable {
 
 class CalendarSet: ObservableObject {
     
-    private(set) var userCalendars: [String: String] = [:]
-    @Published var appleCalendars: [AppleCalendar] = []
-    @Published var selectedCalendars: Set<UUID> = Set([]) // Derived from isSelected property
+    private(set) var userCalendars: [String: String] = [:] // List of calendars to connect to and their types; Persisted in UserDefaults
+    @Published var appleCalendars: [AppleCalendar] = [] // List of all calendars in the Apple Calendar App
+    @Published var selectedCalendars: Set<UUID> = Set([]) // Source of truth for which Apple Calendar App calendars are selected.
     
-    var calendarsToSearch: [EKCalendar] {
+    var calendarsToSearch: [EKCalendar] { // Apple Calendars that are selected.
         appleCalendars.filter({$0.isSelected}).map({$0.calendar})
     }
     
-    // TODO: - update this to throw errors. Then deal with the errors.
     
     func updateCalendars(eventStore: EKEventStore, completion: @escaping (CalendarError?) -> Void) {
                 
+        // App will request access to the Apple Calendar. This should only happen once if the user grants permission.
         eventStore.requestAccess(to: EKEntityType.event) { [self]granted, error in
             
             if granted {
@@ -60,7 +66,7 @@ class CalendarSet: ObservableObject {
                     self.userCalendars = myCalendars as! [String: String]
                     let titles = myCalendars.keys
                     
-                    // Construct an AppleCalendar for each calendar in the user's Appke Calendar App. We are attatching isSelected and type to each EKCalendar. This will allow for easy editing of the user's calendars dictionary.
+                    // Construct an AppleCalendar for each calendar in the user's Apple Calendar App. We are attatching isSelected and type to each EKCalendar. This will allow for easy editing of the user's calendars dictionary.
                     for calendar in getCalendars {
                         let isSelected = titles.contains(calendar.title)
                         var type = "none"
@@ -90,6 +96,7 @@ class CalendarSet: ObservableObject {
     } // End function updateCalendars()
     
     
+    // Call to persist user-selected calendar list to UserDefaults.
     func saveUserCalendars() {
         var myDictionary: [String: String] = [:]
         for calendar in appleCalendars {

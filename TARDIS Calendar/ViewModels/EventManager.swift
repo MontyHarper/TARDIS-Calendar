@@ -4,7 +4,7 @@
 //
 //  Created by Monty Harper on 10/17/23.
 //
-//  Captures new events; provides an array of EventViews for the main view.
+//  Captures new events; provides an array of Event view models.
 //
 
 import EventKit
@@ -12,15 +12,18 @@ import Foundation
 import SwiftUI
 import UIKit
 
-// Wrapper for EKEvent, providing a unique id for each event.
-// Start time is rounded to the minute; can be used also to identify an event.
+// Event is a wrapper for EKEvent, Event Kit's raw event Type.
+// - Provides a type for each event
+// - Provides a unique id for each event
+// - Conforms events to Idenditfiable and Comparable protocols
+// - Rounds starting time so it can be used as an alternate identification (No two events should start at the same time.)
+// - Exposes various other values.
+
 class Event: Identifiable, Comparable {
     
     var event: EKEvent
     var type: String
-    
-    // Track this here for persistance as the views themselves get recycled.
-    
+        
     init(event: EKEvent, type: String) {
         self.event = event
         self.type = type
@@ -57,7 +60,6 @@ class Event: Identifiable, Comparable {
     }
     
     // Protocol conformance for Comparable
-    
     static func < (lhs: Event, rhs: Event) -> Bool {
         if lhs.startDate < rhs.startDate {
             return true
@@ -74,19 +76,18 @@ class Event: Identifiable, Comparable {
 }
 
 
+// ContentView uses an instance of EventManager to access current events, calendars, and related info.
 class EventManager: ObservableObject {
     
-    @Published var events = [Event]() // Upcoming events for the maximum number of days allowed in the display.
+    @Published var events = [Event]() // Upcoming events for the maximum number of days displayed.
     @Published var isExpanded = [Bool]() // For each event, should the view be rendered as expanded? This is the source of truth for expansion of event views.
-    @Published var calendarSet = CalendarSet() // Tracks Apple Calendar calendars and user selected calendars.
+    @Published var calendarSet = CalendarSet() // Tracks which of Apple's Calendar App calendars we're drawing events from.
     
     let eventStore = EKEventStore()
     
-    // newEvents temporarily stores newly downloaded events used to update the event list.
-    // This allows updates to preserve event indices so information about the display mode is not overwritten.
+    // newEvents temporarily stores newly downloaded events so that events can be replaced with newEvents on the main thread.
     private var newEvents = [Event]()
     
-    // Start with a freshly fetched list of events from the user's Apple Calendar app.
     init() {
         // TODO: - Hardcoding this for now; will need to allow user to set this up
         UserDefaults.standard.set(
@@ -96,9 +97,10 @@ class EventManager: ObservableObject {
              "BenaSpecial": CalendarType.special.rawValue
             ],
             forKey: "calendars")
-        refreshCalendarsAndEvents()
-        // Notification will update the events list any time an event or calendar is changed in the user's Apple Calendar App.
-        NotificationCenter.default.addObserver(self, selector: #selector(self.refreshCalendarsAndEvents), name: .EKEventStoreChanged, object: eventStore)
+        // Sets up initial lists of calendars and events.
+        updateCalendarsAndEvents()
+        // Notification will update the calendars and events lists any time an event or calendar is changed in the user's Apple Calendar App.
+        NotificationCenter.default.addObserver(self, selector: #selector(self.updateCalendarsAndEvents), name: .EKEventStoreChanged, object: eventStore)
     }
     
     deinit {
@@ -106,12 +108,14 @@ class EventManager: ObservableObject {
         NotificationCenter.default.removeObserver(eventStore)
     }
     
-    @objc func refreshCalendarsAndEvents() {
+    @objc func updateCalendarsAndEvents() {
         calendarSet.updateCalendars(eventStore: eventStore) { error in
             if let error = error {
                 // TODO: - handle errors gracefully
+                // TODO: - May need to pull data from CoreData if the Internet is not available.
                 fatalError("\(error.title())")
             } else {
+                // called from an enclosure to ensure calendars will be updated first.
                 self.updateEvents()
             }
         }
@@ -126,7 +130,7 @@ class EventManager: ObservableObject {
         // Set up search predicate
         let findEKEvents = eventStore.predicateForEvents(withStart: start, end: end, calendars: calendarSet.calendarsToSearch)
         
-        // Save the dates that are expanded
+        // Save which dates are shown in expanded view.
         let expandedDates = Set(isExpanded.indices.filter({isExpanded[$0]}).map({events[$0].startDate}))
         
         // Store the search results, converting EKEvents to Events, replacing current events.
@@ -134,6 +138,7 @@ class EventManager: ObservableObject {
             Event(event: ekevent, type: calendarSet.userCalendars[ekevent.calendar.title] ?? "none")
         })
         
+        // events has to be updated on the main queue.
         DispatchQueue.main.async {
             self.updateEventsCompletion(expandedDates)
         }
@@ -153,10 +158,7 @@ class EventManager: ObservableObject {
         
         // Restore dates that are expanded.
             self.isExpanded = self.events.indices.map({expandedDates.contains(self.events[$0].startDate)})
-        print("number of events: \(self.events.count)")
-        print("number of isExpanded: \(self.isExpanded.count)")
     }
-    
     
     // Called when user taps the background; closes any expanded views.
     func closeAll() {

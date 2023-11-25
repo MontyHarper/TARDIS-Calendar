@@ -4,10 +4,17 @@
 //
 //  Created by Monty Harper on 10/13/23.
 //
+//  These are the views along the top of the calendar,
+//  showing time intervals, like the ticks on a ruler.
+//
 
 import Foundation
 import SwiftUI
 
+// These are laid out using HorizontalLayoutNoOverlap, which removes labels that overlap.
+// That's why we need separate marker and label views - so missing labels still show a marker.
+
+// The Tick Marker is just a triangle marking the spot.
 struct TimeTickMarkerView: View, Identifiable {
     
     var id = UUID()
@@ -31,6 +38,8 @@ struct TimeTickMarkerView: View, Identifiable {
     }
 }
 
+// The label tells where the marker is in time.
+// Labels have markers that should mask the unlabeled mark underneath.
 struct TimeTickLabelView: View, Identifiable {
     
     var id = UUID()
@@ -43,39 +52,16 @@ struct TimeTickLabelView: View, Identifiable {
         
         VStack {
             Text(timeTick.label)
+                .opacity(xLocation == Timeline.nowLocation ? 1.0 : 0.5)
                 .foregroundColor(.blue)
-                .opacity(0.5)
                 .background(
                     Text("▼")
-                        .foregroundColor(.blue)
                         .opacity(0.75)
+                        .foregroundColor(.blue)
                         .offset(y:15.5))
         }
+        .fontWeight(xLocation == Timeline.nowLocation ? .black : .none)
         .background(.white)
     }
     
-}
-
-// MARK: -- Everything above this line replaces everything below
-
-struct TimeTickView: View, Identifiable {
-    
-    var id = UUID()
-    var labelText: String
-    var xLocation: Double
-    
-    var body: some View {
-        
-            VStack {
-                Text(labelText)
-                    .background(.white)
-                    // Render the label invisible if it only contains one character
-                    // This is a way of thinning out the labels so they don't get overcrowded
-                    .foregroundColor(labelText.count > 1 ? .blue : .white)
-                    .opacity(0.5)
-                    .overlay(
-                        Text("▼").foregroundColor(.white)
-                            .offset(y:15.5))
-        }
-    }
 }

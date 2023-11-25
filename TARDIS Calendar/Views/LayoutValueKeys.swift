@@ -4,11 +4,13 @@
 //
 //  Created by Monty Harper on 9/9/23.
 //
+//  Used in conjunction with HorizontalLayoutNoOverlap
+//
 
 import Foundation
 import SwiftUI
 
-// Keys used to pass values associated with each view into the custom layout.
+// This key passes the xPosition of each view into the Layout for use in calculations.
 
 struct xPositionKey: LayoutValueKey {
     static let defaultValue: CGFloat = 0.0

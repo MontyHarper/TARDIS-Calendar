@@ -4,6 +4,8 @@
 //
 //  Created by Monty Harper on 8/2/23.
 //
+//  Displays each event as a circle with an icon, which can be expanded to show more information.
+//
 
 import Foundation
 import SwiftUI
@@ -13,15 +15,18 @@ import EventKit
 struct EventView: View {
     
     let event: Event
+    
+    // TODO: - Figure out how to animate transitions from regular to expanded format and back.
     @Binding var isExpanded: Bool
+    
     let shrinkFactor: Double
     let screenWidth: Double
     @EnvironmentObject var timeline:Timeline
     
     // Adjust to change the size of an event icon (unexpanded view)
+    // All other dimensions are derived from this number.
+    // TODO: - Derive this number from the size of the screen. (screenWidth above)
     let size: Double = 60.0
-    
-    // TODO: - Figure out how to animate transitions from regular to expanded format and back. I was using sizeMultiplyer, but then when the expansion comes from outside the view, it can end up with the wrong value. Best to keep one value constant for the target size and add a new variable to use when animating?
     
     // Adjust to change the size of an expanded view.
     let sizeMultiplyer = 3.5
@@ -29,20 +34,16 @@ struct EventView: View {
     // Each veiw has an arrow on the timeline; this places it correctly. Do not adjust.
     let arrowOffset: Double = -7.75
     
-    // Date() will change values while the view renders, risking problems with the logic. Avoiding that by setting a static now value for the view. In theory, this gets updated each second when a new view is rendered.
+    // Date() stores the current time when this view is created. This keeps all calculations consistant.
+    // Event views are destroyed and re-created once per second.
     let now = Date()
     
-    // I don't think this still gets used.
-    var timeToEvent: TimeInterval {
-        event.startDate.timeIntervalSince1970 - now.timeIntervalSince1970
-    }
-    
-    // Use to automatically Expand the event View and keep it in place while the event is happening, starting 15 minutes beforehand.
+    // Expands the event View when true and keeps it in place while the event is happening, starting 15 minutes beforehand.
     var eventIsNow: Bool {
         ((event.startDate - 60 * 15)...event.endDate).contains(now)
     }
     
-    // This is to keep the event view centered over now while the event is happening.
+    // This offset value keeps the event view centered over Now while the event is happening.
     var offsetAmount: Double {
         if eventIsNow {
             return screenWidth * (Timeline.nowLocation - timeline.unitX(fromTime: event.startDate.timeIntervalSince1970))
@@ -51,6 +52,8 @@ struct EventView: View {
         }
     }
     
+    // Seems I may have re-invented the wheel here.
+    // TODO: - look into swift's built-in time descriptions.
     var descriptionOfTimeRemaining: String {
         guard event.startDate > now else {
             return ""
@@ -123,7 +126,6 @@ struct EventView: View {
     }
     
     // Makes dictionary of user calendars available; used to determine the calendar type for this event.
-    // Each calendar has a type that is user-defined, not inherent to the event's calendar in EKEvents.
     var calendars: [String: String] {
         UserDefaults.standard.dictionary(forKey: "calendars") as! [String: String]
     }
@@ -142,16 +144,15 @@ struct EventView: View {
         event.calendarColor
     }
     
-    // Only shrink low-priority event icons.
+    // shrinkFactor is passed in, but only use it to shrink low-priority event icons.
     var shrink: Double {
        return event.priority <= 2 ? shrinkFactor : 1.0
     }
     
-    
+    // Here is the "normal" icon-based event view, when it isn't expanded.
     var iconView: some View {
         
         ZStack {
-            
             Circle()
                 .foregroundColor(.yellow)
                 .frame(width: size * shrink, height: size * shrink)
@@ -159,13 +160,15 @@ struct EventView: View {
                 .resizable()
                 .foregroundColor(color)
                 .frame(width: size * 0.95 * shrink, height: size * 0.95 * shrink, alignment: .center)
-        }
+        } // End of ZStack
         .opacity(eventIsNow ? 0.0 : 1.0)
         .onTapGesture {
             isExpanded = true
         }
-    }
-        
+    } // End of icnonView
+    
+    
+    // Here is the actual EventView, composed of ArrowView (separate file), IconView, and an expanded view.
     var body: some View {
         
         Group {
@@ -175,6 +178,7 @@ struct EventView: View {
                 .zIndex((event.endDate > now) ? Double(event.priority) : Double(event.priority) - 5)
             
             
+            // Shows expanded view if either the user taps or the event is currently happening.
             if isExpanded || eventIsNow {
                 
                 ZStack {
@@ -194,7 +198,8 @@ struct EventView: View {
                         if now < event.startDate {
                             Text(descriptionOfTimeRemaining)
                                 .font(.caption)
-                            // Mom found the countdown numbers confusing. Commenting out for now
+     // Mom found the countdown numbers confusing. Commenting out for now.
+     // TODO: - Find a way to use the countdown but make it less confusing.
      //                       Text(timerInterval: now...event.startDate)
                         } else if now < event.endDate {
                             Text("HAPPENING NOW\n")
@@ -203,7 +208,7 @@ struct EventView: View {
                         }
                     }
                     .frame(width: size * sizeMultiplyer * 0.8, height: size * sizeMultiplyer * 0.85)
-                    .multilineTextAlignment(.center)
+                    .multilineTextAlignment(.center) // Necessary??
                     
                 } // End of expanded view ZStack
                 .zIndex(Double(event.priority + 10))
@@ -213,7 +218,7 @@ struct EventView: View {
             } // End of expanded View
         } // End of main Group
         .offset(x:offsetAmount, y:0.0)
-    } // End of body
+    } // End of view
         
-}
+} // End of struct
 

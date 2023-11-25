@@ -4,13 +4,17 @@
 //
 //  Created by Monty Harper on 11/17/23.
 //
+//  This Layout determines when two views overlap and removes overlapping views to off-screen.
+//  Thus as the user zooms in, labels will get thinned out so they don't overlap and become
+//  unreadable.
+//
 
 import Foundation
 import SwiftUI
 
 struct HorizontalLayoutNoOverlap: Layout {
         
-    var minimumSpacing: CGFloat = 20
+    var minimumSpacing: CGFloat = 15
     
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         let tallest = subviews.lazy.map {
@@ -60,7 +64,7 @@ struct HorizontalLayoutNoOverlap: Layout {
         
         // MARK: - Place Subviews
 
-        // Views that cannot be displayed will be placed at "nowhere" - well off screen.
+        // Views that cannot be displayed will be placed at "nowhere" - well off-screen.
         let nowhere = CGPoint(x: 1e12, y: 1e12)
 
         for i in sortedIndices {

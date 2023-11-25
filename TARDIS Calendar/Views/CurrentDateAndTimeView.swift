@@ -4,10 +4,13 @@
 //
 //  Created by Monty Harper on 11/16/23.
 //
+//  This is exactly what it sounds like.
+//  Current Date and Time should be very prominant and clear.
+//  This probably needs more tweaking.
+//
 
 import Foundation
 import SwiftUI
-
 
 struct CurrentDateAndTimeView: View {
     
@@ -15,7 +18,7 @@ struct CurrentDateAndTimeView: View {
     
     var formatter:DateFormatter {
         let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE MMM d"
+        formatter.dateFormat = "EEEE, MMMM d"
         return formatter
     }
     
@@ -23,18 +26,16 @@ struct CurrentDateAndTimeView: View {
         
         let now = Date(timeIntervalSince1970: timeline.now)
         VStack {
-            Text("Current Time")
+            Text("✻ NOW ✻")
                 .font(.subheadline)
                 .foregroundColor(.black)
                 .autocapitalization(.allCharacters)
-            Text(now, format: .dateTime.hour().minute())
             Text(formatter.string(from: now))
+                .padding(EdgeInsets(top: 0.0, leading: 5.0, bottom: 8.0, trailing: 5.0))
+                .background(.white)
+                .foregroundColor(.blue)
+                .clipShape(RoundedRectangle(cornerSize: CGSize(width: 10, height: 5)))
         }
-        .padding(5)
-        .background(.white)
-        .opacity(0.75)
-        .foregroundColor(.blue)
         .fontWeight(.black)
-        .clipShape(RoundedRectangle(cornerSize: CGSize(width: 10, height: 5)))
     }
 }

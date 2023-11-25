@@ -4,6 +4,9 @@
 //
 //  Created by Monty Harper on 11/16/23.
 //
+//  This view adds an arrow to the left of a view.
+//  I made a separate file for it because it gets used both for EventView and NowView.
+//
 
 import Foundation
 import SwiftUI

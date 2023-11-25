@@ -4,6 +4,10 @@
 //
 //  Created by Monty Harper on 10/8/23.
 //
+//  To be honest, I do not understand the need for this.
+//  But if I comment it out I get a buttload of errors.
+//  TODO: - Can I combine this with the Location Manager stuff in SolarEventManager, either here or there?
+//
 
 import CoreLocation
 import Foundation
