@@ -10,6 +10,7 @@
 //  spread across the screen.
 //
 
+import CoreData
 import CoreLocation
 import Foundation
 import SwiftUI
@@ -20,6 +21,10 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
     var solarDaysAvailable = false
     var currentLatitude = 0.0
     var currentLongitude = 0.0 // Will give these values when needed.
+    // Use of CoreData is a requirement for my assignment.
+    // TODO: - evaluate whether this is the best way to persist a solarDays backup.
+    var dataController = DataController()
+    var solarDaysBackupContext: NSManagedObjectContext
     
     // User's location is needed for the sunrisesunset api to return accurate times.
     // TODO: - handle the case where user does not give permission
@@ -27,6 +32,7 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
     private var locationManager = CLLocationManager()
 
     override init() {
+        solarDaysBackupContext = dataController.container.newBackgroundContext()
         super.init()
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
@@ -139,16 +145,20 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
                 if nextDate <= endDate {
                     self.fetchSolarDay(date: nextDate, endDate: endDate)
                 } else {
+                    // We have a complete set of solarDays to work with!
                     self.solarDaysAvailable = true
+                    // Save a backup to CoreData
+                    // saveBackup()
                 }
             } else {
                 // No data returned may indicate a bad internet connection
                 // This process is not continued, and solarDaysAvailable remains false.
-                // That means screenStops will return a single stop, so the background will show as a single color.
-                // The calendar can still be used, and the user will not be plagued with messages.
+                // Attempt to fetch a stored version of solarDays that can be used instead.
+                self.fetchBackup()
             }
         }
         task.resume()
+                
     } // End of fetchSolarDay()
     
         
@@ -273,6 +283,23 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
         let newColor = Color(hue: a + (x-a)*percent, saturation: b + (y-b)*percent, brightness: c + (z-c)*percent)
         
         return newColor
+    }
+    
+    
+    func fetchBackup(timeline: Timeline) {
+        @FetchRequest(sortDescriptors: []) var solarDaysBackup: FetchedResults<StoredSolarDay>
+        var proposedSolarDays = solarDaysBackup.map({SolarDay(day: $0)}).sorted(by: {$0.date < $1.date})
+        
+        // Remove days earlier than our starting date.
+        proposedSolarDays = proposedSolarDays.filter({$0.date >= timeline.leadingDate})
+        
+        let numberOfAvailableDays = proposedSolarDays.count
+        
+        if numberOfAvailableDays > 0 {
+            
+        } else {
+            let numberOfDaysNeeded = 
+        }
     }
 }
 

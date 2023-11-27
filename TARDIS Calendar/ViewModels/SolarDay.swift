@@ -95,7 +95,41 @@ struct SolarDay: Codable {
             (color: .midnight, time: lastLightTime)
         ]
     }
-    
 }
 
+extension SolarDay {
+    
+    init(day: StoredSolarDay) {
+        sunrise = day.sunrise!
+        sunset = day.sunset!
+        first_light = day.first_light!
+        last_light = day.last_light!
+        dawn = day.dawn!
+        dusk = day.dusk!
+        solar_noon = day.solar_noon!
+        golden_hour = day.golden_hour!
+        day_length = day.day_length!
+        timezone = day.timezone!
+        utc_offset = Int(exactly: day.utc_offset)!
+        dateString = day.dateString!
+    }
+}
 
+extension StoredSolarDay {
+    
+    convenience init(day: SolarDay) {
+        self.init()
+        sunrise = day.sunrise
+        sunset = day.sunset
+        first_light = day.first_light
+        last_light = day.last_light
+        dawn = day.dawn
+        dusk = day.dusk
+        solar_noon = day.solar_noon
+        golden_hour = day.golden_hour
+        day_length = day.day_length
+        timezone = day.timezone
+        utc_offset = Int16(exactly: day.utc_offset) ?? 0
+        dateString = day.dateString
+    }
+}
