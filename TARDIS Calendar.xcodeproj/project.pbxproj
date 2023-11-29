@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F10C32A32B16EA9000CCF83B /* AlertViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10C32A22B16EA9000CCF83B /* AlertViews.swift */; };
 		F1102AFA2A6DDCA6007534C1 /* TimeTicks.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1102AF92A6DDCA6007534C1 /* TimeTicks.swift */; };
 		F119C6672A7B59A200B183F5 /* EventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F119C6662A7B59A200B183F5 /* EventView.swift */; };
 		F122A2BC2AD2FB0F002E82AE /* LocationManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A2BB2AD2FB0F002E82AE /* LocationManagerDelegate.swift */; };
@@ -37,6 +38,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		F10C32A22B16EA9000CCF83B /* AlertViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertViews.swift; sourceTree = "<group>"; };
 		F1102AF92A6DDCA6007534C1 /* TimeTicks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTicks.swift; sourceTree = "<group>"; };
 		F119C6662A7B59A200B183F5 /* EventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventView.swift; sourceTree = "<group>"; };
 		F119C6842A7CA56A00B183F5 /* TARDIS-Calendar-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "TARDIS-Calendar-Info.plist"; sourceTree = SOURCE_ROOT; };
@@ -92,6 +94,7 @@
 				F18D04FA2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift */,
 				F18D04FC2B0824F500E5C91E /* LayoutValueKeys.swift */,
 				F18D05022B0AA6B500E5C91E /* SettingsView.swift */,
+				F10C32A22B16EA9000CCF83B /* AlertViews.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -240,6 +243,7 @@
 				F122A2C72ADA4B10002E82AE /* NowView.swift in Sources */,
 				F18D05032B0AA6B500E5C91E /* SettingsView.swift in Sources */,
 				F122A2C02AD82A7C002E82AE /* SolarEventManager.swift in Sources */,
+				F10C32A32B16EA9000CCF83B /* AlertViews.swift in Sources */,
 				F18D04F92B06BA7400E5C91E /* CurrentDateAndTimeView.swift in Sources */,
 				F119C6672A7B59A200B183F5 /* EventView.swift in Sources */,
 				F1B5FE182A735D2200CBBCE6 /* Extensions.swift in Sources */,

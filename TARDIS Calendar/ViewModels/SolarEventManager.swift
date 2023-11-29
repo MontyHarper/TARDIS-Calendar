@@ -13,6 +13,7 @@
 import CoreData
 import CoreLocation
 import Foundation
+import Network
 import SwiftUI
 
 class SolarEventManager: LocationManagerDelegate, ObservableObject {
@@ -25,6 +26,7 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
     // TODO: - evaluate whether this is the best way to persist a solarDays backup.
     var dataController = DataController()
     var solarDaysBackupContext: NSManagedObjectContext
+    let stateBools = StateBools.shared
     
     // User's location is needed for the sunrisesunset api to return accurate times.
     // TODO: - handle the case where user does not give permission
@@ -32,11 +34,18 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
     private var locationManager = CLLocationManager()
 
     override init() {
+        
+        // Context for CoreData backup of SolarDays information.
         solarDaysBackupContext = dataController.container.newBackgroundContext()
         super.init()
+        
+        // Set up location tracking; user location is required to fetch accurate SolarDays information.
         locationManager.delegate = self
         locationManager.requestWhenInUseAuthorization()
         locationManager.startMonitoringSignificantLocationChanges()
+        
+        // Fetch fresh SolarDays information.
+        // TODO: - This method can probably be now streamlined to take better advantage of network connection awareness and CoreData persistence.
         updateSolarDays()
     }
     
@@ -147,13 +156,17 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
                 } else {
                     // We have a complete set of solarDays to work with!
                     self.solarDaysAvailable = true
+                    self.stateBools.internetDown = false
+                    self.stateBools.daysWithNoInternet = 0
                     // Save a backup to CoreData
-                    // saveBackup()
+                    self.saveBackup()
                 }
             } else {
-                // No data returned may indicate a bad internet connection
+                // Assume no data indicates a bad internet connection
                 // This process is not continued, and solarDaysAvailable remains false.
                 // Attempt to fetch a stored version of solarDays that can be used instead.
+                self.stateBools.internetDown = true
+                self.stateBools.daysWithNoInternet += 1
                 self.fetchBackup()
             }
         }
@@ -286,19 +299,89 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
     }
     
     
-    func fetchBackup(timeline: Timeline) {
-        @FetchRequest(sortDescriptors: []) var solarDaysBackup: FetchedResults<StoredSolarDay>
+    func fetchBackup() {
+        
+        print("fetching backup solar days")
+        
+        var solarDaysBackup: [StoredSolarDay] = []
+        
+        let fetchRequest: NSFetchRequest<StoredSolarDay> = StoredSolarDay.fetchRequest()
+        do {
+            solarDaysBackup = try solarDaysBackupContext.fetch(fetchRequest)
+        } catch {
+            print("error fetching backup")
+            return
+        }
+
         var proposedSolarDays = solarDaysBackup.map({SolarDay(day: $0)}).sorted(by: {$0.date < $1.date})
         
+        print("solar days backed up: \(proposedSolarDays)")
+        
+        // If there are no results, abort the attempt. No solar days are available.
+        if proposedSolarDays.isEmpty { return }
+        
+        // Hold on to the last solar day available.
+        var lastDay = proposedSolarDays[proposedSolarDays.count - 1]
+        
         // Remove days earlier than our starting date.
-        proposedSolarDays = proposedSolarDays.filter({$0.date >= timeline.leadingDate})
+        proposedSolarDays = proposedSolarDays.filter({$0.date >= Timeline.minDay})
         
-        let numberOfAvailableDays = proposedSolarDays.count
+        // Add missing days by repeating data from the last available solar day.
+        // Find the latest stored date.
+        let lastAvailableDate = proposedSolarDays[proposedSolarDays.count - 1].date
         
-        if numberOfAvailableDays > 0 {
+        // Start with the later of that date or the min date required, and add a solar day for each day from there to the max date required.
+        let df = DateFormatter()
+        df.dateFormat = "YYYY-MM-dd"
+        var date = Timeline.minDay <= lastAvailableDate ? lastAvailableDate : Timeline.minDay
+        var tagOnDays: [SolarDay] = []
+        while date <= Timeline.maxDay {
+            lastDay.dateString = df.string(from: date)
+            tagOnDays.append(lastDay)
+            date = Timeline.calendar.date(byAdding: .day, value: 1, to: date)!
+        }
+    
+        solarDays = proposedSolarDays + tagOnDays
+        print("backup solar days = \(solarDays)")
+        solarDaysAvailable = true
+    }
+    
+    func saveBackup() {
+        let fetchRequest: NSFetchRequest<StoredSolarDay> = StoredSolarDay.fetchRequest()
+        
+        // Delete existing backup
+        do {
+            let daysToDelete = try solarDaysBackupContext.fetch(fetchRequest)
             
-        } else {
-            let numberOfDaysNeeded = 
+            for day in daysToDelete {
+                solarDaysBackupContext.delete(day)
+            }
+            try solarDaysBackupContext.save()
+        } catch {
+            print("Error deleting objects")
+        }
+        
+        // Save new backup
+        for day in solarDays {
+            let saveTheDay = StoredSolarDay(context: solarDaysBackupContext)
+            saveTheDay.sunrise = day.sunrise
+            saveTheDay.sunset = day.sunset
+            saveTheDay.first_light = day.first_light
+            saveTheDay.last_light = day.last_light
+            saveTheDay.dawn = day.dawn
+            saveTheDay.dusk = day.dusk
+            saveTheDay.solar_noon = day.solar_noon
+            saveTheDay.golden_hour = day.golden_hour
+            saveTheDay.day_length = day.day_length
+            saveTheDay.timezone = day.timezone
+            saveTheDay.utc_offset = Int16(exactly: day.utc_offset) ?? 0
+            saveTheDay.dateString = day.dateString
+            
+            do {
+                try solarDaysBackupContext.save()
+            } catch {
+                print("unable to save")
+            }
         }
     }
 }

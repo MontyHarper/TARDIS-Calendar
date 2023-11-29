@@ -30,7 +30,8 @@ struct SolarDay: Codable {
     let day_length: String
     let timezone: String
     let utc_offset: Int
-    let dateString: String
+    // dateString needs to be a var so it can be assigned as needed by fetchBackup in the solar days manager.
+    var dateString: String
     
     
     static let calendar = Timeline.calendar

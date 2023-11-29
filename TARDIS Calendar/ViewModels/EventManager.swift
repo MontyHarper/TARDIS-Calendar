@@ -113,7 +113,7 @@ class EventManager: ObservableObject {
             if let error = error {
                 // TODO: - handle errors gracefully
                 // TODO: - May need to pull data from CoreData if the Internet is not available.
-                fatalError("\(error.title())")
+                // fatalError("\(error.title())")
             } else {
                 // called from an enclosure to ensure calendars will be updated first.
                 self.updateEvents()

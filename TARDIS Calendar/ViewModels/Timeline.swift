@@ -29,9 +29,18 @@ import SwiftUI
 
 class Timeline: ObservableObject {
     
-    // These two values define any give timeline.
+    // Setting up timeline as a singleton so its properties and methods can be accessed from anywhere.
+    static var shared = Timeline()
+    
+    // These two values define any given timeline.
     @Published var now: Double // current time in seconds
     @Published var trailingTime: Double // time at the right edge of the screen in seconds.
+    
+    // Private init so we can be sure there is only one timeline for the whole app.
+    private init() {
+        now = Date().timeIntervalSince1970
+        trailingTime = Date().timeIntervalSince1970 + Timeline.defaultSpan // default trailingTime
+    }
     
     static var calendar = Calendar.autoupdatingCurrent
     
@@ -80,21 +89,6 @@ class Timeline: ObservableObject {
     public var trailingDate: Date {
         Date(timeIntervalSince1970: trailingTime)
     }
-    
-    
-    convenience init() {
-        self.init(
-            now: Date().timeIntervalSince1970, // default now
-            trailingTime: Date().timeIntervalSince1970 + Timeline.defaultSpan // default trailingTime
-        )
-    }
-    
-    // Two values, now and trailingTime, completely determine a given timeline.
-    init (now: TimeInterval, trailingTime: TimeInterval) {
-        self.trailingTime = trailingTime
-        self.now = now
-    }
-    
     
     // linear transformation from time space to unit space.
     func unitX (fromTime time: Double) -> Double {
@@ -145,7 +139,6 @@ class Timeline: ObservableObject {
             }
         }
     }
-    
     
     // This is called once per second by a timer.
     // Now is set exactly to current time.

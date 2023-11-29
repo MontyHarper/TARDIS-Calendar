@@ -15,12 +15,12 @@ import SwiftUI
 struct ContentView: View {
         
     // Access to view models
-    @StateObject private var timeline = Timeline()
+    @StateObject private var timeline = Timeline.shared
     @StateObject private var eventManager = EventManager()
     @StateObject private var solarEventManager = SolarEventManager()
+    @StateObject private var stateBools = StateBools.shared
     
     // State variables
-    @State private var stateBools = StateBools()
     @State private var inactivityTimer: Timer?
     @State private var currentDay = Timeline.calendar.dateComponents([.day], from: Date())
     
@@ -109,78 +109,74 @@ struct ContentView: View {
                     }
 
                                     
-                // View on top of background is arranged into three groups; label bar, timeline for events, and banner messages. Grouping is just conceptual. Individual elements are placed exactly.
+                // View on top of background is arranged into three groups; label bar, timeline for events, and banner messages. Grouping is just conceptual, and needed because the are more than ten items in this ZStack. Individual elements are placed exactly.
                 
                 
-                // Label Bar
-                
-                // Current Date
-                CurrentDateAndTimeView()
-                    .position(x: 0.2 * screen.size.width, y: yOfInfoBox * screen.size.height)
-                
-                // TimeTick Markers
-                ForEach(
-                    TimeTick.array(timeline: timeline), id: \.self.xLocation) {tick in
-                        TimeTickMarkerView(timeTick: tick)
-                            .position(x: screen.size.width * tick.xLocation, y: yOfLabelBar * screen.size.height)
-                    }
-                
-            
-                // Label bar background
-                Color(.white)
-                    .frame(width: screen.size.width, height: 0.065 * screen.size.height)
-                    .position(x: 0.5 * screen.size.width, y: yOfLabelBar * screen.size.height)
-                
-
-                // TimeTick Labels
-                HorizontalLayoutNoOverlap{
+                Group { // Label Bar
+                    
+                    // Current Date
+                    CurrentDateAndTimeView()
+                        .position(x: 0.2 * screen.size.width, y: yOfInfoBox * screen.size.height)
+                    
+                    // TimeTick Markers
                     ForEach(
                         TimeTick.array(timeline: timeline), id: \.self.xLocation) {tick in
-                            TimeTickLabelView(timeTick: tick)
-                                .xPosition(tick.xLocation)
+                            TimeTickMarkerView(timeTick: tick)
+                                .position(x: screen.size.width * tick.xLocation, y: yOfLabelBar * screen.size.height)
                         }
-                }
-                .position(x: screen.size.width * 0.5, y: yOfLabelBar * screen.size.height)
-                
-                // End of Label Bar
-                
-                
-                // Timeline
-                
-                // Background is a horizontal arrow across the screen
-                Color(.black)
-                    .shadow(color: .white, radius: 3)
-                    .frame(width: screen.size.width, height: 2)
-                    .position(x: 0.5 * screen.size.width, y: yOfTimeline * screen.size.height)
-                    .zIndex(-90)
-                ArrowView(size: 0.0)
-                    .position(x: screen.size.width, y: yOfTimeline * screen.size.height)
-                
-                
-                // Circles representing events along the time line
-            
-                ForEach(eventManager.events.indices.sorted(by: {$0 > $1}), id: \.self) { index in
-                    EventView(event: eventManager.events[index], isExpanded: $eventManager.isExpanded[index], shrinkFactor: shrinkFactor(), screenWidth: screen.size.width)
-                        .position(x: timeline.unitX(fromTime: eventManager.events[index].startDate.timeIntervalSince1970) * screen.size.width, y: yOfTimeline * screen.size.height)
-                }
-                .gesture(oneFingerZoom)
-                
-                                
-                
-                // Circle representing current time.
-                NowView()
-                    .position(x: 0.2 * screen.size.width, y: yOfTimeline * screen.size.height)
+                    
+                    
+                    // Label bar background
+                    Color(.white)
+                        .frame(width: screen.size.width, height: 0.065 * screen.size.height)
+                        .position(x: 0.5 * screen.size.width, y: yOfLabelBar * screen.size.height)
+                    
+                    
+                    // TimeTick Labels
+                    HorizontalLayoutNoOverlap{
+                        ForEach(
+                            TimeTick.array(timeline: timeline), id: \.self.xLocation) {tick in
+                                TimeTickLabelView(timeTick: tick)
+                                    .xPosition(tick.xLocation)
+                            }
+                    }
+                    .position(x: screen.size.width * 0.5, y: yOfLabelBar * screen.size.height)
+                    
+                } // End of Label Bar
                 
                 
-                // End of Timeline
+                Group {// Timeline
+                    
+                    // Background is a horizontal arrow across the screen
+                    Color(.black)
+                        .shadow(color: .white, radius: 3)
+                        .frame(width: screen.size.width, height: 2)
+                        .position(x: 0.5 * screen.size.width, y: yOfTimeline * screen.size.height)
+                        .zIndex(-90)
+                    ArrowView(size: 0.0)
+                        .position(x: screen.size.width, y: yOfTimeline * screen.size.height)
+                    
+                    
+                    // Circles representing events along the time line
+                    
+                    ForEach(eventManager.events.indices.sorted(by: {$0 > $1}), id: \.self) { index in
+                        EventView(event: eventManager.events[index], isExpanded: $eventManager.isExpanded[index], shrinkFactor: shrinkFactor(), screenWidth: screen.size.width)
+                            .position(x: timeline.unitX(fromTime: eventManager.events[index].startDate.timeIntervalSince1970) * screen.size.width, y: yOfTimeline * screen.size.height)
+                    }
+                    .gesture(oneFingerZoom)
+                    
+                    
+                    
+                    // Circle representing current time.
+                    NowView()
+                        .position(x: Timeline.nowLocation * screen.size.width, y: yOfTimeline * screen.size.height)
+                    
+                    
+                } // End of Timeline
                 
                 
-                
-                // Banner Messages will go here
-                
-
-                
-                // End of Banner Messages
+                AlertViews(screen: screen)
+                        
                 
                 
             } // End of main ZStack
