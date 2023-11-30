@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F10C32A32B16EA9000CCF83B /* AlertViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10C32A22B16EA9000CCF83B /* AlertViews.swift */; };
+		F10C32A52B17601200CCF83B /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10C32A42B17601200CCF83B /* NetworkMonitor.swift */; };
 		F1102AFA2A6DDCA6007534C1 /* TimeTicks.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1102AF92A6DDCA6007534C1 /* TimeTicks.swift */; };
 		F119C6672A7B59A200B183F5 /* EventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F119C6662A7B59A200B183F5 /* EventView.swift */; };
 		F122A2BC2AD2FB0F002E82AE /* LocationManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A2BB2AD2FB0F002E82AE /* LocationManagerDelegate.swift */; };
@@ -39,6 +40,7 @@
 
 /* Begin PBXFileReference section */
 		F10C32A22B16EA9000CCF83B /* AlertViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertViews.swift; sourceTree = "<group>"; };
+		F10C32A42B17601200CCF83B /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		F1102AF92A6DDCA6007534C1 /* TimeTicks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTicks.swift; sourceTree = "<group>"; };
 		F119C6662A7B59A200B183F5 /* EventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventView.swift; sourceTree = "<group>"; };
 		F119C6842A7CA56A00B183F5 /* TARDIS-Calendar-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "TARDIS-Calendar-Info.plist"; sourceTree = SOURCE_ROOT; };
@@ -160,6 +162,7 @@
 				F1B5FE172A735D2200CBBCE6 /* Extensions.swift */,
 				F1F9E49A2B11220C00DA4026 /* Enums.swift */,
 				F18D05002B0A99B600E5C91E /* StateBools.swift */,
+				F10C32A42B17601200CCF83B /* NetworkMonitor.swift */,
 				F19149282AD267A400A31D5A /* Settings.swift */,
 			);
 			path = Utilities;
@@ -245,6 +248,7 @@
 				F122A2C02AD82A7C002E82AE /* SolarEventManager.swift in Sources */,
 				F10C32A32B16EA9000CCF83B /* AlertViews.swift in Sources */,
 				F18D04F92B06BA7400E5C91E /* CurrentDateAndTimeView.swift in Sources */,
+				F10C32A52B17601200CCF83B /* NetworkMonitor.swift in Sources */,
 				F119C6672A7B59A200B183F5 /* EventView.swift in Sources */,
 				F1B5FE182A735D2200CBBCE6 /* Extensions.swift in Sources */,
 				F1F9E49B2B11220C00DA4026 /* Enums.swift in Sources */,

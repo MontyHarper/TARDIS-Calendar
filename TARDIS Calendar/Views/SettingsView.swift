@@ -19,7 +19,7 @@ struct SettingsView: View {
     @Environment(\.dismiss) var dismiss
     
     // Shows an alert when there are no calendars selected.
-    @State var selectACalendarAlert = false
+    @State private var selectACalendarAlert = false
     
     var body: some View {
         
@@ -75,7 +75,5 @@ struct SettingsView: View {
         .buttonStyle(.borderedProminent)
     }
 }
-
-
 
 

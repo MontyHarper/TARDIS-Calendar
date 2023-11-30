@@ -156,8 +156,7 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
                 } else {
                     // We have a complete set of solarDays to work with!
                     self.solarDaysAvailable = true
-                    self.stateBools.internetDown = false
-                    self.stateBools.daysWithNoInternet = 0
+                    self.stateBools.missingSolarDays = 0
                     // Save a backup to CoreData
                     self.saveBackup()
                 }
@@ -165,8 +164,7 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
                 // Assume no data indicates a bad internet connection
                 // This process is not continued, and solarDaysAvailable remains false.
                 // Attempt to fetch a stored version of solarDays that can be used instead.
-                self.stateBools.internetDown = true
-                self.stateBools.daysWithNoInternet += 1
+                self.stateBools.missingSolarDays += 1
                 self.fetchBackup()
             }
         }
