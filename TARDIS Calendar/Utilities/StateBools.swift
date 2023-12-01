@@ -47,8 +47,10 @@ class StateBools: ObservableObject {
     @Published var noPermissionForCalendarInfo = false
     var noPermissionForLocation = false
     @Published var noPermissionForLocationInfo = false
+    var showLoadingBackground = false
     var showSettings = false // Opens the settings page where user can select calendars to show.
     @Published var showSettingsAlert = false // Warns that a calendar must be selected.
+
     
     private init() {
         missingSolarDays = UserDefaults.standard.integer(forKey: "missingSolarDays")

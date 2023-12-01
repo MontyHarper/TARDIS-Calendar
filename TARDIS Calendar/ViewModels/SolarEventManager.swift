@@ -45,6 +45,7 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
         locationManager.startMonitoringSignificantLocationChanges()
         
         // Fetch fresh SolarDays information.
+        stateBools.showLoadingBackground = true
         // TODO: - This method can probably be now streamlined to take better advantage of network connection awareness and CoreData persistence.
         updateSolarDays()
     }
@@ -157,6 +158,7 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
                     // We have a complete set of solarDays to work with!
                     self.solarDaysAvailable = true
                     self.stateBools.missingSolarDays = 0
+                    self.stateBools.showLoadingBackground = false
                     // Save a backup to CoreData
                     self.saveBackup()
                 }

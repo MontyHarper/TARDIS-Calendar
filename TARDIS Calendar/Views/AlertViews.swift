@@ -20,6 +20,7 @@ struct AlertViews: View {
                 
         ZStack {
             
+            // Alert for lost network connection.
             if stateBools.internetIsDown {
                 
                 Text("Check Internet Connection.")
@@ -30,12 +31,21 @@ struct AlertViews: View {
                     .alert("Your internet connection has been down since: \n\n\(formatter.localizedString(for: dateWentDown, relativeTo: Date()))\n\nYour calendar may be missing information. \n\nPlease let a helper know.", isPresented: $stateBools.internetIsDownInfo) {
                         Button("OK", role: .cancel, action: {})
                     }
+                    .onAppear {
+                        formatter.unitsStyle = .spellOut
+                        formatter.dateTimeStyle = .named
+                    }
+            } // End network connection alert.
+            
+            // Alert to show network activity.
+            if stateBools.showLoadingBackground {
+                
+                Text("Loading Background...")
+                    .foregroundColor(.red)
+                    .position(x: screen.size.width * 0.5, y: screen.size.height * 0.85)
             }
-        }
-        .onAppear {
-            formatter.unitsStyle = .spellOut
-            formatter.dateTimeStyle = .named
-        }
+            
+        } // End of ZStack.
         
     }
 }
