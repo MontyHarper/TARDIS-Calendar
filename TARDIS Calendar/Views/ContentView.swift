@@ -10,8 +10,6 @@
 import Foundation
 import SwiftUI
 
-
-
 struct ContentView: View {
         
     // Access to view models
@@ -81,7 +79,7 @@ struct ContentView: View {
 
                 // Main ZStack layers background behind all else
             ZStack {
-//
+
                 // Background shows time of day by color
                 BackgroundView(timeline: timeline, solarEventManager: solarEventManager)
                     .zIndex(-100)
@@ -102,7 +100,7 @@ struct ContentView: View {
                         Button("Yes", action: {stateBools.showSettings = true})
                     }
                     .sheet(isPresented: $stateBools.showSettings) {
-                        SettingsView(calendarSet: $eventManager.calendarSet)
+                        SettingsView(eventManager: eventManager)
                             .onDisappear {
                                 eventManager.updateEvents()
                             }
@@ -175,7 +173,7 @@ struct ContentView: View {
                 } // End of Timeline
 
 
-                AlertViews(screen: screen)
+                AlertView(screen: screen)
 
 
 

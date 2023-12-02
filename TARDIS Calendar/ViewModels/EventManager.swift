@@ -79,11 +79,11 @@ class Event: Identifiable, Comparable {
 // ContentView uses an instance of EventManager to access current events, calendars, and related info.
 class EventManager: ObservableObject {
     
+    var eventStore = EKEventStore()
+    
     @Published var events = [Event]() // Upcoming events for the maximum number of days displayed.
     @Published var isExpanded = [Bool]() // For each event, should the view be rendered as expanded? This is the source of truth for expansion of event views.
     @Published var calendarSet = CalendarSet() // Tracks which of Apple's Calendar App calendars we're drawing events from.
-    
-    let eventStore = EKEventStore()
     
     // newEvents temporarily stores newly downloaded events so that events can be replaced with newEvents on the main thread.
     private var newEvents = [Event]()
@@ -111,18 +111,20 @@ class EventManager: ObservableObject {
     @objc func updateCalendarsAndEvents() {
         calendarSet.updateCalendars(eventStore: eventStore) { error in
             if let error = error {
-                // TODO: - handle errors gracefully
-                // TODO: - May need to pull data from CoreData if the Internet is not available.
-                // fatalError("\(error.title())")
+                StateBools.shared.noPermissionForCalendar = (error == CalendarError.permissionDenied)
+                StateBools.shared.noCalendarsSelected = (error == CalendarError.noUserDictionary)
             } else {
-                // called from an enclosure to ensure calendars will be updated first.
+                StateBools.shared.noPermissionForCalendar = false
+                StateBools.shared.noCalendarsSelected = false
+                // called closure to ensure calendars will be updated first.
                 self.updateEvents()
             }
         }
     }
         
     @objc func updateEvents() {
-                
+        
+        print("updateEvents was called.")
         // Set up date parameters
         let start = Timeline.minDay
         let end = Timeline.maxDay

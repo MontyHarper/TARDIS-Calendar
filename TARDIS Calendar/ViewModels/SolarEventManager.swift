@@ -8,6 +8,7 @@
 //  Based on that data, the screenstops function provides an array of gradient stops,
 //  which serves as a background to the calendar, representing day and night as colors
 //  spread across the screen.
+//  Persists data using CoreData, and defaults to using CoreData when the api is not available.
 //
 
 import CoreData
@@ -46,7 +47,7 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
         
         // Fetch fresh SolarDays information.
         stateBools.showLoadingBackground = true
-        // TODO: - This method can probably be now streamlined to take better advantage of network connection awareness and CoreData persistence.
+        // TODO: - The update method can probably be streamlined to take better advantage of network connection awareness and CoreData persistence.
         updateSolarDays()
     }
     
@@ -55,10 +56,14 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
     }
     
     override func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        // TODO: - Pop up a message to the user if authorization is not given.
-        // Possibly provide an alternative background if the user wishes not to allow access?
+        switch manager.authorizationStatus {
+        case .authorizedAlways, .authorizedWhenInUse:
+            StateBools.shared.noPermissionForLocation = false
+            if solarDaysAvailable {updateSolarDays()}
+        default:
+            StateBools.shared.noPermissionForLocation = true
+        }
         print("Authorization Changed: \(manager.authorizationStatus)")
-        if solarDaysAvailable {updateSolarDays()}
     }
     
     // If location changes, save the new location in UserDefaults.
