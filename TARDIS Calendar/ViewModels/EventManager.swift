@@ -89,18 +89,20 @@ class EventManager: ObservableObject {
     private var newEvents = [Event]()
     
     init() {
-        if StateBools.shared.noPermissionForCalendar {
-            // App will request access to the Apple Calendar. If the user refuses, the system will not show the request again.
-            // This syntax is depricated but I can't run the latest XCode on my old-ass computer.
-            // TODO: - Buy a new iMac, install OS13, install xCode 15, and update this line.
-            eventStore.requestAccess(to: EKEntityType.event) {_,_ in }
-        } else {
-            // If permission is already given, get new data.
-            // (If permission is newly given, this will be called from the notification below.)
-            updateCalendarsAndEvents()
-        }
         // Notification will update the calendars and events lists any time an event or calendar is changed in the user's Apple Calendar App.
         NotificationCenter.default.addObserver(self, selector: #selector(self.updateCalendarsAndEvents), name: .EKEventStoreChanged, object: eventStore)
+        
+        if StateBools.shared.noPermissionForCalendar {
+            // App will request access to the Apple Calendar. If the user refuses, the system will not show the request again.
+            // This syntax is deprecated but I can't run the latest XCode on my old-ass computer.
+            // TODO: - Buy a new iMac, install OS13, install xCode 15, and update this line.
+            eventStore.requestAccess(to: EKEntityType.event) {_,_ in }
+            // If permission is newly given, the notification above will fetch new data.
+        } else {
+            // If permission is already given, fetch new data.
+            updateCalendarsAndEvents()
+        }
+
     }
     
     deinit {

@@ -20,11 +20,9 @@ import SwiftUI
 class SolarEventManager: LocationManagerDelegate, ObservableObject {
     
     var solarDays: [SolarDay] = []
-    var solarDaysAvailable = false
     var currentLatitude = 36.110170
     var currentLongitude = -97.058570 // Will give these values when needed.
     // Use of CoreData is a requirement for my assignment.
-    // TODO: - evaluate whether this is the best way to persist a solarDays backup.
     var dataController = DataController()
     var solarDaysBackupContext: NSManagedObjectContext
     let stateBools = StateBools.shared
@@ -58,10 +56,10 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
     override func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
-            StateBools.shared.noPermissionForLocation = false
-            if solarDaysAvailable {updateSolarDays()}
+            stateBools.noPermissionForLocation = false
+            if stateBools.solarDaysAvailable {updateSolarDays()}
         default:
-            StateBools.shared.noPermissionForLocation = true
+            stateBools.noPermissionForLocation = true
         }
         print("Authorization Changed: \(manager.authorizationStatus)")
     }
@@ -75,7 +73,7 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
         print("new location: lon \(longitude), lat \(latitude)")
         UserDefaults.standard.set(longitude,forKey:"longitude")
         UserDefaults.standard.set(latitude,forKey:"latitude")
-        if solarDaysAvailable {updateSolarDays()}
+        if stateBools.solarDaysAvailable {updateSolarDays()}
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
