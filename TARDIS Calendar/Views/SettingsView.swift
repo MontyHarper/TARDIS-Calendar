@@ -16,10 +16,8 @@ struct SettingsView: View {
     
     
     @StateObject var eventManager: EventManager
+    @State private var showWelcome = StateBools.shared.newUser && StateBools.shared.noCalendarsSelected
     @Environment(\.dismiss) var dismiss
-    
-    // Shows an alert when there are no calendars selected.
-    @State private var selectACalendarAlert = false
     
     var body: some View {
         
@@ -56,29 +54,30 @@ struct SettingsView: View {
                     .navigationTitle("Choose Calendars to Display")
                     
                 } else if StateBools.shared.noPermissionForCalendar {
-                    Text("This app displays events from the Apple Calendar App.\n\nYour permission is needed to access those events.\n\nTo change permissions find TARDIS Calendar your Settings app.")
+                    Text("This app displays events from the Apple Calendar App.\n\nYour permission is needed to access those events.\n\nLook for TARDIS Calendar in your Settings app to change permissions.")
                 }
-                    
                 
             } // End of NavigationView
+              // TODO: - Update this to the newer version of alert.
+            .alert("Welcome to TARDIS Calendar!\n\nThis app shows events from the Apple Calendar App. To connect with Apple Calendar, please choose which calendars to show events from.\n\nYou can return to this page by tripple-tapping in the upper right hand corner of the screen.", isPresented: $showWelcome) {
+                Button("OK", role: .cancel, action: {})
+            }
             .onAppear {
-                print("noPermissionForCalendar: \(StateBools.shared.noPermissionForCalendar)")
-                print("appleCalendars.count: \(eventManager.calendarSet.appleCalendars.count)")
+                print("Number of calendars to choose from: ", eventManager.calendarSet.appleCalendars.count)
             }
             
-        }
-        
-        Button("Done") {
-            
-            let count = eventManager.calendarSet.appleCalendars.filter({$0.isSelected}).count
-            if count > 0 {
-                // Saves these settings to UserDefaults
-                eventManager.calendarSet.saveUserCalendars()
+            Button("Done") {
+                
+                let count = eventManager.calendarSet.appleCalendars.filter({$0.isSelected}).count
+                if count > 0 {
+                    // Saves these settings to UserDefaults
+                    eventManager.calendarSet.saveUserCalendars()
+                }
+                dismiss()
             }
-            dismiss()
+            .buttonStyle(.borderedProminent)
         }
-        .buttonStyle(.borderedProminent)
     }
 }
-
-
+    
+    

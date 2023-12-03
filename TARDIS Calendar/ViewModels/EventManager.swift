@@ -89,16 +89,16 @@ class EventManager: ObservableObject {
     private var newEvents = [Event]()
     
     init() {
-        // TODO: - Hardcoding this for now; will need to allow user to set this up
-        UserDefaults.standard.set(
-            ["BenaDaily": CalendarType.daily.rawValue,
-             "BenaMedical": CalendarType.medical.rawValue,
-             "BenaMeals": CalendarType.meals.rawValue,
-             "BenaSpecial": CalendarType.special.rawValue
-            ],
-            forKey: "calendars")
-        // Sets up initial lists of calendars and events.
-        updateCalendarsAndEvents()
+        if StateBools.shared.noPermissionForCalendar {
+            // App will request access to the Apple Calendar. If the user refuses, the system will not show the request again.
+            // This syntax is depricated but I can't run the latest XCode on my old-ass computer.
+            // TODO: - Buy a new iMac, install OS13, install xCode 15, and update this line.
+            eventStore.requestAccess(to: EKEntityType.event) {_,_ in }
+        } else {
+            // If permission is already given, get new data.
+            // (If permission is newly given, this will be called from the notification below.)
+            updateCalendarsAndEvents()
+        }
         // Notification will update the calendars and events lists any time an event or calendar is changed in the user's Apple Calendar App.
         NotificationCenter.default.addObserver(self, selector: #selector(self.updateCalendarsAndEvents), name: .EKEventStoreChanged, object: eventStore)
     }
@@ -111,20 +111,16 @@ class EventManager: ObservableObject {
     @objc func updateCalendarsAndEvents() {
         calendarSet.updateCalendars(eventStore: eventStore) { error in
             if let error = error {
-                StateBools.shared.noPermissionForCalendar = (error == CalendarError.permissionDenied)
-                StateBools.shared.noCalendarsSelected = (error == CalendarError.noUserDictionary)
+                StateBools.shared.noCalendarsAvailable = (error == CalendarError.noAppleCalendars)
             } else {
-                StateBools.shared.noPermissionForCalendar = false
-                StateBools.shared.noCalendarsSelected = false
-                // called closure to ensure calendars will be updated first.
-                self.updateEvents()
+                StateBools.shared.noCalendarsAvailable = false
+                self.updateEvents() // Called from within closure to ensure calendars are updated first.
             }
         }
     }
         
-    @objc func updateEvents() {
-        
-        print("updateEvents was called.")
+    func updateEvents() {
+                
         // Set up date parameters
         let start = Timeline.minDay
         let end = Timeline.maxDay
@@ -149,7 +145,16 @@ class EventManager: ObservableObject {
     
     func updateEventsCompletion(_ expandedDates: Set<Date>) {
         
-        events = newEvents
+        if calendarSet.calendarsToSearch.count > 0 {
+            
+            events = newEvents
+            StateBools.shared.noCalendarsSelected = false
+            
+        } else {
+            // No calendars have been selected. This means we had an empty search predicate, which returned events from all calendars. We don't want the user to see unrelated events from the Caregiver's personal calendars! So this will not be allowed; calendars must be selected before any events are shown.
+            events = []
+            StateBools.shared.noCalendarsSelected = true
+        }
         
         // Filter the results to remove lower priority events scheduled at the same time as higher priority events...
         // TODO: - Test this!

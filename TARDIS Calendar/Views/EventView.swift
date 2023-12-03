@@ -126,9 +126,9 @@ struct EventView: View {
     }
     
     // Makes dictionary of user calendars available; used to determine the calendar type for this event.
-    var calendars: [String: String] {
-        UserDefaults.standard.dictionary(forKey: "calendars") as! [String: String]
-    }
+    var calendars: [String: String] =
+    UserDefaults.standard.dictionary(forKey: "calendars") as? [String: String] ?? ["":""]
+    
     
     // Each calendar type has an associated icon in the CalendarType enum.
     // Use the "daily" icon as a default in case something goes wrong.

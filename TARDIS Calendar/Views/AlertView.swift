@@ -11,6 +11,7 @@ import SwiftUI
 
 struct AlertView: View {
     
+    // TODO: - I believe this kind of alert is deprecated, and this View could be updated to take advantage of the newer version of .alert which includes a title, details, and a built-in dismiss button. https://developer.apple.com/documentation/swiftui/view/alert(_:ispresented:presenting:actions:message:)-8584l
     @State private var showAlert = false
     @StateObject var stateBools = StateBools.shared
     var screen: GeometryProxy
@@ -38,14 +39,6 @@ struct AlertView: View {
                     }
             } // End network connection alert.
             
-            // Alert to show network activity.
-            if stateBools.showLoadingBackground {
-                
-                Text("Loading Background...")
-                    .foregroundColor(.red)
-                    .position(x: screen.size.width * 0.5, y: screen.size.height * 0.85)
-            }
-            
         } // End of ZStack.
         
     }
@@ -55,13 +48,19 @@ struct AlertView: View {
         
         if stateBools.noPermissionForCalendar {
             let warning = "This Calendar Is Empty"
-            let alert = "In order for this calendar to show events, it needs permission to access your Apple Calendar App.\n\nPlease let a helper know.\n\nThis can be fixed by finding TARDIS Calendar in your Settings App and changing the permissions."
+            let alert = "To display events, please give permission to access your Apple Calendar App.\n\nFind TARDIS Calendar in your Settings App and change the permissions."
+            return (warning: warning, alert: alert)
+        }
+        
+        if stateBools.noCalendarsAvailable {
+            let warning = "This Calendar Is Empty"
+            let alert = "To display events, please set up one or more calendars to display in your Apple Calendars App."
             return (warning: warning, alert: alert)
         }
         
         if stateBools.noCalendarsSelected {
             let warning = "This Calendar Is Empty."
-            let alert = "To display events from the Apple Calendar App, you need to select which calendars to display.\n\nPlease let a helper know.\n\nTripple tap the upper right hand corner to open Settings and select calendars."
+            let alert = "To display events, please select one or more calendars from your Apple Calendars App.\n\nTripple tap the upper right hand corner to open Settings and select calendars."
             return (warning: warning, alert: alert)
         }
         
@@ -73,10 +72,11 @@ struct AlertView: View {
         
         if stateBools.noPermissionForLocation {
             let warning = "Day and Night Are Not Showing Correctly."
-            let alert = "Sunrise and sunset times are depicted with colors in the background. These times are currently shown as guesses.\n\nPlease let a helper know.\n\nThis can be fixed by finding TARDIS Calendar in your Settings App and changing the permissions."
+            let alert = "Sunrise and sunsets are depicted with colors in the background. To show them at correct times, permission is needed to access your general location.\n\nPlease find TARDIS Calendar in your Settings App and change the permissions."
             return (warning: warning, alert: alert)
         }
         
+        // Default Warning. This should never be needed.
         return (warning: "Something is wrong.", alert: "Some error is causing this message. It isn't your fault! Let Monty know.")
     }
     

@@ -41,58 +41,42 @@ class CalendarSet: ObservableObject {
         appleCalendars.filter({$0.isSelected}).map({$0.calendar})
     }
     
-    
     func updateCalendars(eventStore: EKEventStore, completion: @escaping (CalendarError?) -> Void) {
         
-        // App will request access to the Apple Calendar. This should only happen once if the user grants permission.
-        // This is depricated but I can't run the latest XCode on my old-ass computer.
-        // TODO: - Buy a new iMac, install OS13, install xCode 15, and update this line.
-        eventStore.requestAccess(to: EKEntityType.event) { [self] granted, error in
-                        
-            guard granted else {
-                // Permission to access Apple Calendar App is not granted.
-                completion(CalendarError.permissionDenied)
-                return
+        print("I'm clearing out appleCalendars.")
+        // Reset list of Apple Calendar App calendars to empty.
+        self.appleCalendars = []
+        
+        // Grab a fresh list of calendars from the Apple Calendar App
+        let getCalendars = eventStore.calendars(for: .event)
+        
+        guard getCalendars.count > 0 else {
+            // No calendars are available to work with; this shouldn't happen. Calendar has default calendars. Yet somehow, it does happen... No, I think I figured it out and this shouldn't happen. I'll leave this here for now to see if it comes up again.
+            completion(CalendarError.noAppleCalendars)
+            return
+        }
+        
+        // Grab user default "calendars" - a dictionary matching calendars to display with their calendar types. If the dictionary isn't yet available, use an empty dictionary to indicate no calendars have been selected.
+        let myCalendars = UserDefaults.standard.dictionary(forKey: "calendars") as? [String : String] ?? ["" : ""]
+        
+        self.userCalendars = myCalendars
+        let titles = myCalendars.keys
+        
+        // Construct an AppleCalendar for each calendar in the user's Apple Calendar App. We are attatching isSelected and type to each EKCalendar. This will allow for easy editing of the user's calendars dictionary.
+        
+        for calendar in getCalendars {
+            let isSelected = titles.contains(calendar.title)
+            var type = "none"
+            if let myType = myCalendars[calendar.title] {
+                type = myType
             }
-            
-            // Reset list of Apple Calendar App calendars to empty.
-            self.appleCalendars = []
-            
-            // Grab a fresh list of calendars from the Apple Calendar App
-            let getCalendars = eventStore.calendars(for: .event)
-            
-            guard getCalendars.count > 0 else {
-                // No calendars are available to work with; this shouldn't happen. Calendar has default calendars.
-                completion(CalendarError.noAppleCalendars)
-                return
-            }
-            
-            // Grab user default "calendars" - a dictionary matching calendars to display with their calendar types.
-            guard let myCalendars = UserDefaults.standard.dictionary(forKey: "calendars") else {
-                // UserDefault "calendars" does not exist.
-                completion(CalendarError.noUserDictionary)
-                return
-            }
-            
-            self.userCalendars = myCalendars as! [String: String]
-            let titles = myCalendars.keys
-            
-            // Construct an AppleCalendar for each calendar in the user's Apple Calendar App. We are attatching isSelected and type to each EKCalendar. This will allow for easy editing of the user's calendars dictionary.
-            for calendar in getCalendars {
-                let isSelected = titles.contains(calendar.title)
-                var type = "none"
-                if let myType = myCalendars[calendar.title] as! String? {
-                    type = myType
-                }
-                let newCalendar = AppleCalendar(calendar: calendar, isSelected: isSelected, type: type)
-                self.appleCalendars.append(newCalendar)
-            }
-            
-            selectedCalendars = Set(self.appleCalendars.filter({$0.isSelected}).map({$0.id}))
-            
-            completion(nil)
-            
-        } // End closure to eventStore.requestAccess
+            let newCalendar = AppleCalendar(calendar: calendar, isSelected: isSelected, type: type)
+            self.appleCalendars.append(newCalendar)
+        }
+        
+        selectedCalendars = Set(self.appleCalendars.filter({$0.isSelected}).map({$0.id}))
+        
+        completion(nil)
         
     } // End function updateCalendars()
     

@@ -8,6 +8,7 @@
 //  Perhaps this will become a state machine?
 //
 
+import EventKit
 import Foundation
 
 // Singleton for sharing names and values of state-related booleans.
@@ -33,30 +34,25 @@ class StateBools: ObservableObject {
         // Note: downAwhile will still be true once the connection has re-established, so we need both bools to be true here.
         return down && downAwhile
     }
-   // @Published var internetIsDownInfo = false // Displays information if user taps warning message.
+    // @Published var internetIsDownInfo = false // Displays information if user taps warning message.
     
     var missingSolarDays = 0 { // Keeps count of how many times SolarDays cannot be downloaded; haven't used yet - not sure how or where to make an alert out of this.
         didSet {
             UserDefaults.standard.set(missingSolarDays, forKey: "missingSolarDays")
         }
     }
-    var newLocationNoInternet = false // unused - do I want to remind the user an internet connection is needed to update solardays information for the new location?
-   // @Published var newLocationNoInternetInfo = false
-    var newUser = true // User is considered new the first time app is launched, but not subsequent times. Unused - do I need to do anything different for a brand new user?
-    var noCalendarsSelected = true // working on it
-    var noPermissionForCalendar = true {
-        didSet {
-            print("noPermissionForCalendar changed its mind. Now it's: ", noPermissionForCalendar)
-        }
-    }// I need to use this; if the user doesn't give permission, what should the app do?
-  //  @Published var noPermissionForCalendarInfo = false
-    var noPermissionForLocation = false // I need to use this; if the app can't get locatio info, what to show in background?
-  //  @Published var noPermissionForLocationInfo = false
+    @Published var newUser = true // User is considered new the first time app is launched, but not subsequent times. Use to open app to Settings with a welcome message.
+    var noCalendarsAvailable = false
+    var noCalendarsSelected = true
+    var noPermissionForCalendar: Bool {
+        !(EKEventStore.authorizationStatus(for: .event) == .authorized)
+    }
+    var noPermissionForLocation = false // Cannot be accessed directly (as far as I can figure out). Will be reset as soon as Events are updated.
     var showLoadingBackground = false // Used to indicate the background is loading.
     var showSettings = false // Opens the settings page where user can select calendars to show.
     @Published var showSettingsAlert = false // Warns that a calendar must be selected.
     var showWarning: Bool { // Use to activate the AlertView, which will then show whichever warning is appropriate, with an attached alert for more information.
-        noPermissionForCalendar || noCalendarsSelected || internetIsDown || noPermissionForLocation
+        noPermissionForCalendar || noCalendarsAvailable || noCalendarsSelected || internetIsDown || noPermissionForLocation
     }
     
     private init() {
@@ -66,5 +62,7 @@ class StateBools: ObservableObject {
         } else {
             UserDefaults.standard.set(true, forKey: "newUser")
         }
+        showSettings = newUser
+        noCalendarsSelected = (UserDefaults.standard.object(forKey: "calendars") == nil)
     }
 }

@@ -85,8 +85,13 @@ struct ContentView: View {
                     .zIndex(-100)
                 // Zoom in and out by changing trailingTime
                     .gesture(oneFingerZoom)
-
-
+                // Show progress view while background loads.
+                if stateBools.showLoadingBackground {
+                    ProgressView()
+                        .position(x: screen.size.width * 0.5, y: screen.size.height * 0.5)
+                        .scaleEffect(4)
+                }
+                
                 // Hidden button in upper right hand corner allows caregivers to change preferences.
                 Color(.clear)
                     .frame(width: 80, height: 80)
@@ -175,7 +180,7 @@ struct ContentView: View {
 
                 AlertView(screen: screen)
 
-
+                    
 
             } // End of main ZStack
 
@@ -190,6 +195,7 @@ struct ContentView: View {
                     // Check for new day; update calendar and solar events once per day.
                     let today = Timeline.calendar.dateComponents([.day], from: Date())
                     if today != currentDay {
+                        print("called update calendars from new day in contentview")
                         eventManager.updateCalendarsAndEvents()
                         solarEventManager.updateSolarDays()
                         currentDay = today

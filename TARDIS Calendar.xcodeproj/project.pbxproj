@@ -27,7 +27,6 @@
 		F18D05032B0AA6B500E5C91E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18D05022B0AA6B500E5C91E /* SettingsView.swift */; };
 		F18D051F2B0BC01C00E5C91E /* CalendarSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18D051E2B0BC01C00E5C91E /* CalendarSet.swift */; };
 		F19149272AD2649000A31D5A /* SolarDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19149262AD2649000A31D5A /* SolarDay.swift */; };
-		F19149292AD267A400A31D5A /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19149282AD267A400A31D5A /* Settings.swift */; };
 		F1B5FE182A735D2200CBBCE6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B5FE172A735D2200CBBCE6 /* Extensions.swift */; };
 		F1D15B422A5FA758006F6A4E /* TARDIS_CalendarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D15B412A5FA758006F6A4E /* TARDIS_CalendarApp.swift */; };
 		F1D15B442A5FA758006F6A4E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D15B432A5FA758006F6A4E /* ContentView.swift */; };
@@ -60,7 +59,6 @@
 		F18D05022B0AA6B500E5C91E /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F18D051E2B0BC01C00E5C91E /* CalendarSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSet.swift; sourceTree = "<group>"; };
 		F19149262AD2649000A31D5A /* SolarDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolarDay.swift; sourceTree = "<group>"; };
-		F19149282AD267A400A31D5A /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		F1B5FE172A735D2200CBBCE6 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		F1D15B3E2A5FA758006F6A4E /* TARDIS Calendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TARDIS Calendar.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1D15B412A5FA758006F6A4E /* TARDIS_CalendarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TARDIS_CalendarApp.swift; sourceTree = "<group>"; };
@@ -163,7 +161,6 @@
 				F1F9E49A2B11220C00DA4026 /* Enums.swift */,
 				F18D05002B0A99B600E5C91E /* StateBools.swift */,
 				F10C32A42B17601200CCF83B /* NetworkMonitor.swift */,
-				F19149282AD267A400A31D5A /* Settings.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -253,7 +250,6 @@
 				F1B5FE182A735D2200CBBCE6 /* Extensions.swift in Sources */,
 				F1F9E49B2B11220C00DA4026 /* Enums.swift in Sources */,
 				F122A2BC2AD2FB0F002E82AE /* LocationManagerDelegate.swift in Sources */,
-				F19149292AD267A400A31D5A /* Settings.swift in Sources */,
 				F1D9AD3A2B13966E0076832F /* DataController.swift in Sources */,
 				F122A2C32ADA4AD1002E82AE /* BackgroundView.swift in Sources */,
 				F1102AFA2A6DDCA6007534C1 /* TimeTicks.swift in Sources */,
@@ -399,8 +395,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "TARDIS-Calendar-Info.plist";
-				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app displays events from Calendar.";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We use your approximate location to display accurate sunrise and sunset times in the background of the calendar.";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app displays events from Apple's Calendar App.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app uses your approximate location to display acurate sunrise and sunset times.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -431,8 +427,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "TARDIS-Calendar-Info.plist";
-				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app displays events from Calendar.";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "We use your approximate location to display accurate sunrise and sunset times in the background of the calendar.";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app displays events from Apple's Calendar App.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app uses your approximate location to display acurate sunrise and sunset times.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

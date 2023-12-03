@@ -17,7 +17,7 @@ struct NowView: View {
         
         // TODO: - this is hard-wired for now. Will need to allow user to specify an image and retrieve it here from user defaults.
         
-        let image = Settings.shared.userImage
+        let image = Image(systemName:"person.circle.fill")
         
         Group {
                 

@@ -21,8 +21,8 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
     
     var solarDays: [SolarDay] = []
     var solarDaysAvailable = false
-    var currentLatitude = 0.0
-    var currentLongitude = 0.0 // Will give these values when needed.
+    var currentLatitude = 36.110170
+    var currentLongitude = -97.058570 // Will give these values when needed.
     // Use of CoreData is a requirement for my assignment.
     // TODO: - evaluate whether this is the best way to persist a solarDays backup.
     var dataController = DataController()
