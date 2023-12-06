@@ -1,3 +1,27 @@
+# Udacity Feedback Response 1.0
+Hello, my reviewer was unable to work the app and asked for a more detailed readme. Other than the information they asked for, all details about installing and running the app are listed below.
+Here is the information that was specifically requested:
+- XCode version: 14.0.1 (Sorry, I know it's not the latest, but my computer is too old to run the latest macOS, so I am updated on XCode as far as I can go.)
+- Swift Version: Swift 5.7 (5.7.0.127.4) 
+- iOS version: minimum deployments is set for iOS 16.0
+
+If the project does not pass again, please verify that this response was received.
+Also please let me know more about what you see when launching the app:
+- Does it ask for permission to track location?
+- Does it ask for permission to access Calendar?
+- Does it show a welcome message?
+- Does it list calendars from your Calendar app? (Apple's Calendar App must be installed on the device.)
+- If a list of calendars does not appear, what happens if you triple-tap the upper right-hand corner?
+- Do vertical bands of dark and light color appear in the background when you swipe to the left across the screen?
+
+
+# Table of Contents
+- You Decide! Udacity Assignment Requirements Met: details how each requirement was met
+- TARDIS Calendar: explains the purpose of the app, along with a list of major features
+- Setup: explains how to install the app and how to set it up for daily use
+- Planned Improvements: my to-do list for adding features and improving code
+
+
 # You Decide! Udacity Assignment Requirements Met
 ReadMe
 - Describes user experience: see below
@@ -26,7 +50,7 @@ Throughout this readme I will refer to:
 - **The User** - this is the end user of the app, i.e. the person with dementia who may benefit from a calendar that displays events in relation to "now". It is assumed that the user knows nothing about computers or apps.
 - **The Caregiver** - this is the user's family member or other caregiver. They will be responsible for setting up the app and populating it with events using Apple's Calendar App.  
 
-# TARDIS Calendar Concept
+## TARDIS Calendar Concept
 - I've designed this calendar for my mom, who has temporal lobe epilepsy, and often cannot conceptualize time very well.
 - Other "dementia clocks" or calendars all seem to work on the same principal, which is to present lots of information on a big screen about what time it is now.
 - What my mom really needs is a way of anchoring herself in relation to future events.
@@ -35,11 +59,11 @@ Throughout this readme I will refer to:
 - In addition, my mom does not work well with technology, and cannot learn to navigate a new app.
 - Thus my guiding principal is that the user may need to re-learn how to use the app each time they look at it. For this reason the controls are meant to be very simple and intuitive.
 
-# Future Plans / Please Contact Me
+## Future Plans / Please Contact Me
 I imagine there are others out there whose needs are similar, so I plan to make this app available when it's ready.
 If you have a loved-one who struggles with the concept of time and might benefit from my approach, please contact me. 
 
-# Basic Features
+## Basic Features
 - Current day, date, and time are prominently displayed.
 - The background is a color gradient representing sunrise, sunset, day and night. Thanks to https://sunrisesunset.io/api/ for providing the necessary data!
 - The "Now" icon anchors the current moment in the timeline. Caregiver may opt to display the user's own face here (this feature is not yet available).
