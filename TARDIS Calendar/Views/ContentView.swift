@@ -86,7 +86,8 @@ struct ContentView: View {
                 // Zoom in and out by changing trailingTime
                     .gesture(oneFingerZoom)
                 // Show progress view while background loads.
-                if stateBools.showLoadingBackground {
+                
+                if stateBools.showProgressView {
                     ProgressView()
                         .position(x: screen.size.width * 0.5, y: screen.size.height * 0.5)
                         .scaleEffect(4)
@@ -197,7 +198,7 @@ struct ContentView: View {
                     if today != currentDay {
                         print("called update calendars from new day in contentview")
                         eventManager.updateCalendarsAndEvents()
-                        solarEventManager.updateSolarDays()
+                        solarEventManager.updateSolarDays(){_ in}
                         currentDay = today
                     }
 

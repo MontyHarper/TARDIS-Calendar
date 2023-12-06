@@ -12,70 +12,6 @@ import Foundation
 import SwiftUI
 import UIKit
 
-// Event is a wrapper for EKEvent, Event Kit's raw event Type.
-// - Provides a type for each event
-// - Provides a unique id for each event
-// - Conforms events to Idenditfiable and Comparable protocols
-// - Rounds starting time so it can be used as an alternate identification (No two events should start at the same time.)
-// - Exposes various other values.
-
-class Event: Identifiable, Comparable {
-    
-    var event: EKEvent
-    var type: String
-        
-    init(event: EKEvent, type: String) {
-        self.event = event
-        self.type = type
-    }
-        
-    var id: UUID {
-        UUID()
-    }
-    
-    var startDate: Date {
-        // Ensures start time is rounded to the minute.
-        let components = Timeline.calendar.dateComponents([.year,.month,.day,.hour,.minute], from: event.startDate)
-        return Timeline.calendar.date(from: components)!
-    }
-    var endDate: Date {
-        event.endDate
-    }
-    var title: String {
-        event.title
-    }
-    var calendarTitle: String {
-        event.calendar.title
-    }
-    var calendarColor: Color {
-        let cg = event.calendar.cgColor ?? CGColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 1.0)
-        return Color(cgColor: cg)
-    }
-    var priority: Int {
-        if let number = CalendarType(rawValue:type)?.priority() {
-            return number
-        } else {
-            return 0
-        }
-    }
-    
-    // Protocol conformance for Comparable
-    static func < (lhs: Event, rhs: Event) -> Bool {
-        if lhs.startDate < rhs.startDate {
-            return true
-        } else if lhs.startDate > rhs.startDate {
-            return false
-        } else {
-            return lhs.priority < rhs.priority
-        }
-    }
-    
-    static func == (lhs: Event, rhs: Event) -> Bool {
-        lhs.startDate == rhs.startDate && lhs.priority == rhs.priority
-    }
-}
-
-
 // ContentView uses an instance of EventManager to access current events, calendars, and related info.
 class EventManager: ObservableObject {
     
@@ -89,7 +25,7 @@ class EventManager: ObservableObject {
     private var newEvents = [Event]()
     
     init() {
-        // Notification will update the calendars and events lists any time an event or calendar is changed in the user's Apple Calendar App.
+        // This notification will update the calendars and events lists any time an event or calendar is changed in the user's Apple Calendar App.
         NotificationCenter.default.addObserver(self, selector: #selector(self.updateCalendarsAndEvents), name: .EKEventStoreChanged, object: eventStore)
         
         if StateBools.shared.noPermissionForCalendar {
@@ -177,4 +113,67 @@ class EventManager: ObservableObject {
         }
     }
     
+}
+
+// Event is a wrapper for EKEvent, Event Kit's raw event Type.
+// - Provides a type for each event
+// - Provides a unique id for each event
+// - Conforms events to Idenditfiable and Comparable protocols
+// - Rounds starting time so it can be used as an alternate identification (No two events should start at the same time.)
+// - Exposes various other values.
+
+class Event: Identifiable, Comparable {
+    
+    var event: EKEvent
+    var type: String
+        
+    init(event: EKEvent, type: String) {
+        self.event = event
+        self.type = type
+    }
+        
+    var id: UUID {
+        UUID()
+    }
+    
+    var startDate: Date {
+        // Ensures start time is rounded to the minute.
+        let components = Timeline.calendar.dateComponents([.year,.month,.day,.hour,.minute], from: event.startDate)
+        return Timeline.calendar.date(from: components)!
+    }
+    var endDate: Date {
+        event.endDate
+    }
+    var title: String {
+        event.title
+    }
+    var calendarTitle: String {
+        event.calendar.title
+    }
+    var calendarColor: Color {
+        let cg = event.calendar.cgColor ?? CGColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 1.0)
+        return Color(cgColor: cg)
+    }
+    var priority: Int {
+        if let number = CalendarType(rawValue:type)?.priority() {
+            return number
+        } else {
+            return 0
+        }
+    }
+    
+    // Protocol conformance for Comparable
+    static func < (lhs: Event, rhs: Event) -> Bool {
+        if lhs.startDate < rhs.startDate {
+            return true
+        } else if lhs.startDate > rhs.startDate {
+            return false
+        } else {
+            return lhs.priority < rhs.priority
+        }
+    }
+    
+    static func == (lhs: Event, rhs: Event) -> Bool {
+        lhs.startDate == rhs.startDate && lhs.priority == rhs.priority
+    }
 }

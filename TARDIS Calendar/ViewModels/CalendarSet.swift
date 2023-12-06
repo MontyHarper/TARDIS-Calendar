@@ -30,7 +30,6 @@ struct AppleCalendar: Identifiable, Hashable {
     }
 }
 
-
 class CalendarSet: ObservableObject {
     
     private(set) var userCalendars: [String: String] = [:] // List of calendars to connect to and their types; Persisted in UserDefaults
@@ -43,7 +42,6 @@ class CalendarSet: ObservableObject {
     
     func updateCalendars(eventStore: EKEventStore, completion: @escaping (CalendarError?) -> Void) {
         
-        print("I'm clearing out appleCalendars.")
         // Reset list of Apple Calendar App calendars to empty.
         self.appleCalendars = []
         

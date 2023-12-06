@@ -17,78 +17,84 @@ import Foundation
 import Network
 import SwiftUI
 
-class SolarEventManager: LocationManagerDelegate, ObservableObject {
+class SolarEventManager: ObservableObject, LocationUpdateReceiver {
     
     var solarDays: [SolarDay] = []
     var currentLatitude = 36.110170
-    var currentLongitude = -97.058570 // Will give these values when needed.
+    var currentLongitude = -97.058570
+    var locationManager = LocationManager()
     // Use of CoreData is a requirement for my assignment.
     var dataController = DataController()
     var solarDaysBackupContext: NSManagedObjectContext
     let stateBools = StateBools.shared
     
-    // User's location is needed for the sunrisesunset api to return accurate times.
-    // TODO: - handle the case where user does not give permission
     
-    private var locationManager = CLLocationManager()
-
-    override init() {
+    init() {
         
         // Context for CoreData backup of SolarDays information.
         solarDaysBackupContext = dataController.container.newBackgroundContext()
-        super.init()
         
-        // Set up location tracking; user location is required to fetch accurate SolarDays information.
+        // My own delegate protocol; sets SolarEventManager up to receive location updates.
         locationManager.delegate = self
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.startMonitoringSignificantLocationChanges()
         
-        // Fetch fresh SolarDays information.
-        stateBools.showLoadingBackground = true
-        // TODO: - The update method can probably be streamlined to take better advantage of network connection awareness and CoreData persistence.
-        updateSolarDays()
-    }
-    
-    deinit {
-        locationManager.stopMonitoringSignificantLocationChanges()
-    }
-    
-    override func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        switch manager.authorizationStatus {
-        case .authorizedAlways, .authorizedWhenInUse:
-            stateBools.noPermissionForLocation = false
-            if stateBools.solarDaysAvailable {updateSolarDays()}
-        default:
-            stateBools.noPermissionForLocation = true
+        // There is no need to show progress view except on init, while we go from no background to some background.
+        stateBools.showProgressView = true
+        
+        updateSolarDays() {success in
+            self.updateSolarDaysCompletion(success: success)
         }
-        print("Authorization Changed: \(manager.authorizationStatus)")
     }
     
-    // If location changes, save the new location in UserDefaults.
-    override func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        print("update location is called")
-        let newLocation = locations[locations.count - 1]
-        let longitude = newLocation.coordinate.longitude
-        let latitude = newLocation.coordinate.latitude
-        print("new location: lon \(longitude), lat \(latitude)")
-        UserDefaults.standard.set(longitude,forKey:"longitude")
-        UserDefaults.standard.set(latitude,forKey:"latitude")
-        if stateBools.solarDaysAvailable {updateSolarDays()}
+    func updateSolarDaysCompletion(success: Bool) {
+        if success {
+            self.stateBools.solarDaysUpdateLocked = false
+            self.stateBools.showProgressView = false
+            self.stateBools.solarDaysAvailable = true
+            self.stateBools.missingSolarDays = 0
+            // Save a backup to CoreData
+            self.saveBackup()
+            // If location has changed, update again.
+            if stateBools.locationChangeAwaitingUpdate {
+                stateBools.locationChangeAwaitingUpdate = false
+                updateSolarDays() {success in
+                    self.updateSolarDaysCompletion(success: success)
+                }
+            }
+        } else {
+            // Data is unavailable.
+            // Attempt to fetch a stored version of solarDays that can be used instead.
+            self.stateBools.missingSolarDays += 1
+            self.fetchBackup()
+        }
     }
-    
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print("location manager failed with error: \(error)")
+
+    func receiveLocationUpdate() {
+        print ("received location update notification")
+        if !stateBools.solarDaysUpdateLocked {
+            updateSolarDays(){success in
+                self.updateSolarDaysCompletion(success: success)
+            }
+        } else {
+            stateBools.locationChangeAwaitingUpdate = true
+        }
     }
-    
+        
     // This method fetches solar event data for the max number of days possibly shown onscreen.
     // This is called...
     // - once from init
     // - whenever locationManager detects a change in location
     // - once per day from ContentView
-    // TODO: - call this function whenever internet connection is restored
-    func updateSolarDays() {
+    func updateSolarDays(_ result: @escaping (Bool) -> Void) {
         
-        solarDaysAvailable = false // To avoid running this process more than once concurrently.
+        stateBools.solarDaysUpdateLocked = true // To avoid running this function twice concurrently.
+        
+        // Retrieve last known location.
+        if let latitude = UserDefaults.standard.object(forKey: "latitude") {
+            currentLatitude = latitude as? Double ?? 36.110170
+        }
+        if let longitude = UserDefaults.standard.object(forKey: "longitude") {
+            currentLongitude = longitude as? Double ?? -97.058570
+        }
         
         print("update solar days was called")
         
@@ -99,19 +105,18 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
         let startDate = Timeline.minDay
         let endDate = Timeline.maxDay
         let date = startDate
-        currentLongitude = UserDefaults.standard.double(forKey:"longitude")
-        currentLatitude = UserDefaults.standard.double(forKey:"latitude")
+
         print("lon \(currentLongitude), lat \(currentLatitude)")
 
         // This function will recursively call itself from its own completion handler.
         // It's set up this way so that the solar days will be added to the array in order i.e. for thread safety.
         // TODO: - I think this can also be done with an async sequence? But I haven't figured that bit of magic out yet. Maybe for a future re-factor. For now, this seems to be working great.
         
-        fetchSolarDay(date: date, endDate: endDate)
+        fetchSolarDay(date: date, endDate: endDate, result: result)
     }
     
     
-    func fetchSolarDay(date: Date, endDate: Date) {
+    func fetchSolarDay(date: Date, endDate: Date, result: @escaping (Bool) -> Void) {
         
         print("fetching a solar day for \(date)")
         
@@ -156,21 +161,14 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
                 // Advance the date; if we have more dates, call for the next one...
                 let nextDate = Timeline.calendar.date(byAdding: .day, value: 1, to: date) ?? Date(timeIntervalSince1970: (date.timeIntervalSince1970 + Double(60 * 60 * 24)))
                 if nextDate <= endDate {
-                    self.fetchSolarDay(date: nextDate, endDate: endDate)
+                    self.fetchSolarDay(date: nextDate, endDate: endDate, result: result)
                 } else {
                     // We have a complete set of solarDays to work with!
-                    self.solarDaysAvailable = true
-                    self.stateBools.missingSolarDays = 0
-                    self.stateBools.showLoadingBackground = false
-                    // Save a backup to CoreData
-                    self.saveBackup()
+                    result(true)
                 }
             } else {
-                // Assume no data indicates a bad internet connection
-                // This process is not continued, and solarDaysAvailable remains false.
-                // Attempt to fetch a stored version of solarDays that can be used instead.
-                self.stateBools.missingSolarDays += 1
-                self.fetchBackup()
+                // No data
+                result(false)
             }
         }
         task.resume()
@@ -181,8 +179,7 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
     // This method returns an array of stops that matches the timeline currently showing on screen. The leading time and trailing time are each matched to an interpolated color, allowing the user to zoom smoothly without colors jumping around at the edge of the screen.
     func screenStops(timeline: Timeline) -> [Gradient.Stop] {
                 
-        guard solarDaysAvailable else {
-            print("solar days unavailable")
+        guard stateBools.solarDaysAvailable else {
             return [Gradient.Stop(color: Color.noon, location: 0.0)]
         }
                 
@@ -346,7 +343,7 @@ class SolarEventManager: LocationManagerDelegate, ObservableObject {
     
         solarDays = proposedSolarDays + tagOnDays
         print("backup solar days = \(solarDays)")
-        solarDaysAvailable = true
+        stateBools.solarDaysAvailable = true
     }
     
     func saveBackup() {

@@ -36,7 +36,8 @@ class StateBools: ObservableObject {
     }
     // @Published var internetIsDownInfo = false // Displays information if user taps warning message.
     
-    var missingSolarDays = 0 { // Keeps count of how many times SolarDays cannot be downloaded; haven't used yet - not sure how or where to make an alert out of this.
+    var locationChangeAwaitingUpdate = false
+    var missingSolarDays = 0 { // Keeps count of how many times SolarDays cannot be downloaded;
         didSet {
             UserDefaults.standard.set(missingSolarDays, forKey: "missingSolarDays")
         }
@@ -48,13 +49,22 @@ class StateBools: ObservableObject {
         !(EKEventStore.authorizationStatus(for: .event) == .authorized)
     }
     var noPermissionForLocation = false // Cannot be accessed directly (as far as I can figure out). Will be reset as soon as Events are updated.
-    var showLoadingBackground = false // Used to indicate the background is loading.
+    var showProgressView = false // Used to indicate the background is loading.
+    var showMissingSolarDaysWarning: Bool { // If enough days are missing that the calendar will look wrong, show a warning.
+        missingSolarDays >= 4
+    }
     var showSettings = false // Opens the settings page where user can select calendars to show.
     @Published var showSettingsAlert = false // Warns that a calendar must be selected.
     var showWarning: Bool { // Use to activate the AlertView, which will then show whichever warning is appropriate, with an attached alert for more information.
-        noPermissionForCalendar || noCalendarsAvailable || noCalendarsSelected || internetIsDown || noPermissionForLocation
+        noPermissionForCalendar || noCalendarsAvailable || noCalendarsSelected || internetIsDown || noPermissionForLocation || showMissingSolarDaysWarning
     }
-    var solarDaysAvailable = false
+    var solarDaysAvailable = false {
+        didSet {
+            print("Solar Days: ",solarDaysAvailable )
+        }
+    }
+    var solarDaysUpdateLocked = false
+    
     
     private init() {
         missingSolarDays = UserDefaults.standard.integer(forKey: "missingSolarDays")
