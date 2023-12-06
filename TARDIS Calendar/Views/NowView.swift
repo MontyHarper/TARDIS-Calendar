@@ -20,13 +20,18 @@ struct NowView: View {
         let image = Image(systemName:"person.circle.fill")
         
         Group {
-                
+            
             ArrowView(size: 100.0)
                 .zIndex(-90)
             Circle().frame(width: 100, height: 100).foregroundColor(.yellow).shadow(color: .white, radius: 20)
             image.resizable().aspectRatio(contentMode:.fit).frame(width:90, height:90, alignment:.center).clipShape(Circle())
-                
-            }
+                .overlay{
+                    Text("Now")
+                        .offset(x: 0.0, y: 60.0)
+                        .shadow(color: .black, radius: 3.0)
+                }
+    
+        }
         
     }
 }

@@ -25,7 +25,7 @@ struct ContentView: View {
     // Constants that configure the UI. To mess with the look of the calendar, mess with these.
     let yOfLabelBar = 0.17 // y position of date label bar in unit space
     let yOfTimeline = 0.5
-    let yOfInfoBox = 0.09
+    let yOfInfoBox = 0.1
     
     // Timers driving change in the UI
     // May want to refactor for better efficiency

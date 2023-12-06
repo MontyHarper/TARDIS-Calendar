@@ -26,12 +26,8 @@ struct CurrentDateAndTimeView: View {
         
         let now = Date(timeIntervalSince1970: timeline.now)
         VStack {
-            Text("✻ NOW ✻")
-                .font(.subheadline)
-                .foregroundColor(.black)
-                .autocapitalization(.allCharacters)
             Text(formatter.string(from: now))
-                .padding(EdgeInsets(top: 0.0, leading: 5.0, bottom: 8.0, trailing: 5.0))
+                .padding(EdgeInsets(top: 0.0, leading: 5.0, bottom: 9.0, trailing: 5.0))
                 .background(.white)
                 .foregroundColor(.blue)
                 .clipShape(RoundedRectangle(cornerSize: CGSize(width: 10, height: 5)))

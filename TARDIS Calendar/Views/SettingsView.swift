@@ -26,7 +26,6 @@ struct SettingsView: View {
                 .font(.largeTitle)
             
             NavigationView {
-                
                 if eventManager.calendarSet.appleCalendars.count > 0 {
                     // Lists all calendars present in the user's Apple Calendar App.
                     List($eventManager.calendarSet.appleCalendars) {$calendar in
