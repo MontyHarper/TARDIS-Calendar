@@ -1,3 +1,9 @@
+# Udacity Feedback Response 2.0
+Hello, I had two things to fix from the last feedback, and I believe I've got them...
+1. App should hide the activity indicator when it's not being used: In contentView the showProgressView Bool determines whether the indicator is showing. That bool is set to true in SolarEventManager.init, then set to false once events are updated or fetched from memory, or fail to be fetched. I added a completion closure to my fetchBackup() function in SolarEventManager. That way all the state logic is encapsulated within updateSolarDaysCompletion(success:). I should only need to set showProgressView to false once there to cover all cases. If it's still misbehaving please let me know under what circumstances.
+2. Impossible to ask permission to use calendar for newer versions of iOS: I have included the new code for this at line 39 in the EventManager. I attempted to use conditional compilation so the app will build for me and for you.
+
+ 
 # Udacity Feedback Response 1.0
 Hello, my reviewer was unable to work the app and asked for a more detailed readme. Other than the information they asked for, all details about installing and running the app are listed below.
 Here is the information that was specifically requested:
