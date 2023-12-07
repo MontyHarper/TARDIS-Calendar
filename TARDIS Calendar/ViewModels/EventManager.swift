@@ -32,14 +32,30 @@ class EventManager: ObservableObject {
             // App will request access to the Apple Calendar. If the user refuses, the system will not show the request again.
             // This syntax is deprecated but I can't run the latest XCode on my old-ass computer.
             // TODO: - Buy a new iMac, install OS13, install xCode 15, and update this line.
-            eventStore.requestAccess(to: EKEntityType.event) {_,_ in }
+            // Implementing solution suggested by Udacity reviewer...
+            // My version won't build with the new request statement, so this will have to be commented out for my own use: lines 39-42, 45
+            
+            // Ask permission the new way if available
+#if swift(>=5.9)
+            if #available(iOS 17.0, *) {
+                eventStore.requestFullAccessToEvents { _, _ in }
+                    
+            } else {
+                // Ask permission the old way if not
+                eventStore.requestAccess(to: EKEntityType.event) { _, _ in }
+            }
             // If permission is newly given, the notification above will fetch new data.
+#else
+            eventStore.requestAccess(to: EKEntityType.event) { _, _ in }
+            
+#endif
+            
         } else {
             // If permission is already given, fetch new data.
             updateCalendarsAndEvents()
         }
-
-    }
+        
+    } // End init
     
     deinit {
         NotificationCenter.default.removeObserver(self)

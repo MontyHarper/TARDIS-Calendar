@@ -90,7 +90,7 @@ struct ContentView: View {
                 if stateBools.showProgressView {
                     ProgressView()
                         .position(x: screen.size.width * 0.5, y: screen.size.height * 0.5)
-                        .scaleEffect(4)
+                        .scaleEffect(3)
                 }
                 
                 // Hidden button in upper right hand corner allows caregivers to change preferences.

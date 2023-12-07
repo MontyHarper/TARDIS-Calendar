@@ -37,7 +37,7 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
         // My own delegate protocol; sets SolarEventManager up to receive location updates.
         locationManager.delegate = self
         
-        // There is no need to show progress view except on init, while we go from no background to some background.
+        // This is set here instead of inside updateSolarDays because we only need to show the ProgressView the first time solarDays updates on launch, while the background transitions from nothing to something. If SolarDays updates after that, the download should be invisible to the user, so no need to indicate the app is working behind the scenes.
         stateBools.showProgressView = true
         
         updateSolarDays() {success in
@@ -64,7 +64,15 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
             // Data is unavailable.
             // Attempt to fetch a stored version of solarDays that can be used instead.
             self.stateBools.missingSolarDays += 1
-            self.fetchBackup()
+            self.fetchBackup() {success in
+                self.stateBools.showProgressView = false
+                self.stateBools.solarDaysUpdateLocked = false
+                if success {
+                    self.stateBools.solarDaysAvailable = true
+                } else {
+                    self.stateBools.solarDaysAvailable = false
+                }
+            }
         }
     }
 
@@ -86,7 +94,7 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
     // - once per day from ContentView
     func updateSolarDays(_ result: @escaping (Bool) -> Void) {
         
-        stateBools.solarDaysUpdateLocked = true // To avoid running this function twice concurrently.
+        stateBools.solarDaysUpdateLocked = true // To avoid running this function twice concurrently; also displays ProgressView while updating.
         
         // Retrieve last known location.
         if let latitude = UserDefaults.standard.object(forKey: "latitude") {
@@ -299,7 +307,7 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
     }
     
     
-    func fetchBackup() {
+    func fetchBackup(success: (Bool) -> Void ) {
         
         print("fetching backup solar days")
         
@@ -310,6 +318,7 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
             solarDaysBackup = try solarDaysBackupContext.fetch(fetchRequest)
         } catch {
             print("error fetching backup")
+            success(false)
             return
         }
 
@@ -318,7 +327,11 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
         print("solar days backed up: \(proposedSolarDays)")
         
         // If there are no results, abort the attempt. No solar days are available.
-        if proposedSolarDays.isEmpty { return }
+        if proposedSolarDays.isEmpty {
+            success(false)
+            return
+            
+        }
         
         // Hold on to the last solar day available.
         var lastDay = proposedSolarDays[proposedSolarDays.count - 1]
@@ -343,7 +356,9 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
     
         solarDays = proposedSolarDays + tagOnDays
         print("backup solar days = \(solarDays)")
-        stateBools.solarDaysAvailable = true
+        
+        success(true)
+        return
     }
     
     func saveBackup() {

@@ -58,11 +58,7 @@ class StateBools: ObservableObject {
     var showWarning: Bool { // Use to activate the AlertView, which will then show whichever warning is appropriate, with an attached alert for more information.
         noPermissionForCalendar || noCalendarsAvailable || noCalendarsSelected || internetIsDown || noPermissionForLocation || showMissingSolarDaysWarning
     }
-    var solarDaysAvailable = false {
-        didSet {
-            print("Solar Days: ",solarDaysAvailable )
-        }
-    }
+    var solarDaysAvailable = false // When false, background returns a solid color.
     var solarDaysUpdateLocked = false
     
     
