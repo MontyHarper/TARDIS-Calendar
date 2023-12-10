@@ -19,7 +19,7 @@ struct NowView: View {
         
         let image = Image(systemName:"person.circle.fill")
         
-        Group {
+        ZStack {
             
             ArrowView(size: 100.0)
                 .zIndex(-90)
