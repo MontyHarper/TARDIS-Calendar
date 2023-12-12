@@ -38,6 +38,23 @@ struct EventView: View {
     // Event views are destroyed and re-created once per second.
     let now = Date()
     
+    var timeRemaining: String {
+        var dayString = ""
+        var hourString = ""
+        var minuteString = ""
+        let parts = Timeline.calendar.dateComponents([.day, .hour, .minute], from: now, to: event.startDate)
+        if let day = parts.day {
+            dayString = day == 0 ? "" : ("\(day) day" + (day == 1 ? ", " : "s, "))
+        }
+        if let hour = parts.hour {
+            hourString = hour == 0 ? "" : ("\(hour) hour" + (hour == 1 ? ", " : "s, "))
+        }
+        if let minute = parts.minute {
+            minuteString = minute == 0 ? "less than one minute" : ("\(minute) minute" + (minute == 1 ? "." : "s."))
+        }
+        return(dayString + hourString + minuteString)
+    }
+    
     // Expands the event View when true and keeps it in place while the event is happening, starting 15 minutes beforehand.
     var eventIsNow: Bool {
         ((event.startDate - 60 * 15)...event.endDate).contains(now)
@@ -165,59 +182,66 @@ struct EventView: View {
         .onTapGesture {
             isExpanded = true
         }
-    } // End of icnonView
+    } // End of iconView
     
     
     // Here is the actual EventView, composed of ArrowView (separate file), IconView, and an expanded view.
     var body: some View {
         
-        Group {
-            ArrowView (size: size * shrink)
-                .zIndex(-6)
-            iconView
-                .zIndex((event.endDate > now) ? Double(event.priority) : Double(event.priority) - 5)
+        if event.endDate > now {
             
-            
-            // Shows expanded view if either the user taps or the event is currently happening.
-            if isExpanded || eventIsNow {
+            Group {
+                ArrowView (size: size * shrink)
+                    .zIndex(-6)
+                iconView
+                    .zIndex((event.endDate > now) ? Double(event.priority) : Double(event.priority) - 5)
                 
-                ZStack {
+                
+                // Shows expanded view if either the user taps or the event is currently happening.
+                if isExpanded || eventIsNow {
                     
-                    Circle()
-                        .foregroundColor(.yellow)
-                        .opacity(0.85)
-                        .frame(width: size * sizeMultiplyer, height: size * sizeMultiplyer)
-                    
-                    VStack {
-                        Text(event.title)
-                            .font(.headline)
-                        Text(event.event.notes ?? "")
-                            .font(.caption)
-                        Spacer()
+                    ZStack {
                         
-                        if now < event.startDate {
-                            Text(descriptionOfTimeRemaining)
-                                .font(.caption)
-     // Mom found the countdown numbers confusing. Commenting out for now.
-     // TODO: - Find a way to use the countdown but make it less confusing.
-     //                       Text(timerInterval: now...event.startDate)
-                        } else if now < event.endDate {
-                            Text("HAPPENING NOW\n")
-                        } else {
-                            Text("Done!\n")
+                        Circle()
+                            .foregroundColor(.yellow)
+                            .opacity(0.85)
+                            .frame(width: size * sizeMultiplyer, height: size * sizeMultiplyer)
+                        
+                        VStack {
+                            Text(event.title)
+                                .font(.headline)
+                            if let notes = event.event.notes {
+                                Text(notes)
+                                    .font(.caption)
+                            }
+                            Text("at " + event.startDate.formatted(date: .omitted, time:.shortened))
+                            Spacer()
+                            
+                            if now < event.startDate {
+                                Text("Coming up in \(timeRemaining)")
+                            } else if now < event.endDate {
+                                Text("HAPPENING NOW\n")
+                            } else {
+                                Text("Done!\n")
+                            }
                         }
+                        .frame(width: size * sizeMultiplyer * 0.8, height: size * sizeMultiplyer * 0.85)
+                        .multilineTextAlignment(.center) // Necessary??
+                        
+                        
+                    } // End of expanded view ZStack
+                    .zIndex(Double(event.priority + 10))
+                    .onTapGesture {
+                        isExpanded = false
                     }
-                    .frame(width: size * sizeMultiplyer * 0.8, height: size * sizeMultiplyer * 0.85)
-                    .multilineTextAlignment(.center) // Necessary??
-                    
-                } // End of expanded view ZStack
-                .zIndex(Double(event.priority + 10))
-                .onTapGesture {
-                    isExpanded = false
-                }
-            } // End of expanded View
-        } // End of main Group
-        .offset(x:offsetAmount, y:0.0)
+                } // End of expanded View
+            } // End of main Group
+            .offset(x:offsetAmount, y:0.0)
+            
+        } else {
+            // if event has passed, return an empty view
+        }
+        
     } // End of view
         
 } // End of struct

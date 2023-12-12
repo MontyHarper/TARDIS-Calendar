@@ -24,7 +24,7 @@ struct ContentView: View {
     
     // Constants that configure the UI. To mess with the look of the calendar, mess with these.
     let yOfLabelBar = 0.17 // y position of date label bar in unit space
-    let yOfTimeline = 0.5
+    let yOfTimeline = 0.6
     let yOfInfoBox = 0.1
     
     // Timers driving change in the UI
@@ -72,7 +72,7 @@ struct ContentView: View {
                     // And reset the inactivity timer, since this indicates the end of user interaction.
                     // When this timer goes off, the screen animates back to default zoom position.
                     inactivityTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: false, block: {_ in
-                        stateBools.animateSpan = true
+                        stateBools.animateSpan = false // Turning this off for now to see how we like the app without this feature.
                     })
                 }
 
@@ -174,11 +174,20 @@ struct ContentView: View {
                     // Circle representing current time.
                     NowView()
                         .position(x: Timeline.nowLocation * screen.size.width, y: yOfTimeline * screen.size.height)
+                        .onTapGesture {
+                            timeline.setTargetSpan(date: eventManager.nextDate())
+                            StateBools.shared.animateSpan = true
+                        }
 
 
                 } // End of Timeline
-
-
+                
+                if !eventManager.bannerText.isEmpty {
+                    MarqueeView(message: eventManager.bannerText)
+                        .position(x: screen.size.width * 0.5, y: screen.size.height * 0.3)
+                }
+                
+                
                 AlertView(screen: screen)
 
                     
@@ -227,8 +236,8 @@ struct ContentView: View {
         // Represents one frame - changes trailingTime toward the default time.
         // Maybe I can get swift to animate this?
         
-        if abs(Timeline.defaultSpan - timeline.span) > 1 {
-            let newSpan = timeline.span + 0.02 * (Timeline.defaultSpan - timeline.span)
+        if abs(timeline.targetSpan - timeline.span) > 1 {
+            let newSpan = timeline.span + 0.02 * (timeline.targetSpan - timeline.span)
             print(newSpan)
             let newTrailingTime = timeline.leadingTime + newSpan
             timeline.trailingTime = newTrailingTime

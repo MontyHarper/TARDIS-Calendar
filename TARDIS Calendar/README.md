@@ -102,10 +102,10 @@ Following is the to-do list for planned improvements to code and features for th
     - App crashes when permission to access Calendar is switched from on to off. "Terminated due to signal 9"
 - UI Tweaks
 	- Animate expanding Event views
-	- Auto return to zoom level needs to happen when app is asleep
-	- OR by tapping the now button
+	√ Auto return to zoom level needs to happen when app is asleep
+	√ OR by tapping the now button
 	- Hide past events
-	- Add numbers for hours and minutes in the expanded view countdown.
+	√ Add numbers for hours and minutes in the expanded view countdown.
     - Make everything look good on an iPad
 - User Settings
 	- Allow user to provide their own user image.

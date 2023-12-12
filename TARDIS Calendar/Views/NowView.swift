@@ -12,7 +12,7 @@ import Foundation
 import SwiftUI
 
 struct NowView: View {
-        
+            
     var body: some View {
         
         // TODO: - this is hard-wired for now. Will need to allow user to specify an image and retrieve it here from user defaults.
@@ -30,9 +30,7 @@ struct NowView: View {
                         .offset(x: 0.0, y: 60.0)
                         .shadow(color: .black, radius: 3.0)
                 }
-    
-        }
-        
+        } // End of ZStack
     }
 }
 

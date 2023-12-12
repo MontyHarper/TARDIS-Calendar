@@ -53,6 +53,8 @@ class Timeline: ObservableObject {
         Double (Timeline.hoursOnScreen * 3600)
     }
     
+    var targetSpan = Double (Timeline.hoursOnScreen * 3600) // Target for zoom animation; will change based on time to the next event.
+    
     // Calculated values all stem from the variables now & trailing time, plus the constants set up above.
     
     // Maximum amount of time that can be depicted on screen in seconds.
@@ -75,6 +77,10 @@ class Timeline: ObservableObject {
         let maxDate = Timeline.calendar.date(byAdding: .day, value: Timeline.maxFutureDays, to: Date())!.timeIntervalSince1970
         let minDate = Timeline.calendar.startOfDay(for: Date(timeIntervalSince1970: now - Timeline.nowLocation * (maxDate - now)/(1.0 - Timeline.nowLocation)))
         return Timeline.calendar.date(byAdding: .day, value: -1, to: minDate)!
+    }
+    
+    static var today: Date {
+        Timeline.calendar.startOfDay(for: Date())
     }
     
     public var leadingTime: Double {
@@ -150,4 +156,32 @@ class Timeline: ObservableObject {
         trailingTime += 1.0
     }
     
+
+    func resetZoom() {
+        trailingTime = Date().timeIntervalSince1970 + Timeline.defaultSpan // default trailingTime
+    }
+    
+    // This calculation takes a date and returns the span required to place that date onscreen at 0.8 on the unit scale. This assumes 0.2 is where Now is located. If I want to make this responsive to a change in the now location, I will need to refactor to take that into account.
+    // This is used in setting the target of an auto zoom initiated by tapping the Now icon. The zoom will place the next event at 0.8 on the screen so it can easily be seen.
+    func setTargetSpan(date: Date?) {
+        if let date = date {
+            let next = unitX(fromTime: date.timeIntervalSince1970)
+            // transform takes .2 (now) to .2, and .8 to next; will take 0 to new leading edge, and 1 to new trailing, to calculate the new span.
+            let transform: (Double) -> Double = {x in
+                (x * (next - 0.2) - 0.2 * next + 0.16) / 0.6
+            }
+            let targetTrailingUnit = transform(1.0)
+            let targetLeadingUnit = transform(0.0)
+            targetSpan = timeX(fromUnit: targetTrailingUnit) - timeX(fromUnit: targetLeadingUnit) // new target span is in time space.
+            // Limit targetSpan to lie between minSpan and maxSpan
+            if targetSpan < Timeline.minSpan {
+                targetSpan = Timeline.minSpan
+            }
+            if targetSpan > maxSpan {
+                targetSpan = maxSpan
+            }
+        } else {
+            targetSpan = Timeline.defaultSpan
+        }
+    }
 }

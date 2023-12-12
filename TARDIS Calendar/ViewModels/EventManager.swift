@@ -18,11 +18,14 @@ class EventManager: ObservableObject {
     var eventStore = EKEventStore()
     
     @Published var events = [Event]() // Upcoming events for the maximum number of days displayed.
+    @Published var bannerText = ""
     @Published var isExpanded = [Bool]() // For each event, should the view be rendered as expanded? This is the source of truth for expansion of event views.
     @Published var calendarSet = CalendarSet() // Tracks which of Apple's Calendar App calendars we're drawing events from.
     
     // newEvents temporarily stores newly downloaded events so that events can be replaced with newEvents on the main thread.
     private var newEvents = [Event]()
+    private var newBanners = [Event]()
+    private var banners = [Event]()
     
     init() {
         // This notification will update the calendars and events lists any time an event or calendar is changed in the user's Apple Calendar App.
@@ -85,10 +88,18 @@ class EventManager: ObservableObject {
         // Save which dates are shown in expanded view.
         let expandedDates = Set(isExpanded.indices.filter({isExpanded[$0]}).map({events[$0].startDate}))
         
-        // Store the search results, converting EKEvents to Events, replacing current events.
+        // Store the search results, converting EKEvents to Events.
         newEvents = eventStore.events(matching: findEKEvents).map({ekevent in
             Event(event: ekevent, type: calendarSet.userCalendars[ekevent.calendar.title] ?? "none")
         })
+        
+        // Split newEvents into newEvents and banners.
+        newBanners = newEvents.filter {
+            $0.type == "banner"
+        }
+        newEvents = newEvents.filter {
+            $0.type != "banner"
+        }
         
         // events has to be updated on the main queue.
         DispatchQueue.main.async {
@@ -102,17 +113,23 @@ class EventManager: ObservableObject {
         if calendarSet.calendarsToSearch.count > 0 {
             
             events = newEvents
+            banners = newBanners
+            bannerText = makeBannerText()
             StateBools.shared.noCalendarsSelected = false
             
         } else {
             // No calendars have been selected. This means we had an empty search predicate, which returned events from all calendars. We don't want the user to see unrelated events from the Caregiver's personal calendars! So this will not be allowed; calendars must be selected before any events are shown.
             events = []
+            banners = []
+            bannerText = ""
             StateBools.shared.noCalendarsSelected = true
         }
         
+        print("banner text: ", bannerText)
+        
         // Filter the results to remove lower priority events scheduled at the same time as higher priority events...
         // TODO: - Test this!
-            self.events = self.events.filter({event in
+        self.events = self.events.filter({event in
             let sameDate = self.events.filter({$0.startDate == event.startDate})
             return event == sameDate.max()
         })
@@ -129,6 +146,28 @@ class EventManager: ObservableObject {
         }
     }
     
+    // Expands next eventView & returns the start date of the next event after now
+    // Might want to separate these functionalities? But for now they are always needed together.
+    func nextDate() -> Date? {
+        for index in events.indices {
+            if events[index].startDate.timeIntervalSince1970 > Timeline.shared.now {
+                isExpanded[index] = true
+                return events[index].startDate
+            }
+        }
+        return nil
+    }
+    
+    // Generate string from all banner messages
+    func makeBannerText() -> String {
+        var bannerText = ""
+        for banner in banners {
+            if banner.startDate < Date() && banner.endDate > Date() {
+                bannerText += banner.title + "  ★  "
+            }
+        }
+        return bannerText
+    }
 }
 
 // Event is a wrapper for EKEvent, Event Kit's raw event Type.
@@ -192,4 +231,5 @@ class Event: Identifiable, Comparable {
     static func == (lhs: Event, rhs: Event) -> Bool {
         lhs.startDate == rhs.startDate && lhs.priority == rhs.priority
     }
+
 }
