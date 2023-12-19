@@ -37,6 +37,7 @@ class StateBools: ObservableObject {
     // @Published var internetIsDownInfo = false // Displays information if user taps warning message.
     
     var locationChangeAwaitingUpdate = false
+    var marqueeNotShowing = true
     var missingSolarDays = 0 { // Keeps count of how many times SolarDays cannot be downloaded;
         didSet {
             UserDefaults.standard.set(missingSolarDays, forKey: "missingSolarDays")

@@ -18,6 +18,7 @@ struct ContentView: View {
     @StateObject private var solarEventManager = SolarEventManager()
     @StateObject private var stateBools = StateBools.shared
     
+    
     // State variables
     @State private var inactivityTimer: Timer?
     @State private var currentDay = Timeline.calendar.dateComponents([.day], from: Date())
@@ -39,8 +40,9 @@ struct ContentView: View {
     
     var body: some View {
         
+        
         GeometryReader { screen in
-
+            
             // Custom Zoom gesture attaches to the background and event views.
             // Needs to live here inside the geometry reader.
             let oneFingerZoom = DragGesture()
@@ -61,11 +63,11 @@ struct ContentView: View {
                     }
                     // This call changes the trailing time in our timeline, if we haven't gone beyond the boundaries.
                     timeline.newTrailingTime(start: start, end: end)
-
+                    
                     // This indicates user interaction, so reset the inactivity timer.
                     stateBools.animateSpan = false
                     inactivityTimer?.invalidate()
-
+                    
                 } .onEnded { _ in
                     // When the drag ends, reset the starting value to zero to indicate no drag is happening at the moment.
                     ContentView.dragStart = 0.0
@@ -75,11 +77,10 @@ struct ContentView: View {
                         stateBools.animateSpan = false // Turning this off for now to see how we like the app without this feature.
                     })
                 }
-
-
-                // Main ZStack layers background behind all else
+            
+            // Main ZStack layers background behind all else
             ZStack {
-
+                
                 // Background shows time of day by color
                 BackgroundView(timeline: timeline, solarEventManager: solarEventManager)
                     .zIndex(-100)
@@ -111,31 +112,31 @@ struct ContentView: View {
                                 eventManager.updateEvents()
                             }
                     }
-
-
+                
+                
                 // View on top of background is arranged into three groups; label bar, timeline for events, and banner messages. Grouping is just conceptual, and needed because the are more than ten items in this ZStack. Individual elements are placed exactly.
-
-
+                
+                
                 Group { // Label Bar
-
+                    
                     // Current Date
                     CurrentDateAndTimeView()
                         .position(x: 0.2 * screen.size.width, y: yOfInfoBox * screen.size.height)
-
+                    
                     // TimeTick Markers
                     ForEach(
                         TimeTick.array(timeline: timeline), id: \.self.xLocation) {tick in
                             TimeTickMarkerView(timeTick: tick)
                                 .position(x: screen.size.width * tick.xLocation, y: yOfLabelBar * screen.size.height)
                         }
-
-
+                    
+                    
                     // Label bar background
                     Color(.white)
                         .frame(width: screen.size.width, height: 0.065 * screen.size.height)
                         .position(x: 0.5 * screen.size.width, y: yOfLabelBar * screen.size.height)
-
-
+                    
+                    
                     // TimeTick Labels
                     HorizontalLayoutNoOverlap{
                         ForEach(
@@ -145,12 +146,12 @@ struct ContentView: View {
                             }
                     }
                     .position(x: screen.size.width * 0.5, y: yOfLabelBar * screen.size.height)
-
+                    
                 } // End of Label Bar
-
-
+                
+                
                 Group {// Timeline
-
+                    
                     // Background is a horizontal arrow across the screen
                     Color(.black)
                         .shadow(color: .white, radius: 3)
@@ -159,18 +160,18 @@ struct ContentView: View {
                         .zIndex(-90)
                     ArrowView(size: 0.0)
                         .position(x: screen.size.width, y: yOfTimeline * screen.size.height)
-
-
+                    
+                    
                     // Circles representing events along the time line
-
+                    
                     ForEach(eventManager.events.indices.sorted(by: {$0 > $1}), id: \.self) { index in
                         EventView(event: eventManager.events[index], isExpanded: $eventManager.isExpanded[index], shrinkFactor: shrinkFactor(), screenWidth: screen.size.width)
                             .position(x: timeline.unitX(fromTime: eventManager.events[index].startDate.timeIntervalSince1970) * screen.size.width, y: yOfTimeline * screen.size.height)
                     }
                     .gesture(oneFingerZoom)
-
-
-
+                    
+                    
+                    
                     // Circle representing current time.
                     NowView()
                         .position(x: Timeline.nowLocation * screen.size.width, y: yOfTimeline * screen.size.height)
@@ -178,55 +179,64 @@ struct ContentView: View {
                             timeline.setTargetSpan(date: eventManager.nextDate())
                             StateBools.shared.animateSpan = true
                         }
-
-
+                    
+                    
                 } // End of Timeline
                 
-                if !eventManager.bannerText.isEmpty {
-                    MarqueeView(message: eventManager.bannerText)
-                        .position(x: screen.size.width * 0.5, y: screen.size.height * 0.3)
-                }
-                
+                // Marquee showing banner messages
+                // Do not render unless the needed data is available (It takes time to initialize the banner text).
                 
                 AlertView(screen: screen)
-
+                
+                if eventManager.marquee != nil {
+                    MarqueeView(controller: eventManager.marquee)
+                        .position(x: screen.size.width * 0.5, y: screen.size.height * 0.3)
+                        .opacity(0.65)
+                }
                     
-
+                
+                
             } // End of main ZStack
-
-
+            .statusBarHidden(true)
+            .environmentObject(timeline)
+            
             // Update timer fires once per second.
-                .onReceive(updateTimer) { time in
-
-                    // Advance the timeline
-                    timeline.updateNow()
-                    print(timeline.now)
-
-                    // Check for new day; update calendar and solar events once per day.
-                    let today = Timeline.calendar.dateComponents([.day], from: Date())
-                    if today != currentDay {
-                        print("called update calendars from new day in contentview")
-                        eventManager.updateCalendarsAndEvents()
-                        solarEventManager.updateSolarDays(){_ in}
-                        currentDay = today
+            .onReceive(updateTimer) { time in
+                
+                // Advance the timeline
+                timeline.updateNow()
+                print(timeline.now)
+                
+                // Check for new day; update calendar and solar events once per day.
+                let today = Timeline.calendar.dateComponents([.day], from: Date())
+                if today != currentDay {
+                    print("called update calendars from new day in contentview")
+                    eventManager.updateCalendarsAndEvents()
+                    solarEventManager.updateSolarDays(){_ in}
+                    currentDay = today
+                }
+                
+                if let marquee = eventManager.marquee {
+                    if Date() > marquee.refreshDate {
+                        eventManager.makeBanners()
                     }
-
                 }
-
+                
+            }
+            
             // Animating zoom's return to default by hand
-                .onReceive(spanTimer) { time in
-                    if stateBools.animateSpan {changeSpan()}
-                }
-
+            .onReceive(spanTimer) { time in
+                if stateBools.animateSpan {changeSpan()}
+            }
+            
             // Tapping outside an event view closes all expanded views
-                .onTapGesture {
-                    eventManager.closeAll()
-                }
+            .onTapGesture {
+                eventManager.closeAll()
+            }
 
         } // End of Geometry Reader
         .ignoresSafeArea()
-        .environmentObject(timeline)
-        
+
     } // End of ContentView
     
     

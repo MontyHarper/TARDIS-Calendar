@@ -18,14 +18,17 @@ class EventManager: ObservableObject {
     var eventStore = EKEventStore()
     
     @Published var events = [Event]() // Upcoming events for the maximum number of days displayed.
-    @Published var bannerText = ""
     @Published var isExpanded = [Bool]() // For each event, should the view be rendered as expanded? This is the source of truth for expansion of event views.
     @Published var calendarSet = CalendarSet() // Tracks which of Apple's Calendar App calendars we're drawing events from.
     
+    @Published var marquee: MarqueeController? // Messages that scroll
+    
     // newEvents temporarily stores newly downloaded events so that events can be replaced with newEvents on the main thread.
     private var newEvents = [Event]()
-    private var newBanners = [Event]()
+    
+    // vars needed to calculate banner text and intervals
     private var banners = [Event]()
+    private var newBanners = [Event]()
     
     init() {
         // This notification will update the calendars and events lists any time an event or calendar is changed in the user's Apple Calendar App.
@@ -78,6 +81,7 @@ class EventManager: ObservableObject {
         
     func updateEvents() {
                 
+        print("updateEvents has been triggered")
         // Set up date parameters
         let start = Timeline.minDay
         let end = Timeline.maxDay
@@ -114,18 +118,17 @@ class EventManager: ObservableObject {
             
             events = newEvents
             banners = newBanners
-            bannerText = makeBannerText()
+            makeBanners()
             StateBools.shared.noCalendarsSelected = false
             
         } else {
             // No calendars have been selected. This means we had an empty search predicate, which returned events from all calendars. We don't want the user to see unrelated events from the Caregiver's personal calendars! So this will not be allowed; calendars must be selected before any events are shown.
             events = []
             banners = []
-            bannerText = ""
+            marquee = nil
             StateBools.shared.noCalendarsSelected = true
         }
         
-        print("banner text: ", bannerText)
         
         // Filter the results to remove lower priority events scheduled at the same time as higher priority events...
         // TODO: - Test this!
@@ -159,16 +162,27 @@ class EventManager: ObservableObject {
     }
     
     // Generate string from all banner messages
-    func makeBannerText() -> String {
+    func makeBanners() {
+        
+        // Replace banner text with new banners
         var bannerText = ""
+        var bannerRefreshDate = Timeline.maxDay
         for banner in banners {
             if banner.startDate < Date() && banner.endDate > Date() {
                 bannerText += banner.title + "  ★  "
             }
+            if banner.startDate > Date() && banner.startDate < bannerRefreshDate {
+                bannerRefreshDate = banner.startDate
+            }
+            if banner.endDate > Date() && banner.endDate < bannerRefreshDate {
+                bannerRefreshDate = banner.endDate
+            }
         }
-        return bannerText
+        print("new banner text: ", bannerText, "\nrefresh date: ", bannerRefreshDate.formatted())
+        marquee = MarqueeController(message: bannerText, refresh: bannerRefreshDate)
     }
 }
+
 
 // Event is a wrapper for EKEvent, Event Kit's raw event Type.
 // - Provides a type for each event
