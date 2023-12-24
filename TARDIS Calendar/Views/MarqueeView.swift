@@ -19,21 +19,15 @@ struct MarqueeView: View {
     var body: some View {
         
         if let controller = controller {
-            ZStack {
-  //              Color(.white)
-    //                .frame(width: 600, height: 50)
-                TimelineView(.animation) {context in
-                    Text(controller.frame(context.date).text)
-                        .padding()
-                        .lineLimit(1)
-                        .font(Font(controller.marqueeFont))
-                        .foregroundColor(.primary)
-                        .offset(x: controller.frame(context.date).offset, y: 0.0)
-                        .background(.white)
-                        .fixedSize(horizontal: true, vertical: false)
-   //                     .frame(width: 600, alignment: .leading)
-                        .clipped()
-                }
+            TimelineView(.animation) {context in
+                Text(controller.frame(context.date).text)
+                    .padding()
+                    .lineLimit(1)
+                    .font(Font(controller.marqueeFont))
+                    .foregroundColor(.primary)
+                    .offset(x: controller.frame(context.date).offset, y: 0.0)
+                    .background(.white)
+                    .fixedSize(horizontal: true, vertical: false)
             }
         } else {
             Text("There is nothing to display yet...")
@@ -50,11 +44,11 @@ class MarqueeController {
     var timeMarkers = [TimeInterval]()
     var startTime = 0.0
     var runningTime = 0.0
-    let speed = 90.0 // points/second
+    let speed = 50.0 // points/second
     let marqueeFont = UIFont.systemFont(ofSize: 24, weight: .black) // Using a UIFont because the width can be measured.
     
     init(message: String, refresh: Date) {
-        self.message = message
+        self.message = (message == "") ? "No Text Available" : message
         self.refreshDate = refresh
         var text = message
         for _ in 0..<message.count {

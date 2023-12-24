@@ -17,6 +17,7 @@ import SwiftUI
 // The Tick Marker is just a triangle marking the spot.
 struct TimeTickMarkerView: View, Identifiable {
     
+    @EnvironmentObject var size: Dimensions
     var id = UUID()
     var timeTick: TimeTick
     var xLocation: Double {
@@ -32,9 +33,11 @@ struct TimeTickMarkerView: View, Identifiable {
                     Text("▼")
                         .foregroundColor(.white)
                         .opacity(1.0)
-                        .offset(y: 15.5))
+                        .offset(y: size.lineHeight * 0.85))
         }
-        .background(.white)
+        .font(.system(size: size.fontSizeMedium, weight: xLocation == Timeline.nowLocation ? .black : .none))
+
+    //    .background(.white)
     }
 }
 
@@ -42,6 +45,7 @@ struct TimeTickMarkerView: View, Identifiable {
 // Labels have markers that should mask the unlabeled mark underneath.
 struct TimeTickLabelView: View, Identifiable {
     
+    @EnvironmentObject var size: Dimensions
     var id = UUID()
     var timeTick: TimeTick
     var xLocation: Double {
@@ -58,10 +62,10 @@ struct TimeTickLabelView: View, Identifiable {
                     Text("▼")
                         .opacity(0.75)
                         .foregroundColor(.blue)
-                        .offset(y:15.5))
+                        .offset(y: size.lineHeight * 0.85))
         }
-        .fontWeight(xLocation == Timeline.nowLocation ? .black : .none)
-        .background(.white)
+        .font(.system(size: size.fontSizeMedium, weight: xLocation == Timeline.nowLocation ? .black : .none))
+     //   .background(.white)
     }
     
 }

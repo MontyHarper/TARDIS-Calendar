@@ -23,6 +23,9 @@ class EventManager: ObservableObject {
     
     @Published var marquee: MarqueeController? // Messages that scroll
     
+    @Published var buttons = [ButtonModel]()
+    var buttonsExpire: Date = Timeline.maxDay
+    
     // newEvents temporarily stores newly downloaded events so that events can be replaced with newEvents on the main thread.
     private var newEvents = [Event]()
     
@@ -45,7 +48,7 @@ class EventManager: ObservableObject {
 #if swift(>=5.9)
             if #available(iOS 17.0, *) {
                 eventStore.requestFullAccessToEvents { _, _ in }
-                    
+                
             } else {
                 // Ask permission the old way if not
                 eventStore.requestAccess(to: EKEntityType.event) { _, _ in }
@@ -78,9 +81,9 @@ class EventManager: ObservableObject {
             }
         }
     }
-        
+    
     func updateEvents() {
-                
+        
         print("updateEvents has been triggered")
         // Set up date parameters
         let start = Timeline.minDay
@@ -109,7 +112,7 @@ class EventManager: ObservableObject {
         DispatchQueue.main.async {
             self.updateEventsCompletion(expandedDates)
         }
-                
+        
     } // End of updateEvents
     
     func updateEventsCompletion(_ expandedDates: Set<Date>) {
@@ -119,12 +122,14 @@ class EventManager: ObservableObject {
             events = newEvents
             banners = newBanners
             makeBanners()
+            makeButtons()
             StateBools.shared.noCalendarsSelected = false
             
         } else {
             // No calendars have been selected. This means we had an empty search predicate, which returned events from all calendars. We don't want the user to see unrelated events from the Caregiver's personal calendars! So this will not be allowed; calendars must be selected before any events are shown.
             events = []
             banners = []
+            buttons = []
             marquee = nil
             StateBools.shared.noCalendarsSelected = true
         }
@@ -138,7 +143,7 @@ class EventManager: ObservableObject {
         })
         
         // Restore dates that are expanded.
-            self.isExpanded = self.events.indices.map({expandedDates.contains(self.events[$0].startDate)})
+        self.isExpanded = self.events.indices.map({expandedDates.contains(self.events[$0].startDate)})
     }
     
     // Called when user taps the background; closes any expanded views.
@@ -179,7 +184,39 @@ class EventManager: ObservableObject {
             }
         }
         print("new banner text: ", bannerText, "\nrefresh date: ", bannerRefreshDate.formatted())
-        marquee = MarqueeController(message: bannerText, refresh: bannerRefreshDate)
+        if bannerText != "" {
+            marquee = MarqueeController(message: bannerText, refresh: bannerRefreshDate)
+        }
+    }
+    
+    func makeButtons() {
+    
+        print("make buttons is called")
+        print("listing events")
+        for event in events {
+            print("\(event.title) - \(event.type) -  \(event.startDate.formatted())")
+        }
+        buttons = []
+        buttonsExpire = Timeline.maxDay
+        
+        for type in CalendarType.allCases {
+            
+            switch type {
+            case .banner, .none:
+                print("no button for type: ", type)
+                
+            default:
+                if let event = events.first(where: {$0.type == type.rawValue && $0.startDate > Date()}) {
+                    let button = ButtonModel(type: type, nextEvent: event)
+                    print("button for event: ", event.startDate, " for type: ", type)
+                    buttons.append(button)
+                }
+                if let lastEvent = events.last(where: {$0.type == type.rawValue && $0.startDate > Date()}) {
+                    buttonsExpire = (lastEvent.startDate < buttonsExpire) ? lastEvent.startDate : buttonsExpire
+                }
+                print("expires: ", buttonsExpire)
+            }
+        }
     }
 }
 

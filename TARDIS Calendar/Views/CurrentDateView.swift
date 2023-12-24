@@ -12,13 +12,13 @@
 import Foundation
 import SwiftUI
 
-struct CurrentDateAndTimeView: View {
+struct CurrentDateView: View {
     
     @EnvironmentObject var timeline: Timeline
     
     var formatter:DateFormatter {
         let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE, MMMM d"
+        formatter.dateFormat = "EEEE, MMMM d, yyyy"
         return formatter
     }
     

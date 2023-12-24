@@ -18,14 +18,13 @@ struct ContentView: View {
     @StateObject private var solarEventManager = SolarEventManager()
     @StateObject private var stateBools = StateBools.shared
     
-    
     // State variables
     @State private var inactivityTimer: Timer?
     @State private var currentDay = Timeline.calendar.dateComponents([.day], from: Date())
     
     // Constants that configure the UI. To mess with the look of the calendar, mess with these.
-    let yOfLabelBar = 0.17 // y position of date label bar in unit space
-    let yOfTimeline = 0.6
+    let yOfLabelBar = 0.1 // y position of date label bar in unit space
+    let yOfTimeline = 0.45
     let yOfInfoBox = 0.1
     
     // Timers driving change in the UI
@@ -39,7 +38,6 @@ struct ContentView: View {
     
     
     var body: some View {
-        
         
         GeometryReader { screen in
             
@@ -86,8 +84,9 @@ struct ContentView: View {
                     .zIndex(-100)
                 // Zoom in and out by changing trailingTime
                     .gesture(oneFingerZoom)
-                // Show progress view while background loads.
+
                 
+                // Show progress view while background loads.
                 if stateBools.showProgressView {
                     ProgressView()
                         .position(x: screen.size.width * 0.5, y: screen.size.height * 0.5)
@@ -114,40 +113,12 @@ struct ContentView: View {
                     }
                 
                 
-                // View on top of background is arranged into three groups; label bar, timeline for events, and banner messages. Grouping is just conceptual, and needed because the are more than ten items in this ZStack. Individual elements are placed exactly.
+                // View on top of background is arranged into three groups; Header, which include current date, marquee, and time ticks, timeline for events, and "next" buttons. Grouping is just conceptual, and needed because there are more than ten items in this ZStack. Individual elements are placed exactly.
                 
                 
-                Group { // Label Bar
-                    
-                    // Current Date
-                    CurrentDateAndTimeView()
-                        .position(x: 0.2 * screen.size.width, y: yOfInfoBox * screen.size.height)
-                    
-                    // TimeTick Markers
-                    ForEach(
-                        TimeTick.array(timeline: timeline), id: \.self.xLocation) {tick in
-                            TimeTickMarkerView(timeTick: tick)
-                                .position(x: screen.size.width * tick.xLocation, y: yOfLabelBar * screen.size.height)
-                        }
-                    
-                    
-                    // Label bar background
-                    Color(.white)
-                        .frame(width: screen.size.width, height: 0.065 * screen.size.height)
-                        .position(x: 0.5 * screen.size.width, y: yOfLabelBar * screen.size.height)
-                    
-                    
-                    // TimeTick Labels
-                    HorizontalLayoutNoOverlap{
-                        ForEach(
-                            TimeTick.array(timeline: timeline), id: \.self.xLocation) {tick in
-                                TimeTickLabelView(timeTick: tick)
-                                    .xPosition(tick.xLocation)
-                            }
-                    }
-                    .position(x: screen.size.width * 0.5, y: yOfLabelBar * screen.size.height)
-                    
-                } // End of Label Bar
+                // headerView combines current date, marquee with scrolling messages, and time tick markers.
+                HeaderView(size: Dimensions(screen.size), eventManager: eventManager)
+                    .position(x: screen.size.width * 0.5, y: screen.size.height * yOfLabelBar)
                 
                 
                 Group {// Timeline
@@ -183,16 +154,12 @@ struct ContentView: View {
                     
                 } // End of Timeline
                 
-                // Marquee showing banner messages
-                // Do not render unless the needed data is available (It takes time to initialize the banner text).
+                if eventManager.buttons.count > 0 && !stateBools.showWarning {
+                    ButtonBar(size: Dimensions(screen.size), buttons: eventManager.buttons)
+                        .position(x: screen.size.width * 0.5, y: screen.size.height * 0.85)
+                }
                 
                 AlertView(screen: screen)
-                
-                if eventManager.marquee != nil {
-                    MarqueeView(controller: eventManager.marquee)
-                        .position(x: screen.size.width * 0.5, y: screen.size.height * 0.3)
-                        .opacity(0.65)
-                }
                     
                 
                 
@@ -216,10 +183,16 @@ struct ContentView: View {
                     currentDay = today
                 }
                 
+                // Update marquee and/or next buttons if either has expired.
+                
                 if let marquee = eventManager.marquee {
                     if Date() > marquee.refreshDate {
                         eventManager.makeBanners()
                     }
+                }
+                
+                if eventManager.buttonsExpire < Date() {
+                    eventManager.makeButtons()
                 }
                 
             }
@@ -236,6 +209,7 @@ struct ContentView: View {
 
         } // End of Geometry Reader
         .ignoresSafeArea()
+
 
     } // End of ContentView
     
