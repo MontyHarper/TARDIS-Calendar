@@ -11,11 +11,27 @@ struct HeaderView: View {
     
     var size: Dimensions
     @StateObject var eventManager: EventManager
+    @EnvironmentObject var timeline: Timeline
     
     var dateText: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE MMMM d, yyyy"
-        return formatter.string(from: Date())
+        return formatter.string(from: Date(timeIntervalSince1970: timeline.now))
+    }
+    var timeOfDayText: String {
+        let hour = Timeline.calendar.component(.hour, from: Date(timeIntervalSince1970: timeline.now))
+        switch hour {
+        case 1...5:
+            return "Sleep Tight"
+        case 6...11:
+            return "Good Morning"
+        case 12...16:
+            return "Good Afternoon"
+        case 17...20:
+            return "Good Evening"
+        default:
+            return "Night, Night"
+        }
     }
     var dateFont: UIFont {
         UIFont.systemFont(ofSize: size.fontSizeMedium, weight: .black)
@@ -30,10 +46,10 @@ struct HeaderView: View {
             
             // Row 1
             HStack {
-                Text("Today is...")
+                Text("\(timeOfDayText)!")
                     .fontWeight(.bold)
                     .shadow(color: .white, radius: 10.0)
-                Spacer()
+                    .font(.system(size: size.fontSizeMedium, weight: .bold))
             }
             .padding(.leading)
             
