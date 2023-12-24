@@ -12,7 +12,13 @@ import Foundation
 import SwiftUI
 
 struct NowView: View {
-            
+         
+    @EnvironmentObject var timeline: Timeline
+    var size: Dimensions
+    var timeText: String {
+        Date(timeIntervalSince1970: timeline.now).formatted(date: .omitted, time: .shortened)
+    }
+    
     var body: some View {
         
         // TODO: - this is hard-wired for now. Will need to allow user to specify an image and retrieve it here from user defaults.
@@ -21,14 +27,22 @@ struct NowView: View {
         
         ZStack {
             
-            ArrowView(size: 100.0)
+            ArrowView(size: size.mediumEvent)
                 .zIndex(-90)
-            Circle().frame(width: 100, height: 100).foregroundColor(.yellow).shadow(color: .white, radius: 20)
-            image.resizable().aspectRatio(contentMode:.fit).frame(width:90, height:90, alignment:.center).clipShape(Circle())
+            Circle()
+                .frame(width: size.mediumEvent, height: size.mediumEvent).foregroundColor(.yellow)
+                .shadow(color: .white, radius: size.mediumEvent * 0.1)
+            image
+                .resizable()
+                .aspectRatio(contentMode:.fit)
+                .frame(width:size.mediumEvent * 0.9, height: size.mediumEvent * 0.9, alignment:.center)
+                .clipShape(Circle())
                 .overlay{
-                    Text("Now")
-                        .offset(x: 0.0, y: 60.0)
-                        .shadow(color: .black, radius: 3.0)
+                    Text(timeText)
+                        .lineLimit(1)
+                        .font(.system(size: size.fontSizeMedium, weight: .black))
+                        .offset(x: 0.0, y: size.mediumEvent * 0.62)
+                        .shadow(color: .white, radius:  size.mediumEvent * 0.1)
                 }
         } // End of ZStack
     }

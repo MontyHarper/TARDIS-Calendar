@@ -144,7 +144,7 @@ struct ContentView: View {
                     
                     
                     // Circle representing current time.
-                    NowView()
+                    NowView(size: Dimensions(screen.size))
                         .position(x: Timeline.nowLocation * screen.size.width, y: yOfTimeline * screen.size.height)
                         .onTapGesture {
                             timeline.setTargetSpan(date: eventManager.nextDate())

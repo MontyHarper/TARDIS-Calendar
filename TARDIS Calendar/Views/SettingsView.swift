@@ -104,7 +104,7 @@ struct SettingsView: View {
             
             VStack {
                 Text("Current Now Icon")
-                NowView()
+                // NowView() - need to pass in size
             }
             
             Spacer()
