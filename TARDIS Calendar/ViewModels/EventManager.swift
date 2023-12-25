@@ -117,6 +117,8 @@ class EventManager: ObservableObject {
     
     func updateEventsCompletion(_ expandedDates: Set<Date>) {
         
+        marquee = nil
+
         if calendarSet.calendarsToSearch.count > 0 {
             
             events = newEvents
@@ -130,7 +132,6 @@ class EventManager: ObservableObject {
             events = []
             banners = []
             buttons = []
-            marquee = nil
             StateBools.shared.noCalendarsSelected = true
         }
         
@@ -165,6 +166,12 @@ class EventManager: ObservableObject {
         }
         return nil
     }
+
+    func expandEvent(event: Event) {
+        if let index = events.indices.first(where: {events[$0] == event}) {
+            isExpanded[index] = true
+        }
+    }
     
     // Generate string from all banner messages
     func makeBanners() {
@@ -184,9 +191,11 @@ class EventManager: ObservableObject {
             }
         }
         print("new banner text: ", bannerText, "\nrefresh date: ", bannerRefreshDate.formatted())
+        
         if bannerText != "" {
-            marquee = MarqueeController(message: bannerText, refresh: bannerRefreshDate)
+            marquee = MarqueeController(message: bannerText, refresh: bannerRefreshDate, fontSize: 24 )
         }
+        
     }
     
     func makeButtons() {

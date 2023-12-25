@@ -10,15 +10,12 @@ import SwiftUI
 
 struct MarqueeView: View {
 
-    var controller: MarqueeController?
-
-    init(controller: MarqueeController?) {
-        self.controller = controller
-    }
+    @EnvironmentObject var eventManager: EventManager
+    @EnvironmentObject var size: Dimensions
 
     var body: some View {
         
-        if let controller = controller {
+        if let controller = eventManager.marquee {
             TimelineView(.animation) {context in
                 Text(controller.frame(context.date).text)
                     .padding()
@@ -45,12 +42,14 @@ class MarqueeController {
     var startTime = 0.0
     var runningTime = 0.0
     let speed = 50.0 // points/second
-    let marqueeFont = UIFont.systemFont(ofSize: 24, weight: .black) // Using a UIFont because the width can be measured.
+    let marqueeFont: UIFont // Using a UIFont because the width can be measured.
     
-    init(message: String, refresh: Date) {
+    init(message: String, refresh: Date, fontSize: Double) {
+        print("making a new controller: ", message)
         self.message = (message == "") ? "No Text Available" : message
         self.refreshDate = refresh
         var text = message
+        marqueeFont = UIFont.systemFont(ofSize: fontSize, weight: .black)
         for _ in 0..<message.count {
             let first = String(text.removeFirst())
             let width = first.size(withAttributes: [.font: marqueeFont]).width

@@ -24,7 +24,7 @@ struct ContentView: View {
     
     // Constants that configure the UI. To mess with the look of the calendar, mess with these.
     let yOfLabelBar = 0.1 // y position of date label bar in unit space
-    let yOfTimeline = 0.45
+    let yOfTimeline = 0.5
     let yOfInfoBox = 0.1
     
     // Timers driving change in the UI
@@ -117,7 +117,7 @@ struct ContentView: View {
                 
                 
                 // headerView combines current date, marquee with scrolling messages, and time tick markers.
-                HeaderView(size: Dimensions(screen.size), eventManager: eventManager)
+                HeaderView(size: Dimensions(screen.size))
                     .position(x: screen.size.width * 0.5, y: screen.size.height * yOfLabelBar)
                 
                 
@@ -144,20 +144,21 @@ struct ContentView: View {
                     
                     
                     // Circle representing current time.
-                    NowView(size: Dimensions(screen.size))
+                    NowView()
                         .position(x: Timeline.nowLocation * screen.size.width, y: yOfTimeline * screen.size.height)
                         .onTapGesture {
                             timeline.setTargetSpan(date: eventManager.nextDate())
                             StateBools.shared.animateSpan = true
                         }
                     
-                    
                 } // End of Timeline
+                .environmentObject(Dimensions(screen.size))
                 
                 if eventManager.buttons.count > 0 && !stateBools.showWarning {
-                    ButtonBar(size: Dimensions(screen.size), buttons: eventManager.buttons)
+                    ButtonBar(size: Dimensions(screen.size))
                         .position(x: screen.size.width * 0.5, y: screen.size.height * 0.85)
                 }
+
                 
                 AlertView(screen: screen)
                     
@@ -166,6 +167,7 @@ struct ContentView: View {
             } // End of main ZStack
             .statusBarHidden(true)
             .environmentObject(timeline)
+            .environmentObject(eventManager)
             
             // Update timer fires once per second.
             .onReceive(updateTimer) { time in

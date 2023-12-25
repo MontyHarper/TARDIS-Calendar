@@ -10,7 +10,7 @@ import SwiftUI
 struct HeaderView: View {
     
     var size: Dimensions
-    @StateObject var eventManager: EventManager
+    @EnvironmentObject var eventManager: EventManager
     @EnvironmentObject var timeline: Timeline
     
     var dateText: String {
@@ -45,14 +45,13 @@ struct HeaderView: View {
         VStack {
             
             // Row 1
-            HStack {
-                Text("\(timeOfDayText)!")
+                Text(" \(timeOfDayText)! ")
                     .fontWeight(.bold)
-                    .shadow(color: .white, radius: 10.0)
                     .font(.system(size: size.fontSizeMedium, weight: .bold))
-            }
-            .padding(.leading)
-            
+                    .background(.white)
+                    .clipShape(RoundedRectangle(cornerSize: CGSize(width: 10, height: 5)))
+                    .frame(height: size.fontSizeMedium * 1.5, alignment: .bottom)
+
               
                 VStack {
                     
@@ -74,7 +73,7 @@ struct HeaderView: View {
                         Spacer()
                         
                         if eventManager.marquee != nil {
-                            MarqueeView(controller: eventManager.marquee)
+                            MarqueeView()
                                 .frame(width: 0.9 * (size.width - dateWidth), height: size.lineHeight)
                                 .clipShape(RoundedRectangle(cornerSize: CGSize(width: 10, height: 5)))
                         } else {

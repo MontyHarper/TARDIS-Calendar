@@ -88,5 +88,6 @@ class CalendarSet: ObservableObject {
             }
         }
         UserDefaults.standard.set(myDictionary, forKey: "calendars")
+        userCalendars = myDictionary
     }
 }

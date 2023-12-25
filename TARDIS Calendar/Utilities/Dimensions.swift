@@ -36,7 +36,7 @@ class Dimensions: ObservableObject {
         height / 22.0
     }
     var largeEvent: Double {
-        height * 0.25
+        height * 0.5
     }
     var mediumEvent: Double {
         height * 0.20

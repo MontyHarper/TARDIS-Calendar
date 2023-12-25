@@ -29,6 +29,7 @@ struct ButtonView: View {
     var size: Dimensions
     var button: ButtonModel
     @EnvironmentObject var timeline: Timeline
+    @EnvironmentObject var eventManager: EventManager
     
     var body: some View {
         
@@ -43,18 +44,20 @@ struct ButtonView: View {
                 .overlay {
                     Text(button.type.rawValue)
                         .font(.system(size: size.fontSizeSmall, weight: .bold))
-                        .offset(y: 0.5 * size.tinyEvent)
+                        .offset(y: 0.55 * size.tinyEvent)
                         .lineLimit(1)
                 }
                 .overlay {
                     Text("NEXT")
                         .font(.system(size: size.fontSizeSmall, weight: .bold))
-                        .offset(y: -0.5 * size.tinyEvent)
+                        .offset(y: -0.55 * size.tinyEvent)
                 }
         } // End of ZStack
         .onTapGesture {
             timeline.setTargetSpan(date: button.nextEvent.startDate)
             StateBools.shared.animateSpan = true
+            eventManager.expandEvent(event: button.nextEvent)
+            
         }
     }
 }
@@ -62,9 +65,10 @@ struct ButtonView: View {
 struct ButtonBar: View {
     
     var size: Dimensions
-    @State var buttons: [ButtonModel]
+    @EnvironmentObject var eventManager: EventManager
     
     var body: some View {
+        
         
         HStack {
             
@@ -72,12 +76,12 @@ struct ButtonBar: View {
             
             ZStack {
                 Color(.white)
-                    .frame(width: size.tinyEvent * Double(buttons.count) * 1.20, height: size.tinyEvent * 1.4)
+                    .frame(width: size.tinyEvent * Double(eventManager.buttons.count) * 1.20, height: size.tinyEvent * 1.4)
                     .opacity(0.65)
                     .clipShape(RoundedRectangle(cornerRadius: 5))
                 
                 HStack {
-                    ForEach(buttons) {button in
+                    ForEach(eventManager.buttons) {button in
                         ButtonView(size: size, button: button)                }
                 }
             }

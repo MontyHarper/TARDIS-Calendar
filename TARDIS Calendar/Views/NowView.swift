@@ -14,7 +14,7 @@ import SwiftUI
 struct NowView: View {
          
     @EnvironmentObject var timeline: Timeline
-    var size: Dimensions
+    @EnvironmentObject var size: Dimensions
     var timeText: String {
         Date(timeIntervalSince1970: timeline.now).formatted(date: .omitted, time: .shortened)
     }
@@ -38,17 +38,19 @@ struct NowView: View {
                 .frame(width:size.mediumEvent * 0.9, height: size.mediumEvent * 0.9, alignment:.center)
                 .clipShape(Circle())
                 .overlay{
-                    Text(timeText)
+                    Text(" \(timeText) ")
                         .lineLimit(1)
                         .font(.system(size: size.fontSizeMedium, weight: .black))
+                        .background(.white)
+                        .clipShape(RoundedRectangle(cornerSize: CGSize(width: 10, height: 5)))
+                        .frame(height: size.fontSizeMedium * 1.5, alignment: .bottom)
                         .offset(x: 0.0, y: size.mediumEvent * 0.62)
-                        .shadow(color: .white, radius:  size.mediumEvent * 0.1)
                 }
         } // End of ZStack
     }
 }
 
-
+    
 
 
 

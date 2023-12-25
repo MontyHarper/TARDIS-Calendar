@@ -30,10 +30,8 @@ struct TimeTick {
         let trailingDate = timeline.trailingDate
         let now = Date(timeIntervalSince1970: timeline.now)
         
-        // First tick is always "Now" - formatted as the current time.
-        let formatter = DateFormatter()
-        formatter.dateFormat = "h:mm a"
-        array.append(TimeTick(date: now, xLocation: Timeline.nowLocation, label: formatter.string(from: now)))
+        // First tick is always "Now"
+        array.append(TimeTick(date: now, xLocation: Timeline.nowLocation, label: "NOW"))
         
         // Calculate the number of hours represented on screen.
         let onScreenHours = calendar.dateComponents([.hour], from: leadingDate, to: trailingDate).hour!

@@ -15,6 +15,7 @@ import EventKit
 struct EventView: View {
     
     let event: Event
+    @EnvironmentObject var size: Dimensions
     
     // TODO: - Figure out how to animate transitions from regular to expanded format and back.
     @Binding var isExpanded: Bool
@@ -22,15 +23,7 @@ struct EventView: View {
     let shrinkFactor: Double
     let screenWidth: Double
     @EnvironmentObject var timeline:Timeline
-    
-    // Adjust to change the size of an event icon (unexpanded view)
-    // All other dimensions are derived from this number.
-    // TODO: - Derive this number from the size of the screen. (screenWidth above)
-    let size: Double = 60.0
-    
-    // Adjust to change the size of an expanded view.
-    let sizeMultiplyer = 3.5
-    
+        
     // Each veiw has an arrow on the timeline; this places it correctly. Do not adjust.
     let arrowOffset: Double = -7.75
     
@@ -172,11 +165,11 @@ struct EventView: View {
         ZStack {
             Circle()
                 .foregroundColor(.yellow)
-                .frame(width: size * shrink, height: size * shrink)
+                .frame(width: size.smallEvent * shrink, height: size.smallEvent * shrink)
             icon
                 .resizable()
                 .foregroundColor(color)
-                .frame(width: size * 0.95 * shrink, height: size * 0.95 * shrink, alignment: .center)
+                .frame(width: size.smallEvent * 0.95 * shrink, height: size.smallEvent * 0.95 * shrink, alignment: .center)
         } // End of ZStack
         .opacity(eventIsNow ? 0.0 : 1.0)
         .onTapGesture {
@@ -191,7 +184,7 @@ struct EventView: View {
         if event.endDate > now {
             
             Group {
-                ArrowView (size: size * shrink)
+                ArrowView (size: size.smallEvent * shrink)
                     .zIndex(-6)
                 iconView
                     .zIndex((event.endDate > now) ? Double(event.priority) : Double(event.priority) - 5)
@@ -205,14 +198,14 @@ struct EventView: View {
                         Circle()
                             .foregroundColor(.yellow)
                             .opacity(0.85)
-                            .frame(width: size * sizeMultiplyer, height: size * sizeMultiplyer)
+                            .frame(width: size.largeEvent, height: size.largeEvent)
                         
                         VStack {
                             Text(event.title)
-                                .font(.headline)
+                                .font(.system(size: size.fontSizeMedium, weight: .bold))
                             if let notes = event.event.notes {
                                 Text(notes)
-                                    .font(.caption)
+                                    .font(.system(size: size.fontSizeSmall))
                             }
                             Text("at " + event.startDate.formatted(date: .omitted, time:.shortened))
                             Spacer()
@@ -225,8 +218,9 @@ struct EventView: View {
                                 Text("Done!\n")
                             }
                         }
-                        .frame(width: size * sizeMultiplyer * 0.8, height: size * sizeMultiplyer * 0.85)
-                        .multilineTextAlignment(.center) // Necessary??
+                        .frame(width: size.largeEvent * 0.75, height: size.largeEvent * 0.75)
+                        .font(.system(size: size.fontSizeSmall, weight: .bold))
+                        .multilineTextAlignment(.center) 
                         
                         
                     } // End of expanded view ZStack
