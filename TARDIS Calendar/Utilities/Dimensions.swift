@@ -47,6 +47,12 @@ class Dimensions: ObservableObject {
     var tinyEvent: Double {
         height * 0.11
     }
+    var arrowSize: Double {
+        height * 0.003
+    }
+    var timelineThickness: Double {
+        height * 0.008
+    }
     
     
 }

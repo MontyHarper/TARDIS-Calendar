@@ -16,9 +16,16 @@ struct xPositionKey: LayoutValueKey {
     static let defaultValue: CGFloat = 0.0
 }
 
+struct yPositionKey: LayoutValueKey {
+    static let defaultValue: CGFloat = 0.0
+}
+
 extension View {
     func xPosition(_ percent: CGFloat) -> some View {
         layoutValue(key: xPositionKey.self, value: percent)
+    }
+    func yPosition(_ percent: CGFloat) -> some View {
+        layoutValue(key: yPositionKey.self, value: percent)
     }
 }
 

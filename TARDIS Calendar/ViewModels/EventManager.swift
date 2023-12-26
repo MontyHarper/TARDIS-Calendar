@@ -167,7 +167,9 @@ class EventManager: ObservableObject {
         return nil
     }
 
+    // leaves only the requested event expanded
     func expandEvent(event: Event) {
+        isExpanded = isExpanded.map({_ in false})
         if let index = events.indices.first(where: {events[$0] == event}) {
             isExpanded[index] = true
         }

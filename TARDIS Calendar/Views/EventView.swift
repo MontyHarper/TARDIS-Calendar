@@ -16,6 +16,7 @@ struct EventView: View {
     
     let event: Event
     @EnvironmentObject var size: Dimensions
+    @EnvironmentObject var eventManager: EventManager
     
     // TODO: - Figure out how to animate transitions from regular to expanded format and back.
     @Binding var isExpanded: Bool
@@ -30,6 +31,15 @@ struct EventView: View {
     // Date() stores the current time when this view is created. This keeps all calculations consistant.
     // Event views are destroyed and re-created once per second.
     let now = Date()
+    
+    var atTime: String {
+        let eventDay = Timeline.calendar.component(.day, from: event.startDate)
+        let today: Bool = ( eventDay == Timeline.calendar.component(.day, from: Date()))
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEEE"
+        let dayOfWeek = formatter.string(from: event.startDate)
+        return ("at " + event.startDate.formatted(date: .omitted, time: .shortened) + (today ? " Today" : " \(dayOfWeek)"))
+    }
     
     var timeRemaining: String {
         var dayString = ""
@@ -169,11 +179,10 @@ struct EventView: View {
             icon
                 .resizable()
                 .foregroundColor(color)
-                .frame(width: size.smallEvent * 0.95 * shrink, height: size.smallEvent * 0.95 * shrink, alignment: .center)
+                .frame(width: size.smallEvent * 0.95 * shrink, height: size.smallEvent * 0.95 * shrink)
         } // End of ZStack
-        .opacity(eventIsNow ? 0.0 : 1.0)
         .onTapGesture {
-            isExpanded = true
+            eventManager.expandEvent(event: event)
         }
     } // End of iconView
     
@@ -184,10 +193,10 @@ struct EventView: View {
         if event.endDate > now {
             
             Group {
-                ArrowView (size: size.smallEvent * shrink)
-                    .zIndex(-6)
+                ArrowView (size: isExpanded ? size.largeEvent : size.smallEvent * shrink)
+                    .zIndex(isExpanded ? 0 : -6)
                 iconView
-                    .zIndex((event.endDate > now) ? Double(event.priority) : Double(event.priority) - 5)
+                    .zIndex(Double(event.priority))
                 
                 
                 // Shows expanded view if either the user taps or the event is currently happening.
@@ -196,32 +205,63 @@ struct EventView: View {
                     ZStack {
                         
                         Circle()
-                            .foregroundColor(.yellow)
-                            .opacity(0.85)
+                            .foregroundColor(eventIsNow ? .cyan : .yellow)
+                            .opacity(eventIsNow ? 1.0 : 1.0)
                             .frame(width: size.largeEvent, height: size.largeEvent)
                         
                         VStack {
+                            
                             Text(event.title)
-                                .font(.system(size: size.fontSizeMedium, weight: .bold))
+                                .font(.system(size: size.fontSizeLarge, weight: .bold))
+                                .multilineTextAlignment(.center)
                             if let notes = event.event.notes {
                                 Text(notes)
+                                    .multilineTextAlignment(.center)
                                     .font(.system(size: size.fontSizeSmall))
                             }
-                            Text("at " + event.startDate.formatted(date: .omitted, time:.shortened))
-                            Spacer()
+                            
+                            if now > event.startDate {
+                                Text("HAPPENING NOW")
+                                    .font(.system(size: size.fontSizeSmall, weight: .bold))
+                            } else if eventIsNow {
+                                Text("HAPPENING SOON")
+                                    .font(.system(size: size.fontSizeSmall, weight: .bold))
+                            } else {
+                                Text(atTime)
+                                    .font(.system(size: size.fontSizeMedium))
+                            }
+                            
+                            
+                                ZStack {
+                                    Circle()
+                                        .foregroundColor(.yellow)
+                                        .frame(width: size.tinyEvent, height: size.tinyEvent)
+                                    icon
+                                        .resizable()
+                                        .foregroundColor(color)
+                                        .frame(width: size.tinyEvent * 0.95, height: size.tinyEvent * 0.95)
+                                }
+
                             
                             if now < event.startDate {
                                 Text("Coming up in \(timeRemaining)")
-                            } else if now < event.endDate {
-                                Text("HAPPENING NOW\n")
-                            } else {
-                                Text("Done!\n")
+                                    .font(.system(size: size.fontSizeMedium))
+                                    .multilineTextAlignment(.center)
                             }
+                            
+                                
+                            if eventIsNow {
+                                Text("The time is:")
+                                    .font(.system(size: size.fontSizeSmall))
+                                Text(Date().formatted(date: .omitted, time: .shortened))
+                                    .font(.system(size: size.fontSizeLarge, weight: .black))
+                            }
+                            
                         }
-                        .frame(width: size.largeEvent * 0.75, height: size.largeEvent * 0.75)
-                        .font(.system(size: size.fontSizeSmall, weight: .bold))
-                        .multilineTextAlignment(.center) 
+                        .frame(width: size.largeEvent * 0.7, height: size.largeEvent * 0.8)
+
                         
+                          
                         
                     } // End of expanded view ZStack
                     .zIndex(Double(event.priority + 10))

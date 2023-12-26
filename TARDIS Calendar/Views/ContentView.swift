@@ -121,39 +121,12 @@ struct ContentView: View {
                     .position(x: screen.size.width * 0.5, y: screen.size.height * yOfLabelBar)
                 
                 
-                Group {// Timeline
-                    
-                    // Background is a horizontal arrow across the screen
-                    Color(.black)
-                        .shadow(color: .white, radius: 3)
-                        .frame(width: screen.size.width, height: 2)
-                        .position(x: 0.5 * screen.size.width, y: yOfTimeline * screen.size.height)
-                        .zIndex(-90)
-                    ArrowView(size: 0.0)
-                        .position(x: screen.size.width, y: yOfTimeline * screen.size.height)
-                    
-                    
-                    // Circles representing events along the time line
-                    
-                    ForEach(eventManager.events.indices.sorted(by: {$0 > $1}), id: \.self) { index in
-                        EventView(event: eventManager.events[index], isExpanded: $eventManager.isExpanded[index], shrinkFactor: shrinkFactor(), screenWidth: screen.size.width)
-                            .position(x: timeline.unitX(fromTime: eventManager.events[index].startDate.timeIntervalSince1970) * screen.size.width, y: yOfTimeline * screen.size.height)
-                    }
+                // eventTimelineView combines a horizontal timeline with views for each event and a "nowView" that marks the current moment.
+                EventTimelineView()
                     .gesture(oneFingerZoom)
-                    
-                    
-                    
-                    // Circle representing current time.
-                    NowView()
-                        .position(x: Timeline.nowLocation * screen.size.width, y: yOfTimeline * screen.size.height)
-                        .onTapGesture {
-                            timeline.setTargetSpan(date: eventManager.nextDate())
-                            StateBools.shared.animateSpan = true
-                        }
-                    
-                } // End of Timeline
-                .environmentObject(Dimensions(screen.size))
                 
+                
+                // Navigation buttons; each button represents a type of event and pulls the next event of that type onto the screen.
                 if eventManager.buttons.count > 0 && !stateBools.showWarning {
                     ButtonBar(size: Dimensions(screen.size))
                         .position(x: screen.size.width * 0.5, y: screen.size.height * 0.85)
@@ -168,6 +141,7 @@ struct ContentView: View {
             .statusBarHidden(true)
             .environmentObject(timeline)
             .environmentObject(eventManager)
+            .environmentObject(Dimensions(screen.size))
             
             // Update timer fires once per second.
             .onReceive(updateTimer) { time in
@@ -234,27 +208,7 @@ struct ContentView: View {
         
     }
     
-    // This function provides a factor by which to re-size low priority event views, shrinking them as the calendar zooms out. This allows high priority events to stand out from the crowd.
-    func shrinkFactor() -> Double {
-        
-        let x = timeline.span
-
-        // min seconds on screen to trigger shrink effect; set for 8 hours
-        let min = 8.0 * 60 * 60
-        let max = timeline.maxSpan // seconds on screen where target size is reached
-        let b = 0.35 // target size
-        
-        switch x {
-        case 0.0..<min:
-            return 1.0
-        case min..<max:
-            let result = (b - 1) * (x - min)/(max - min) + 1
-            return Double(result)
-        default:
-            return b
-        }
-        
-    }
+    
     
     
 }
