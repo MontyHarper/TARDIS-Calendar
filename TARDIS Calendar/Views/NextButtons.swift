@@ -53,7 +53,7 @@ struct ButtonView: View {
                         .offset(y: -0.55 * size.tinyEvent)
                 }
         } // End of ZStack
-        .onTapGesture {
+        .onLongPressGesture(minimumDuration: 0.05, maximumDistance: 20.0) {
             timeline.setTargetSpan(date: button.nextEvent.startDate)
             StateBools.shared.animateSpan = true
             eventManager.expandEvent(event: button.nextEvent)

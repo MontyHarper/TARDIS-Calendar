@@ -34,11 +34,14 @@ struct EventView: View {
     
     var atTime: String {
         let eventDay = Timeline.calendar.component(.day, from: event.startDate)
-        let today: Bool = ( eventDay == Timeline.calendar.component(.day, from: Date()))
+        let today = Timeline.calendar.component(.day, from: Date())
+        let eventIsToday: Bool = (eventDay == today)
+        let eventIsTomorrow: Bool = (eventDay == (today + 1))
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE"
         let dayOfWeek = formatter.string(from: event.startDate)
-        return ("at " + event.startDate.formatted(date: .omitted, time: .shortened) + (today ? " Today" : " \(dayOfWeek)"))
+        let dayText = eventIsToday ? " Today" : (eventIsTomorrow ? " Tomorrow" : " \(dayOfWeek)")
+        return ("at " + event.startDate.formatted(date: .omitted, time: .shortened) + dayText)
     }
     
     var timeRemaining: String {
@@ -181,7 +184,7 @@ struct EventView: View {
                 .foregroundColor(color)
                 .frame(width: size.smallEvent * 0.95 * shrink, height: size.smallEvent * 0.95 * shrink)
         } // End of ZStack
-        .onTapGesture {
+        .onLongPressGesture(minimumDuration: 0.05, maximumDistance: 20.0) {
             eventManager.expandEvent(event: event)
         }
     } // End of iconView
@@ -193,7 +196,7 @@ struct EventView: View {
         if event.endDate > now {
             
             Group {
-                ArrowView (size: isExpanded ? size.largeEvent : size.smallEvent * shrink)
+                ArrowView (size: (isExpanded || eventIsNow) ? size.largeEvent : size.smallEvent * shrink)
                     .zIndex(isExpanded ? 0 : -6)
                 iconView
                     .zIndex(Double(event.priority))
@@ -215,17 +218,20 @@ struct EventView: View {
                                 .font(.system(size: size.fontSizeLarge, weight: .bold))
                                 .multilineTextAlignment(.center)
                             if let notes = event.event.notes {
-                                Text(notes)
-                                    .multilineTextAlignment(.center)
-                                    .font(.system(size: size.fontSizeSmall))
+                                if !eventIsNow {
+                                    Text(notes)
+                                        .multilineTextAlignment(.center)
+                                        .font(.system(size: size.fontSizeSmall))
+                                }
                             }
                             
                             if now > event.startDate {
                                 Text("HAPPENING NOW")
                                     .font(.system(size: size.fontSizeSmall, weight: .bold))
                             } else if eventIsNow {
-                                Text("HAPPENING SOON")
-                                    .font(.system(size: size.fontSizeSmall, weight: .bold))
+                                Text("Coming up in \(timeRemaining)")
+                                    .font(.system(size: size.fontSizeMedium))
+                                    .multilineTextAlignment(.center)
                             } else {
                                 Text(atTime)
                                     .font(.system(size: size.fontSizeMedium))
@@ -243,7 +249,7 @@ struct EventView: View {
                                 }
 
                             
-                            if now < event.startDate {
+                            if now < event.startDate && !eventIsNow {
                                 Text("Coming up in \(timeRemaining)")
                                     .font(.system(size: size.fontSizeMedium))
                                     .multilineTextAlignment(.center)
@@ -265,7 +271,7 @@ struct EventView: View {
                         
                     } // End of expanded view ZStack
                     .zIndex(Double(event.priority + 10))
-                    .onTapGesture {
+                    .onLongPressGesture(minimumDuration: 0.2, maximumDistance: 20.0) {
                         isExpanded = false
                     }
                 } // End of expanded View

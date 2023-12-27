@@ -130,8 +130,10 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
         
         // set up the fetch
         let formatter = DateFormatter()
-        formatter.dateFormat = "YYYY-MM-dd"
+        formatter.dateFormat = "yyyy-MM-dd"
+        
         let formattedDate = formatter.string(from: date)
+        
         let urlString = "https://api.sunrisesunset.io/json?lat=" + String(currentLatitude) + "&lng=" + String(currentLongitude) + "&date=" + formattedDate
         guard let url = URL(string: urlString) else {
             // This should never happen; the urlString is a valid URL
@@ -167,7 +169,9 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
                 }
                 
                 // Advance the date; if we have more dates, call for the next one...
+                print("Current Date: ", date.formatted())
                 let nextDate = Timeline.calendar.date(byAdding: .day, value: 1, to: date) ?? Date(timeIntervalSince1970: (date.timeIntervalSince1970 + Double(60 * 60 * 24)))
+                print("Next Date: ", nextDate.formatted())
                 if nextDate <= endDate {
                     self.fetchSolarDay(date: nextDate, endDate: endDate, result: result)
                 } else {
@@ -207,7 +211,7 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
         
         // Iterate until the last day
         dayLoop: while day <= lastDay {
-            
+                                    
             // Find this day's solar events. If they dont exist, exit the loop
             guard let index = solarDays.firstIndex(where: {$0.date == day}) else {
                 break dayLoop
@@ -247,6 +251,7 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
                     let trailingStopColor = interpolate(event, nextEvent, to: trailingTime)
                     screenStops.append(.init(color: leadingStopColor, location: 0.0))
                     screenStops.append(.init(color: trailingStopColor, location: 1.0))
+                    
                     break dayLoop // We've added the final stop
                 }
                     
@@ -279,7 +284,6 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
                 
             }
             // end of stops loop
-        
             day = nextDay
         
         } // end of dayLoop

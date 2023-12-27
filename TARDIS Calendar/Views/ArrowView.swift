@@ -37,9 +37,9 @@ struct ArrowView: View {
                 Image(systemName: "arrow.right")
                     .resizable()
                     .frame(width: width * arrowSize, height: height * arrowSize)
-                    .offset(x: -size * 0.5 - width * 0.49 * arrowSize)
+                    .offset(x: -size * 0.5 - width * 0.45 * arrowSize)
                     .foregroundColor(.black)
-                    .shadow(color: .white, radius: 3)
+                    .shadow(color: .white, radius: 20, x: 0)
             }
     }
 }

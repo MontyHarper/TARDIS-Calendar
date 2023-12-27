@@ -179,7 +179,7 @@ struct ContentView: View {
             }
             
             // Tapping outside an event view closes all expanded views
-            .onTapGesture {
+            .onLongPressGesture(minimumDuration: 0.05, maximumDistance: 20.0) {
                 eventManager.closeAll()
             }
 

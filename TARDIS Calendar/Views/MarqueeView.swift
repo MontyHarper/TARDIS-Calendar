@@ -41,7 +41,7 @@ class MarqueeController {
     var timeMarkers = [TimeInterval]()
     var startTime = 0.0
     var runningTime = 0.0
-    let speed = 25.0 // points/second
+    let speed = 40.0 // points/second
     let marqueeFont: UIFont // Using a UIFont because the width can be measured.
     
     init(message: String, refresh: Date, fontSize: Double) {
