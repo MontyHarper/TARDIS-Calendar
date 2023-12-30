@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HeaderView: View {
     
-    var size: Dimensions
+    @EnvironmentObject var size: Dimensions
     @EnvironmentObject var eventManager: EventManager
     @EnvironmentObject var timeline: Timeline
     
@@ -87,7 +87,7 @@ struct HeaderView: View {
                     Spacer()
                     
                     // Row 3; TimeTicks
-                    TimeTickBar(size: size)
+                    TimeTickBar()
                     
                     Spacer()
                 }

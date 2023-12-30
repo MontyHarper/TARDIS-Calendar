@@ -95,6 +95,8 @@ class EventManager: ObservableObject {
         // Save which dates are shown in expanded view.
         let expandedDates = Set(isExpanded.indices.filter({isExpanded[$0]}).map({events[$0].startDate}))
         
+        print("user calendar: ", calendarSet.userCalendars)
+        
         // Store the search results, converting EKEvents to Events.
         newEvents = eventStore.events(matching: findEKEvents).map({ekevent in
             Event(event: ekevent, type: calendarSet.userCalendars[ekevent.calendar.title] ?? "none")
@@ -147,29 +149,15 @@ class EventManager: ObservableObject {
         self.isExpanded = self.events.indices.map({expandedDates.contains(self.events[$0].startDate)})
     }
     
+    
     // Called when user taps the background; closes any expanded views.
     func closeAll() {
-        print("Close All")
-        for i in 0..<isExpanded.count {
-            isExpanded[i] = false
-        }
+        isExpanded = isExpanded.map({_ in false})
     }
     
-    // Expands next eventView & returns the start date of the next event after now
-    // Might want to separate these functionalities? But for now they are always needed together.
-    func nextDate() -> Date? {
-        for index in events.indices {
-            if events[index].startDate.timeIntervalSince1970 > Timeline.shared.now {
-                isExpanded[index] = true
-                return events[index].startDate
-            }
-        }
-        return nil
-    }
-
     // leaves only the requested event expanded
     func expandEvent(event: Event) {
-        isExpanded = isExpanded.map({_ in false})
+        closeAll()
         if let index = events.indices.first(where: {events[$0] == event}) {
             isExpanded[index] = true
         }

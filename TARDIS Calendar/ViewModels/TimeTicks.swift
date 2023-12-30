@@ -39,7 +39,7 @@ struct TimeTick {
         // Show hours or days with the labels, depending on the number of hours on screen.
         switch onScreenHours {
             
-        case 0...Int(24/(1-Timeline.nowLocation)):
+        case 0...Int(40/(1-Timeline.nowLocation)):
             // labels will show hours
             
             // Begin at the current time plus one hour
@@ -52,15 +52,48 @@ struct TimeTick {
                 let xLocation = timeline.unitX(fromTime: tickDate.timeIntervalSince1970)
                 
                 // Calculate content of label
-                let hours = calendar.dateComponents([.hour], from: now, to: tickDate).hour!
+                let components = calendar.dateComponents([.hour, .day], from: now, to: tickDate)
+                let hoursToTick = components.hour! + components.day! * 24
+                let hourOfTick = calendar.dateComponents([.hour], from: tickDate).hour!
+                let daysToTick = calendar.dateComponents([.day], from: calendar.startOfDay(for: now), to: calendar.startOfDay(for: tickDate)).day!
                 
-                let label = "\(hours.name()) Hour" + ((hours == 1) ? "" : "s")
+                var label = ""
+                
+                if hoursToTick <= 8 {
+                    label = "\(hoursToTick.name()) Hour" + ((hoursToTick == 1) ? "" : "s")
+                } else if daysToTick == 0 && hoursToTick % 3 == 0 {
+                    switch hourOfTick {
+                    case 0...4: label = "Tonight"
+                    case 5...11: label = "This Morning"
+                    case 12...16: label = "This Afternoon"
+                    case 17...20: label = "This Evening"
+                    case 21...24: label = "Tonight"
+                    default: label = "Today"
+                    }
+                } else if daysToTick == 1 && hoursToTick % 3 == 0 {
+                    switch hourOfTick {
+                    case 0...4: label = "Tomorrow"
+                    case 5...11: label = "Tomorrow Morning"
+                    case 12...16: label = "Tomorrow Afternoon"
+                    case 17...20: label = "Tomorrow Evening"
+                    case 21...24: label = "Tomorrow Night"
+                    default: label = "Tomorrow"
+                    }
+                } else if daysToTick > 1 {
+                    let formatter = DateFormatter()
+                    formatter.dateFormat = "EEEE"
+                    label = formatter.string(from: tickDate)
+                }
                 
                 // Create the TimeTick
+                
                 let timeTick = TimeTick(date: tickDate, xLocation: xLocation, label: label)
                 
+                
                 // Add this tick to the array
-                array.append(timeTick)
+                if label != "" {
+                    array.append(timeTick)
+                }
                 
                 // Advance the hour
                 tickDate = calendar.date(byAdding: .hour, value: 1, to: tickDate)!

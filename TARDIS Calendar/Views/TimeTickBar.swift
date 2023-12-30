@@ -10,7 +10,7 @@ import SwiftUI
 struct TimeTickBar: View {
     
     @EnvironmentObject var timeline: Timeline
-    var size: Dimensions
+    @EnvironmentObject var size: Dimensions
     
     var body: some View {
         
@@ -19,14 +19,16 @@ struct TimeTickBar: View {
         Color(.white)
             .frame(width: size.width, height: size.lineHeight)
 
-        .overlay{
-            ForEach(
-                TimeTick.array(timeline: timeline), id: \.self.xLocation) {tick in
-                    TimeTickMarkerView(timeTick: tick)
-                        .position(x: size.width * tick.xLocation)
-                }
-                .offset(y: 0.73 * size.lineHeight)
-        }
+        // These put the white marks for unlabeled time intervals - trying to see how we do without them.
+        
+//        .overlay{
+//            ForEach(
+//                TimeTick.array(timeline: timeline), id: \.self.xLocation) {tick in
+//                    TimeTickMarkerView(timeTick: tick)
+//                        .position(x: size.width * tick.xLocation)
+//                }
+//                .offset(y: 0.73 * size.lineHeight)
+//        }
 
         .overlay{
             // TimeTick Labels

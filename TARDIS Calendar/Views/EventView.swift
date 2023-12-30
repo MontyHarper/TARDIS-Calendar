@@ -7,9 +7,10 @@
 //  Displays each event as a circle with an icon, which can be expanded to show more information.
 //
 
+import EventKit
 import Foundation
 import SwiftUI
-import EventKit
+
 
 
 struct EventView: View {
@@ -20,11 +21,12 @@ struct EventView: View {
     
     // TODO: - Figure out how to animate transitions from regular to expanded format and back.
     @Binding var isExpanded: Bool
+    @State var dismiss = false
     
     let shrinkFactor: Double
     let screenWidth: Double
     @EnvironmentObject var timeline:Timeline
-        
+    
     // Each veiw has an arrow on the timeline; this places it correctly. Do not adjust.
     let arrowOffset: Double = -7.75
     
@@ -44,6 +46,7 @@ struct EventView: View {
         return ("at " + event.startDate.formatted(date: .omitted, time: .shortened) + dayText)
     }
     
+    // I have three different functions to describe time remaining. I will keep them all until I settle on one. This is not currently being used.
     // Not sure if I actually need this one
     var timeRemaining: String {
         var dayString = ""
@@ -76,13 +79,14 @@ struct EventView: View {
         }
     }
     
+    // Currently using this description of time remaining. It seems to be the simplest, both in execution and format. The other two may not be needed.
     var relativeTimeRemainingDescription: String {
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .full
         return formatter.localizedString(for: event.startDate, relativeTo: Date())
     }
     
-    // Seems I may have re-invented the wheel here.
+    // Seems I may have re-invented the wheel here. I'm using the above function for now to see how we like it. This one may need to go.
     // TODO: - look into swift's built-in time descriptions.
     var descriptionOfTimeRemaining: String {
         guard event.startDate > now else {
@@ -176,7 +180,7 @@ struct EventView: View {
     
     // shrinkFactor is passed in, but only use it to shrink low-priority event icons.
     var shrink: Double {
-       return event.priority <= 2 ? shrinkFactor : 1.0
+        return event.priority <= 2 ? shrinkFactor : 1.0
     }
     
     // Here is the "normal" icon-based event view, when it isn't expanded.
@@ -197,99 +201,158 @@ struct EventView: View {
     } // End of iconView
     
     
-    // Here is the actual EventView, composed of ArrowView (separate file), IconView, and an expanded view.
+    // MARK: ExpandedView
+    var expandedView: some View {
+        
+        ZStack {
+            
+            Circle() // background
+                .frame(width: size.largeEvent, height: size.largeEvent)
+                .background(.ultraThinMaterial, in: Circle())
+            
+            VStack { // Content
+                
+                // Title
+                Text(event.title)
+                    .font(.system(size: size.fontSizeLarge, weight: .bold))
+                    .multilineTextAlignment(.center)
+                
+                // Notes
+                if let notes = event.event.notes {
+                    Text(notes)
+                        .multilineTextAlignment(.center)
+                        .font(.system(size: size.fontSizeSmall))
+                }
+                
+                // Time
+                Text(atTime)
+                    .font(.system(size: size.fontSizeMedium))
+                
+                // Icon
+                ZStack {
+                    Circle()
+                        .foregroundColor(.yellow)
+                        .frame(width: size.tinyEvent, height: size.tinyEvent)
+                    icon
+                        .resizable()
+                        .foregroundColor(color)
+                        .frame(width: size.tinyEvent * 0.95, height: size.tinyEvent * 0.95)
+                }
+                
+                // Relative Time
+                Text(relativeTimeRemainingDescription)
+                    .font(.system(size: size.fontSizeMedium))
+                    .multilineTextAlignment(.center)
+                
+            } // End of content
+            .frame(width: size.largeEvent * 0.7, height: size.largeEvent * 0.8)
+            
+            
+        } // End of ZStack
+        .onLongPressGesture(minimumDuration: 0.2, maximumDistance: 20.0) {
+            isExpanded = false
+        }
+        
+    } // End of expanded view
+    
+    
+    // MARK: EventIsNowView
+    var eventIsNowView: some View {
+        
+        ZStack {
+            
+            Circle() // Background
+                .frame(width: size.largeEvent, height: size.largeEvent)
+                .background(.ultraThinMaterial, in: Circle())
+
+            
+            VStack { // Content
+                
+                // Title
+                Text(event.title)
+                    .font(.system(size: size.fontSizeLarge, weight: .bold))
+                    .multilineTextAlignment(.center)
+                
+                Text("HAPPENING NOW")
+                    .font(.system(size: size.fontSizeSmall, weight: .bold))
+                
+                // Icon
+                ZStack {
+                    Circle()
+                        .foregroundColor(.yellow)
+                        .frame(width: size.tinyEvent, height: size.tinyEvent)
+                    icon
+                        .resizable()
+                        .foregroundColor(color)
+                        .frame(width: size.tinyEvent * 0.95, height: size.tinyEvent * 0.95)
+                }
+                
+                // Current Time
+                Text("The time is:")
+                    .font(.system(size: size.fontSizeSmall))
+                Text(Date().formatted(date: .omitted, time: .shortened))
+                    .font(.system(size: size.fontSizeLarge, weight: .black))
+                
+            } // End of content
+            .frame(width: size.largeEvent * 0.7, height: size.largeEvent * 0.8)
+            
+            
+        } // End of ZStack
+        .onTapGesture {
+            dismiss = true
+        }
+        .alert("Are you finished with \(event.title)?", isPresented: $dismiss) {
+            Button("YES") {
+                event.event.endDate = Date()
+            }
+            Button("NO", role: .cancel) {
+            }
+        }
+        
+    } // End of EventIsNowView
+    
+    
+    
+    // Here is the actual EventView, composed of its various parts.
     var body: some View {
         
-        if event.endDate > now {
+        // If the event has passed, present an empty view
+        if event.endDate < now {
             
-            Group {
-                ArrowView (size: (isExpanded || eventIsNow) ? size.largeEvent : size.smallEvent * shrink)
-                    .zIndex(isExpanded ? 0 : -6)
-                iconView
-                    .zIndex(Double(event.priority))
-                
-                
-                // Shows expanded view if either the user taps or the event is currently happening.
-                if isExpanded || eventIsNow {
-                    
-                    ZStack {
-                        
-                        Circle()
-                            .foregroundColor(eventIsNow ? .cyan : .yellow)
-                            .opacity(eventIsNow ? 1.0 : 1.0)
-                            .frame(width: size.largeEvent, height: size.largeEvent)
-                        
-                        VStack {
-                            
-                            Text(event.title)
-                                .font(.system(size: size.fontSizeLarge, weight: .bold))
-                                .multilineTextAlignment(.center)
-                            if let notes = event.event.notes {
-                                if !eventIsNow {
-                                    Text(notes)
-                                        .multilineTextAlignment(.center)
-                                        .font(.system(size: size.fontSizeSmall))
-                                }
-                            }
-                            
-                            if now > event.startDate {
-                                Text("HAPPENING NOW")
-                                    .font(.system(size: size.fontSizeSmall, weight: .bold))
-                            } else if eventIsNow {
-                                Text("Coming up in \(timeRemaining)")
-                                    .font(.system(size: size.fontSizeMedium))
-                                    .multilineTextAlignment(.center)
-                            } else {
-                                Text(atTime)
-                                    .font(.system(size: size.fontSizeMedium))
-                            }
-                            
-                            
-                                ZStack {
-                                    Circle()
-                                        .foregroundColor(.yellow)
-                                        .frame(width: size.tinyEvent, height: size.tinyEvent)
-                                    icon
-                                        .resizable()
-                                        .foregroundColor(color)
-                                        .frame(width: size.tinyEvent * 0.95, height: size.tinyEvent * 0.95)
-                                }
-
-                            
-                            if now < event.startDate && !eventIsNow {
-                                Text(relativeTimeRemainingDescription)
-                                    .font(.system(size: size.fontSizeMedium))
-                                    .multilineTextAlignment(.center)
-                            }
-                            
-                                
-                            if eventIsNow {
-                                Text("The time is:")
-                                    .font(.system(size: size.fontSizeSmall))
-                                Text(Date().formatted(date: .omitted, time: .shortened))
-                                    .font(.system(size: size.fontSizeLarge, weight: .black))
-                            }
-                            
-                        }
-                        .frame(width: size.largeEvent * 0.7, height: size.largeEvent * 0.8)
-
-                        
-                          
-                        
-                    } // End of expanded view ZStack
-                    .zIndex(Double(event.priority + 10))
-                    .onLongPressGesture(minimumDuration: 0.2, maximumDistance: 20.0) {
-                        isExpanded = false
-                    }
-                } // End of expanded View
-            } // End of main Group
-            .offset(x:offsetAmount, y:0.0)
+            EmptyView()
             
+            // If the event is currently happening, present eventIsNowView
+        } else if eventIsNow {
+            
+            
+            ArrowView (size: size.largeEvent)
+                .zIndex(0)
+            eventIsNowView
+                .offset(x:offsetAmount, y:0.0) // Keep the view at Now
+                .zIndex(20)
+            
+            
+            // If the event is expanded, present expandedView
+        } else if isExpanded {
+            
+            
+            ArrowView (size: size.largeEvent)
+                .zIndex(0)
+            expandedView
+                .zIndex(Double(event.priority + 10))
+            
+            
+            // Present default view
         } else {
-            // if event has passed, return an empty view
+            
+            ArrowView (size: size.smallEvent * shrink)
+                .zIndex(0)
+            iconView
+                .zIndex(Double(event.priority))
+            
         }
         
     } // End of view
-        
+    
 } // End of struct
 

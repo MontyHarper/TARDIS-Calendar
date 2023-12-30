@@ -46,7 +46,7 @@ class Timeline: ObservableObject {
     
     // These constant values are set here and made available across instances.
     static let minSpan: TimeInterval = 3600 // minimum time shown on screen is one hour, in seconds
-    static let nowLocation: Double = 0.2 // now icon is shown 1/5 of the way from left edge of screen
+    static let nowLocation: Double = 0.15 // Determines how far from left edge of screen the now icon is positioned.
     static let maxFutureDays = 7
     static let hoursOnScreen = 4 // Default number; screen returns to this when triggered.
     static var defaultSpan: TimeInterval { // represents seconds onscreen: 14400
@@ -168,7 +168,7 @@ class Timeline: ObservableObject {
             let next = unitX(fromTime: date.timeIntervalSince1970)
             // transform takes .2 (now) to .2, and .8 to next; will take 0 to new leading edge, and 1 to new trailing, to calculate the new span.
             let transform: (Double) -> Double = {x in
-                (x * (next - 0.2) - 0.2 * next + 0.16) / 0.6
+                (x * (next - Timeline.nowLocation) - Timeline.nowLocation * next + 0.16) / 0.6
             }
             let targetTrailingUnit = transform(1.0)
             let targetLeadingUnit = transform(0.0)

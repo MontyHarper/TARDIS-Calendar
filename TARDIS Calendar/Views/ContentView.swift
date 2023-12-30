@@ -41,6 +41,7 @@ struct ContentView: View {
         
         GeometryReader { screen in
             
+            // MARK: - Zoom Gesture
             // Custom Zoom gesture attaches to the background and event views.
             // Needs to live here inside the geometry reader.
             let oneFingerZoom = DragGesture()
@@ -75,6 +76,8 @@ struct ContentView: View {
                         stateBools.animateSpan = false // Turning this off for now to see how we like the app without this feature.
                     })
                 }
+            
+            // MARK: - View Elements
             
             // Main ZStack layers background behind all else
             ZStack {
@@ -117,7 +120,7 @@ struct ContentView: View {
                 
                 
                 // headerView combines current date, marquee with scrolling messages, and time tick markers.
-                HeaderView(size: Dimensions(screen.size))
+                HeaderView()
                     .position(x: screen.size.width * 0.5, y: screen.size.height * yOfLabelBar)
                 
                 
@@ -205,12 +208,7 @@ struct ContentView: View {
         } else {
             stateBools.animateSpan = false
         }
-        
     }
-    
-    
-    
-    
 }
 
 

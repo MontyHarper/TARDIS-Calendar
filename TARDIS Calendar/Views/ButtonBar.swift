@@ -37,7 +37,6 @@ struct ButtonModel: Identifiable {
                     eventManager.expandEvent(event: targetEvent)
                 }
                 StateBools.shared.animateSpan = true
-
             }
             
         case "all":
@@ -117,10 +116,10 @@ struct ButtonBar: View {
             Spacer()
             
             ZStack {
-                Color(.white)
+                Color(.clear)
                     .frame(width: size.tinyEvent * Double(eventManager.buttons.count) * 1.20, height: size.tinyEvent * 1.4)
-                    .opacity(0.65)
-                    .clipShape(RoundedRectangle(cornerRadius: 5))
+                    .background(.ultraThinMaterial)
+                    .clipShape(RoundedRectangle(cornerRadius: 15))
                 
                 HStack {
                     

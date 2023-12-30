@@ -103,7 +103,6 @@
 				F18D04F62B06B35100E5C91E /* ArrowView.swift */,
 				F122A2C62ADA4B10002E82AE /* NowView.swift */,
 				F18D04F82B06BA7400E5C91E /* CurrentDateView.swift */,
-				F122A2C82ADA4B20002E82AE /* TimeTickViews.swift */,
 				F18D04FA2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift */,
 				F18D04FC2B0824F500E5C91E /* LayoutValueKeys.swift */,
 				F18D05022B0AA6B500E5C91E /* SettingsView.swift */,
@@ -111,6 +110,7 @@
 				F166ACBA2B2750F800AE27E3 /* MarqueeView.swift */,
 				F14A8A422B32A9D90049217C /* HeaderView.swift */,
 				F1DED93C2B3624450023BF22 /* TimeTickBar.swift */,
+				F122A2C82ADA4B20002E82AE /* TimeTickViews.swift */,
 				F1DED93E2B3756660023BF22 /* ButtonBar.swift */,
 			);
 			path = Views;

@@ -41,7 +41,11 @@ struct EventTimelineView: View {
             NowView()
                 .position(x: Timeline.nowLocation * size.width, y: yOfTimeline * size.height)
                 .onTapGesture {
-                    timeline.setTargetSpan(date: eventManager.nextDate())
+                    let targetEvent = eventManager.events.first(where: {$0.startDate > Date()})
+                    timeline.setTargetSpan(date: targetEvent?.startDate)
+                    if let targetEvent = targetEvent {
+                        eventManager.expandEvent(event: targetEvent)
+                    }
                     StateBools.shared.animateSpan = true
                 }
         }

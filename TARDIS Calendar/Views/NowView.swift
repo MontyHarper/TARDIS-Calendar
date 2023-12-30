@@ -25,20 +25,22 @@ struct NowView: View {
         
         let image = Image(systemName:"person.circle.fill")
         
-        ZStack {
+        Group {
             
             ArrowView(size: size.mediumEvent)
-                .zIndex(-90)
+                .zIndex(0)
             Circle()
                 .frame(width: size.mediumEvent, height: size.mediumEvent).foregroundColor(.yellow)
+                .zIndex(9)
                 .shadow(color: .white, radius: size.mediumEvent * 0.1)
             image
                 .resizable()
                 .aspectRatio(contentMode:.fit)
                 .frame(width:size.mediumEvent * 0.9, height: size.mediumEvent * 0.9, alignment:.center)
                 .clipShape(Circle())
+                .zIndex(10)
             
-        } // End of ZStack
+        } // End of Group
         .frame(width: size.largeEvent * 1.5)
         .overlay{
             VStack {
