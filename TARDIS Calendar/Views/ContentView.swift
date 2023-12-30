@@ -127,8 +127,8 @@ struct ContentView: View {
                 
                 
                 // Navigation buttons; each button represents a type of event and pulls the next event of that type onto the screen.
-                if eventManager.buttons.count > 0 && !stateBools.showWarning {
-                    ButtonBar(size: Dimensions(screen.size))
+                if !stateBools.showWarning {
+                    ButtonBar()
                         .position(x: screen.size.width * 0.5, y: screen.size.height * 0.85)
                 }
 

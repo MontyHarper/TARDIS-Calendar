@@ -37,7 +37,7 @@
 		F1D15B492A5FA75B006F6A4E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F1D15B482A5FA75B006F6A4E /* Preview Assets.xcassets */; };
 		F1D9AD3A2B13966E0076832F /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D9AD392B13966E0076832F /* DataController.swift */; };
 		F1DED93D2B3624450023BF22 /* TimeTickBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DED93C2B3624450023BF22 /* TimeTickBar.swift */; };
-		F1DED93F2B3756660023BF22 /* NextButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DED93E2B3756660023BF22 /* NextButtons.swift */; };
+		F1DED93F2B3756660023BF22 /* ButtonBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DED93E2B3756660023BF22 /* ButtonBar.swift */; };
 		F1DED9412B3B164D0023BF22 /* EventTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DED9402B3B164D0023BF22 /* EventTimelineView.swift */; };
 		F1F9E49B2B11220C00DA4026 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1F9E49A2B11220C00DA4026 /* Enums.swift */; };
 		F1F9E49E2B12AF2A00DA4026 /* StoredSolarDays.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F1F9E49C2B12AF2A00DA4026 /* StoredSolarDays.xcdatamodeld */; };
@@ -76,7 +76,7 @@
 		F1D15B482A5FA75B006F6A4E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		F1D9AD392B13966E0076832F /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		F1DED93C2B3624450023BF22 /* TimeTickBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTickBar.swift; sourceTree = "<group>"; };
-		F1DED93E2B3756660023BF22 /* NextButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NextButtons.swift; sourceTree = "<group>"; };
+		F1DED93E2B3756660023BF22 /* ButtonBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonBar.swift; sourceTree = "<group>"; };
 		F1DED9402B3B164D0023BF22 /* EventTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTimelineView.swift; sourceTree = "<group>"; };
 		F1F9E49A2B11220C00DA4026 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		F1F9E49D2B12AF2A00DA4026 /* SolarDay.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SolarDay.xcdatamodel; sourceTree = "<group>"; };
@@ -111,7 +111,7 @@
 				F166ACBA2B2750F800AE27E3 /* MarqueeView.swift */,
 				F14A8A422B32A9D90049217C /* HeaderView.swift */,
 				F1DED93C2B3624450023BF22 /* TimeTickBar.swift */,
-				F1DED93E2B3756660023BF22 /* NextButtons.swift */,
+				F1DED93E2B3756660023BF22 /* ButtonBar.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -262,7 +262,7 @@
 				F18D05032B0AA6B500E5C91E /* SettingsView.swift in Sources */,
 				F122A2C02AD82A7C002E82AE /* SolarEventManager.swift in Sources */,
 				F1DED93D2B3624450023BF22 /* TimeTickBar.swift in Sources */,
-				F1DED93F2B3756660023BF22 /* NextButtons.swift in Sources */,
+				F1DED93F2B3756660023BF22 /* ButtonBar.swift in Sources */,
 				F10C32A32B16EA9000CCF83B /* AlertView.swift in Sources */,
 				F18D04F92B06BA7400E5C91E /* CurrentDateView.swift in Sources */,
 				F10C32A52B17601200CCF83B /* NetworkMonitor.swift in Sources */,

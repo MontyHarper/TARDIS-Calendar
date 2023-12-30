@@ -202,14 +202,14 @@ class EventManager: ObservableObject {
     
     func makeButtons() {
     
-        print("make buttons is called")
-        print("listing events")
-        for event in events {
-            print("\(event.title) - \(event.type) -  \(event.startDate.formatted())")
-        }
         buttons = []
         buttonsExpire = Timeline.maxDay
         
+        // Make a next event button
+        var button = ButtonModel(eventManager: self, id: "first")
+        buttons.append(button)
+        
+        // Make a button for each relevant calendar type
         for type in CalendarType.allCases {
             
             switch type {
@@ -217,17 +217,20 @@ class EventManager: ObservableObject {
                 print("no button for type: ", type)
                 
             default:
-                if let event = events.first(where: {$0.type == type.rawValue && $0.startDate > Date()}) {
-                    let button = ButtonModel(type: type, nextEvent: event)
-                    print("button for event: ", event.startDate, " for type: ", type)
+                if events.first(where: {$0.type == type.rawValue && $0.startDate > Date()}) != nil {
+                    let button = ButtonModel(eventManager: self, id: type.rawValue)
                     buttons.append(button)
                 }
+                
                 if let lastEvent = events.last(where: {$0.type == type.rawValue && $0.startDate > Date()}) {
                     buttonsExpire = (lastEvent.startDate < buttonsExpire) ? lastEvent.startDate : buttonsExpire
                 }
-                print("expires: ", buttonsExpire)
             }
-        }
+        } // End of calendar type buttons.
+        
+        // Make a button to span the whole timeline.
+        button = ButtonModel(eventManager: self, id: "all")
+        buttons.append(button)
     }
 }
 

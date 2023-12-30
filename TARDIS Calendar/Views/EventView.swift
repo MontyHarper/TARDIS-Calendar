@@ -44,6 +44,7 @@ struct EventView: View {
         return ("at " + event.startDate.formatted(date: .omitted, time: .shortened) + dayText)
     }
     
+    // Not sure if I actually need this one
     var timeRemaining: String {
         var dayString = ""
         var hourString = ""
@@ -61,9 +62,9 @@ struct EventView: View {
         return(dayString + hourString + minuteString)
     }
     
-    // Expands the event View when true and keeps it in place while the event is happening, starting 15 minutes beforehand.
+    // Keeps the event in place while it's happening.
     var eventIsNow: Bool {
-        ((event.startDate - 60 * 15)...event.endDate).contains(now)
+        (event.startDate...event.endDate).contains(now)
     }
     
     // This offset value keeps the event view centered over Now while the event is happening.
@@ -73,6 +74,12 @@ struct EventView: View {
         } else {
             return 0.0
         }
+    }
+    
+    var relativeTimeRemainingDescription: String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .full
+        return formatter.localizedString(for: event.startDate, relativeTo: Date())
     }
     
     // Seems I may have re-invented the wheel here.
@@ -85,26 +92,26 @@ struct EventView: View {
         let days = components.day ?? 0
         let hours = components.hour ?? 0
         let minutes = components.minute ?? 0
-        var description = "Coming up in "
+        var description = ""
         
         if days >= 1 {
-            let plural = (days == 1) ? "." : "s."
+            let plural = (days == 1) ? "" : "s"
             switch hours {
             case 0..<3:
                 description += "about \(days.lowerName()) day" + plural
             case 3..<9:
                 description += "more than \(days.lowerName()) day" + plural
             case 9..<15:
-                description += "about \(days.lowerName()) and a half days."
+                description += "about \(days.lowerName()) and a half days"
             case 15..<21:
-                description += "less than \((days + 1).lowerName()) days."
+                description += "less than \((days + 1).lowerName()) days"
             case 21..<24:
-                description += "about \((days + 1).lowerName()) days."
+                description += "about \((days + 1).lowerName()) days"
             default:
                 description += "\(days.lowerName()) day" + plural
             }
         } else if hours >= 1 {
-            let plural = (hours == 1) ? "." : "s."
+            let plural = (hours == 1) ? "" : "s"
             switch hours {
             case 0..<11:
                 switch minutes {
@@ -113,39 +120,39 @@ struct EventView: View {
                 case 5..<20:
                     description += "more than \(hours.lowerName()) hour" + plural
                 case 20..<40:
-                    description += "about \(hours.lowerName()) and a half hours."
+                    description += "about \(hours.lowerName()) and a half hours"
                 case 40..<55:
-                    description += "less than \((hours + 1).lowerName()) hours."
+                    description += "less than \((hours + 1).lowerName()) hours"
                 case 55..<60:
-                    description += "about \((hours + 1).lowerName()) hours."
+                    description += "about \((hours + 1).lowerName()) hours"
                 default:
                     description += "\(hours.lowerName()) hour" + plural
                 }
             case 11..<13:
-                description += "about half a day."
+                description += "about half a day"
             case 13..<22:
-                description += "less than a day."
+                description += "less than a day"
             case 22..<24:
-                description += "about one day."
+                description += "about one day"
             default:
                 description += "\(hours.lowerName()) hour" + plural
             }
         } else {
-            let plural = (minutes == 0) ? "." : "s."
+            let plural = (minutes == 0) ? "" : "s"
             switch minutes {
             case 0..<20:
                 description += "less than \((minutes + 1).lowerName()) minute" + plural
             case 20..<40:
-                description += "about half an hour."
+                description += "about half an hour"
             case 40..<55:
-                description += "less than an hour."
+                description += "less than an hour"
             case 55..<60:
-                description += "about an hour."
+                description += "about an hour"
             default:
                 description += "less than \((minutes + 1).lowerName()) minute" + plural
             }
         }
-        return description
+        return description + " from now"
     }
     
     // Makes dictionary of user calendars available; used to determine the calendar type for this event.
@@ -250,7 +257,7 @@ struct EventView: View {
 
                             
                             if now < event.startDate && !eventIsNow {
-                                Text("Coming up in \(timeRemaining)")
+                                Text(relativeTimeRemainingDescription)
                                     .font(.system(size: size.fontSizeMedium))
                                     .multilineTextAlignment(.center)
                             }
