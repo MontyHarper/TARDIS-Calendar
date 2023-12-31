@@ -23,7 +23,6 @@ struct MarqueeView: View {
                     .font(Font(controller.marqueeFont))
                     .foregroundColor(.primary)
                     .offset(x: controller.frame(context.date).offset, y: 0.0)
-                    .background(.white)
                     .fixedSize(horizontal: true, vertical: false)
             }
         } else {

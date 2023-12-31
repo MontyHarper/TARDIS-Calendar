@@ -16,7 +16,7 @@ extension Color {
     static var midnight = Color(hue: 0.668944, saturation: 1.0, brightness: 0.267304)
     static var sunrise = Color(hue: 0.158652, saturation: 0.329797, brightness: 1.0)
     static var morning = Color(hue: 0.544171, saturation: 0.579690, brightness: 1.0)
-    static var noon = Color(hue: 0.544171, saturation: 0.223588, brightness: 1.0)
+    static var noon = Color(hue: 0.583333, saturation: 0.647086, brightness: 1.0)
     static var evening = Color(hue: 0.610656, saturation: 0.546903, brightness: 0.819217)
     static var sunset = Color(hue: 0.824681, saturation: 0.420310, brightness: 0.964025)
 }

@@ -84,6 +84,7 @@ struct ContentView: View {
                 
                 // Background shows time of day by color
                 BackgroundView(timeline: timeline, solarEventManager: solarEventManager)
+                    .opacity(1.0)
                     .zIndex(-100)
                 // Zoom in and out by changing trailingTime
                     .gesture(oneFingerZoom)
@@ -95,6 +96,17 @@ struct ContentView: View {
                         .position(x: screen.size.width * 0.5, y: screen.size.height * 0.5)
                         .scaleEffect(3)
                 }
+                
+                
+                
+                
+                // View on top of background is arranged into three groups; Header, which include current date, marquee, and time ticks, timeline for events, and "next" buttons. Grouping is just conceptual, and needed because there are more than ten items in this ZStack. Individual elements are placed exactly.
+                
+                
+                // headerView combines current date, marquee with scrolling messages, and time tick markers.
+                HeaderView()
+                    .position(x: screen.size.width * 0.5, y: screen.size.height * yOfLabelBar)
+                
                 
                 // Hidden button in upper right hand corner allows caregivers to change preferences.
                 Color(.clear)
@@ -114,15 +126,6 @@ struct ContentView: View {
                                 eventManager.updateEvents()
                             }
                     }
-                
-                
-                // View on top of background is arranged into three groups; Header, which include current date, marquee, and time ticks, timeline for events, and "next" buttons. Grouping is just conceptual, and needed because there are more than ten items in this ZStack. Individual elements are placed exactly.
-                
-                
-                // headerView combines current date, marquee with scrolling messages, and time tick markers.
-                HeaderView()
-                    .position(x: screen.size.width * 0.5, y: screen.size.height * yOfLabelBar)
-                
                 
                 // eventTimelineView combines a horizontal timeline with views for each event and a "nowView" that marks the current moment.
                 EventTimelineView()

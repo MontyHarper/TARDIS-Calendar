@@ -206,7 +206,7 @@ struct EventView: View {
         
         ZStack {
             
-            Circle() // background
+            Color(.clear) // Background
                 .frame(width: size.largeEvent, height: size.largeEvent)
                 .background(.ultraThinMaterial, in: Circle())
             
@@ -247,7 +247,6 @@ struct EventView: View {
             } // End of content
             .frame(width: size.largeEvent * 0.7, height: size.largeEvent * 0.8)
             
-            
         } // End of ZStack
         .onLongPressGesture(minimumDuration: 0.2, maximumDistance: 20.0) {
             isExpanded = false
@@ -260,11 +259,10 @@ struct EventView: View {
     var eventIsNowView: some View {
         
         ZStack {
-            
-            Circle() // Background
+                        
+            Color(.clear) // Background
                 .frame(width: size.largeEvent, height: size.largeEvent)
                 .background(.ultraThinMaterial, in: Circle())
-
             
             VStack { // Content
                 
@@ -312,7 +310,7 @@ struct EventView: View {
     } // End of EventIsNowView
     
     
-    
+    // MARK: Body
     // Here is the actual EventView, composed of its various parts.
     var body: some View {
         
@@ -329,7 +327,7 @@ struct EventView: View {
                 .zIndex(0)
             eventIsNowView
                 .offset(x:offsetAmount, y:0.0) // Keep the view at Now
-                .zIndex(20)
+                .zIndex(Double(20 + event.priority))
             
             
             // If the event is expanded, present expandedView

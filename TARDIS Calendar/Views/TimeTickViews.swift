@@ -64,7 +64,7 @@ struct TimeTickLabelView: View, Identifiable {
                         .foregroundColor(.blue)
                         .offset(y: size.lineHeight * 0.85))
         }
-        .font(.system(size: size.fontSizeMedium, weight: xLocation == Timeline.nowLocation ? .black : .none))
+        .font(.system(size: xLocation == Timeline.nowLocation ? size.fontSizeMedium : size.fontSizeSmall, weight: xLocation == Timeline.nowLocation ? .black : .bold))
     }
     
 }

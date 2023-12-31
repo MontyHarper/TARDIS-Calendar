@@ -50,7 +50,7 @@ struct NowView: View {
                     .font(.system(size: size.fontSizeLarge, weight: .black))
             }
             .foregroundColor(.blue)
-            .background(.white)
+            .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 10))
             .offset(x: 0.0, y: size.mediumEvent * 0.55)
         }

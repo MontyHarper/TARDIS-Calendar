@@ -15,14 +15,14 @@ struct HeaderView: View {
     
     var dateText: String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE MMMM d, yyyy"
+        formatter.dateFormat = "EEEE, MMMM d, yyyy"
         return formatter.string(from: Date(timeIntervalSince1970: timeline.now))
     }
     var timeOfDayText: String {
         let hour = Timeline.calendar.component(.hour, from: Date(timeIntervalSince1970: timeline.now))
         switch hour {
         case 1...5:
-            return "Sleep Tight"
+            return "Time to Sleep"
         case 6...11:
             return "Good Morning"
         case 12...16:
@@ -30,72 +30,76 @@ struct HeaderView: View {
         case 17...20:
             return "Good Evening"
         default:
-            return "Night, Night"
+            return "Time to Sleep"
         }
     }
     var dateFont: UIFont {
         UIFont.systemFont(ofSize: size.fontSizeMedium, weight: .black)
     }
-    var dateWidth: Double {
-        dateText.size(withAttributes: [.font: dateFont]).width
+    var marqueeFont: UIFont? {
+        eventManager.marquee?.marqueeFont
+    }
+    var marqueeText: String? {
+        eventManager.marquee?.message
+    }
+    var marqueeTextWidth: CGFloat? {
+        marqueeText?.size(withAttributes: [.font: marqueeFont as Any]).width
+    }
+    var marqueeWidth: Double {
+        min(size.width * 0.85, (marqueeTextWidth ?? size.width * 0.85) * 1.1)
+    }
+    var showMarquee: Bool {
+        if let marqueeTextWidth = marqueeTextWidth {
+            return (marqueeTextWidth > marqueeWidth)
+        } else {
+            return false
+        }
     }
     
     var body: some View {
         
-        VStack {
+        ZStack {
             
-            // Row 1
-                Text(" \(timeOfDayText)! ")
-                    .fontWeight(.bold)
+            // Background
+            Color(.clear)
+                .frame(width: size.width, height: size.lineHeight * 5)
+                .background(.regularMaterial)
+            Color(.blue)
+                .frame(width: size.width, height: size.lineHeight * 5)
+                .opacity(0.3)
+            
+            VStack (spacing: 0.2 * size.lineHeight) {
+                
+                // Row 1: Time of day and today's date.
+                Text(" \(timeOfDayText)! Today is \(dateText). ")
+                    .fontWeight(.black)
                     .font(.system(size: size.fontSizeMedium, weight: .bold))
-                    .background(.white)
                     .clipShape(RoundedRectangle(cornerSize: CGSize(width: 10, height: 5)))
                     .frame(height: size.fontSizeMedium * 1.5, alignment: .bottom)
-
-              
-                VStack {
-                    
-                    Spacer()
-                    
-                    // Row 2; today's date, marquee text
-                    HStack {
-                        
-                        Spacer()
-                        
-                        Text(dateText)
-                            .font(Font(dateFont))
-                            .lineLimit(1)
-                            .frame(width: 1.1 * dateWidth, height: size.lineHeight)
-                            .background(.white)
-                            .clipShape(RoundedRectangle(cornerSize: CGSize(width: 10, height: 5)))
-                            .foregroundColor(.blue)
-
-                        Spacer()
-                        
-                        if eventManager.marquee != nil {
-                            MarqueeView()
-                                .frame(width: 0.9 * (size.width - dateWidth), height: size.lineHeight)
-                                .clipShape(RoundedRectangle(cornerSize: CGSize(width: 10, height: 5)))
-                        } else {
-                            Color(.clear)
-                                .frame(width: 0.9 * (size.width - dateWidth), height: size.lineHeight)
-                        }
-                        
-                        Spacer()
-                    } // End of row 2 HStack
-                    
-                    Spacer()
-                    
-                    // Row 3; TimeTicks
-                    TimeTickBar()
-                    
-                    Spacer()
+                
+                // Row 2: marquee text
+                ZStack {
+                    if showMarquee {
+                        MarqueeView()
+                    } else if let showText = marqueeText {
+                        Text(" ★ \(showText)")
+                            .font(Font(marqueeFont!))
+                    } else {
+                        EmptyView()
+                    }
                 }
-                .frame(width: size.width, height: size.lineHeight * 3)
-                .background(.blue)
-                .environmentObject(size)
+                .frame(width: showMarquee ? marqueeWidth : 0.0, height: size.lineHeight)
+                .background(Color(hue: 0.0, saturation: 0.0, brightness: 1.0, opacity: 0.5))                .clipShape(RoundedRectangle(cornerRadius: 20))
+
+                
+                // Row 3: TimeTicks
+                TimeTickBar()
+                
+            }
             
-        } // End of main VStack
+            
+        } // End of ZStack
+        .environmentObject(size)
     }
 }
 

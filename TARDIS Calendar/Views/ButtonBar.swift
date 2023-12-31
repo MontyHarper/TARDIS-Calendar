@@ -25,11 +25,12 @@ struct ButtonModel: Identifiable {
         
         switch id {
             
+        // Note: just using bottomText for now, & not topText; keeping both properties while I decide if I need both.
         case "first":
             image = Image(systemName: "circle.circle.fill")
             color = .blue
-            topText = "NEXT"
-            bottomText = "event"
+            topText = "next"
+            bottomText = "next"
             action = {timeline in
                 let targetEvent = eventManager.events.first(where: {$0.startDate > Date()})
                 timeline.setTargetSpan(date: targetEvent?.startDate)
@@ -42,8 +43,8 @@ struct ButtonModel: Identifiable {
         case "all":
             image = Image(systemName: "arrow.left.and.right.circle.fill")
             color = .blue
-            topText = "ALL"
-            bottomText = "events"
+            topText = "all"
+            bottomText = "all"
             action = {timeline in
                 let targetEvent = eventManager.events.last(where: {$0.startDate > Date()})
                 timeline.setTargetSpan(date: targetEvent?.startDate)
@@ -54,8 +55,8 @@ struct ButtonModel: Identifiable {
             image = CalendarType(rawValue: id)?.icon() ?? Image(systemName: "questionmark.circle.fill")
             let targetEvent = eventManager.events.first(where: {$0.type == id && $0.startDate > Date()})
             color = targetEvent?.calendarColor ?? .blue
-            topText = "NEXT"
-            bottomText = (id == "meals") ? "meal" : id
+            topText = "next"
+            bottomText = id
             action = {timeline in
                  let targetEvent = eventManager.events.first(where: {$0.type == id && $0.startDate > Date()})
                 timeline.setTargetSpan(date: targetEvent?.startDate)
@@ -68,7 +69,7 @@ struct ButtonModel: Identifiable {
     }
 }
 
-
+// MARK: Button View
 struct ButtonView: View {
     
     var size: Dimensions
@@ -86,17 +87,13 @@ struct ButtonView: View {
                 .foregroundColor(button.color)
                 .frame(width: size.tinyEvent * 0.95, height: size.tinyEvent * 0.95, alignment: .center)
                 .overlay {
-                    Text(button.topText)
-                        .font(.system(size: size.fontSizeSmall, weight: .bold))
-                        .offset(y: -0.55 * size.tinyEvent)
-                        .lineLimit(1)
-                }
-                .overlay {
                     Text(button.bottomText)
                         .font(.system(size: size.fontSizeSmall, weight: .bold))
-                        .offset(y: 0.55 * size.tinyEvent)
+                        .offset(y: 0.65 * size.tinyEvent)
+                        .lineLimit(1)
                 }
         } // End of ZStack
+        .foregroundColor(.blue)
         .onLongPressGesture(minimumDuration: 0.05, maximumDistance: 20.0) {
             button.action(timeline)
         }
@@ -104,6 +101,7 @@ struct ButtonView: View {
 }
 
 
+// MARK: Button Bar
 struct ButtonBar: View {
     
     @EnvironmentObject var size: Dimensions
@@ -126,6 +124,7 @@ struct ButtonBar: View {
                     ForEach(eventManager.buttons) {button in
                         ButtonView(size: size, button: button)
                     }
+                    .offset(y: -0.1 * size.tinyEvent)
                 }
                 
             }
