@@ -47,12 +47,12 @@ struct NowView: View {
                 Text("The time is")
                     .font(.system(size: size.fontSizeSmall))
                 Text(" \(timeText) ")
-                    .font(.system(size: size.fontSizeLarge, weight: .black))
+                    .font(.system(size: size.fontSizeLarge * 1.25, weight: .black))
             }
             .foregroundColor(.blue)
             .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 10))
-            .offset(x: 0.0, y: size.mediumEvent * 0.55)
+            .offset(x: 0.0, y: size.largeEvent * 0.7)
         }
     }
 }

@@ -85,6 +85,12 @@ struct EventView: View {
         formatter.unitsStyle = .full
         return formatter.localizedString(for: event.startDate, relativeTo: Date())
     }
+    var relativeTimeRemainingInEvent: String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .full
+        let timeString = formatter.localizedString(for: event.endDate, relativeTo: Date())
+        return timeString.dropFirst().dropFirst().dropFirst() + " remaining\n"
+    }
     
     // Seems I may have re-invented the wheel here. I'm using the above function for now to see how we like it. This one may need to go.
     // TODO: - look into swift's built-in time descriptions.
@@ -271,6 +277,13 @@ struct EventView: View {
                     .font(.system(size: size.fontSizeLarge, weight: .bold))
                     .multilineTextAlignment(.center)
                 
+                // Notes
+                if let notes = event.event.notes {
+                    Text(notes)
+                        .multilineTextAlignment(.center)
+                        .font(.system(size: size.fontSizeSmall))
+                }
+                
                 Text("HAPPENING NOW")
                     .font(.system(size: size.fontSizeSmall, weight: .bold))
                 
@@ -285,11 +298,13 @@ struct EventView: View {
                         .frame(width: size.tinyEvent * 0.95, height: size.tinyEvent * 0.95)
                 }
                 
-                // Current Time
-                Text("The time is:")
-                    .font(.system(size: size.fontSizeSmall))
-                Text(Date().formatted(date: .omitted, time: .shortened))
-                    .font(.system(size: size.fontSizeLarge, weight: .black))
+                // Relative Time
+                Text(relativeTimeRemainingInEvent)
+                    .font(.system(size: size.fontSizeMedium))
+                    .multilineTextAlignment(.center)
+                Text("TAP TO DISMISS")
+                    .font(.system(size: size.fontSizeSmall * 0.75, weight: .bold))
+                    .foregroundColor(.blue)
                 
             } // End of content
             .frame(width: size.largeEvent * 0.7, height: size.largeEvent * 0.8)

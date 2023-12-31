@@ -75,6 +75,7 @@ struct ButtonView: View {
     var size: Dimensions
     var button: ButtonModel
     @EnvironmentObject var timeline: Timeline
+    @State var rotateAmount: Double = 0.0
     
     var body: some View {
         
@@ -86,15 +87,20 @@ struct ButtonView: View {
                 .resizable()
                 .foregroundColor(button.color)
                 .frame(width: size.tinyEvent * 0.95, height: size.tinyEvent * 0.95, alignment: .center)
-                .overlay {
-                    Text(button.bottomText)
-                        .font(.system(size: size.fontSizeSmall, weight: .bold))
-                        .offset(y: 0.65 * size.tinyEvent)
-                        .lineLimit(1)
-                }
+                
         } // End of ZStack
+        .rotation3DEffect(.degrees(rotateAmount), axis: (x: 0.5, y: 0.5, z: 0))
+        .overlay {
+            Text(button.bottomText)
+                .font(.system(size: size.fontSizeSmall, weight: .bold))
+                .offset(y: 0.65 * size.tinyEvent)
+                .lineLimit(1)
+        }
         .foregroundColor(.blue)
         .onLongPressGesture(minimumDuration: 0.05, maximumDistance: 20.0) {
+            withAnimation(.linear(duration: 0.75)) {
+                rotateAmount += 360
+            }
             button.action(timeline)
         }
     }

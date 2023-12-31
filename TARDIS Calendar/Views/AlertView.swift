@@ -14,7 +14,7 @@ struct AlertView: View {
     // TODO: - I believe this kind of alert is deprecated, and this View could be updated to take advantage of the newer version of .alert which includes a title, details, and a built-in dismiss button. https://developer.apple.com/documentation/swiftui/view/alert(_:ispresented:presenting:actions:message:)-8584l
     @State private var showAlert = false
     @StateObject var stateBools = StateBools.shared
-    var screen: GeometryProxy
+    @EnvironmentObject var size: Dimensions
     var formatter = RelativeDateTimeFormatter()
     let dateWentDown = UserDefaults.standard.object(forKey: "lastTimeInternetWentDown") as? Date ?? Date()
     
@@ -28,11 +28,13 @@ struct AlertView: View {
                 Text(showText().0)
                     .foregroundColor(.red)
                     .fontWeight(.bold)
-                    .position(x: screen.size.width * 0.75, y: screen.size.height * 0.9)
+                    .lineLimit(1)
+                    .position(x: size.width * 0.5, y: size.height * 0.95)
                     .onTapGesture {showAlert = true}
                     .alert(showText().1, isPresented: $showAlert) {
                         Button("OK", role: .cancel, action: {})
                     }
+                    .font(.system(size: size.fontSizeMedium, weight: .bold))
                     .onAppear {
                         formatter.unitsStyle = .spellOut
                         formatter.dateTimeStyle = .named

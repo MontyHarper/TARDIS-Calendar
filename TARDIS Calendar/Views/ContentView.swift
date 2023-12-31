@@ -133,14 +133,14 @@ struct ContentView: View {
                 
                 
                 // Navigation buttons; each button represents a type of event and pulls the next event of that type onto the screen.
-                if !stateBools.showWarning {
-                    ButtonBar()
-                        .position(x: screen.size.width * 0.5, y: screen.size.height * 0.85)
-                }
-
                 
-                AlertView(screen: screen)
-                    
+                ButtonBar()
+                    .position(x: screen.size.width * 0.5, y: screen.size.height * 0.85)
+                
+                
+                
+                AlertView()
+                
                 
                 
             } // End of main ZStack

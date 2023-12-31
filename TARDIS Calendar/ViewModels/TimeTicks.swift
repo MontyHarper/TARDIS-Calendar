@@ -32,6 +32,9 @@ struct TimeTick {
         
         // First tick is always "Now"
         array.append(TimeTick(date: now, xLocation: Timeline.nowLocation, label: "NOW"))
+        // Second tick at half an hour
+        let halfAnHour = calendar.date(byAdding: .minute, value: 30, to: now)!
+        array.append(TimeTick(date: halfAnHour, xLocation: timeline.unitX(fromTime: halfAnHour.timeIntervalSince1970), label: "Half an Hour"))
         
         // Calculate the number of hours represented on screen.
         let onScreenHours = calendar.dateComponents([.hour], from: leadingDate, to: trailingDate).hour!
