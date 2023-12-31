@@ -163,6 +163,15 @@ class EventManager: ObservableObject {
         }
     }
     
+    func highlightNextEvent(timeline: Timeline) {
+        let targetEvent = events.first(where: {$0.startDate > Date()})
+        timeline.setTargetSpan(date: targetEvent?.startDate)
+        if let targetEvent = targetEvent {
+            expandEvent(event: targetEvent)
+        }
+        StateBools.shared.animateSpan = true
+    }
+    
     // Generate string from all banner messages
     func makeBanners() {
         
@@ -234,7 +243,7 @@ class Event: Identifiable, Comparable {
     
     var event: EKEvent
     var type: String
-        
+            
     init(event: EKEvent, type: String) {
         self.event = event
         self.type = type
@@ -269,6 +278,7 @@ class Event: Identifiable, Comparable {
             return 0
         }
     }
+    
     
     // Protocol conformance for Comparable
     static func < (lhs: Event, rhs: Event) -> Bool {

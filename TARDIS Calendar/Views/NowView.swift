@@ -27,10 +27,22 @@ struct NowView: View {
         
         Group {
             
-            ArrowView(size: size.mediumEvent)
-                .zIndex(0)
+            VStack {
+                Image(systemName: "arrowtriangle.up.fill")
+                    .resizable()
+                    .frame(width: size.mediumEvent * 0.2, height: 0.27 * size.height)
+                Image(systemName: "arrowtriangle.down.fill")
+                    .resizable()
+                    .frame(width: size.mediumEvent * 0.2, height: 0.27 * size.height)
+            }
+            .foregroundColor(.blue)
+            .shadow(color: .white, radius: 20)
+            .zIndex(-1)
+            
+//            ArrowView(size: size.mediumEvent)
+//                .zIndex(0)
             Circle()
-                .frame(width: size.mediumEvent, height: size.mediumEvent).foregroundColor(.yellow)
+                .frame(width: size.mediumEvent, height: size.mediumEvent).foregroundColor(.blue)
                 .zIndex(9)
                 .shadow(color: .white, radius: size.mediumEvent * 0.1)
             image

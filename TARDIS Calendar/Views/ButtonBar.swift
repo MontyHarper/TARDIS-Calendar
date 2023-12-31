@@ -32,12 +32,7 @@ struct ButtonModel: Identifiable {
             topText = "next"
             bottomText = "next"
             action = {timeline in
-                let targetEvent = eventManager.events.first(where: {$0.startDate > Date()})
-                timeline.setTargetSpan(date: targetEvent?.startDate)
-                if let targetEvent = targetEvent {
-                    eventManager.expandEvent(event: targetEvent)
-                }
-                StateBools.shared.animateSpan = true
+                eventManager.highlightNextEvent(timeline: timeline)
             }
             
         case "all":
@@ -46,6 +41,7 @@ struct ButtonModel: Identifiable {
             topText = "all"
             bottomText = "all"
             action = {timeline in
+                eventManager.closeAll()
                 let targetEvent = eventManager.events.last(where: {$0.startDate > Date()})
                 timeline.setTargetSpan(date: targetEvent?.startDate)
                 StateBools.shared.animateSpan = true

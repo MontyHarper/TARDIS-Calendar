@@ -317,6 +317,12 @@ struct EventView: View {
         .alert("Are you finished with \(event.title)?", isPresented: $dismiss) {
             Button("YES") {
                 event.event.endDate = Date()
+                let range = Date()...Timeline.calendar.date(byAdding: .minute, value: 30, to: Date())!
+                
+                // If the next event is within half an hour, highlight it.
+                if let _ = eventManager.events.first(where: {range.contains($0.startDate)}) {
+                    eventManager.highlightNextEvent(timeline: timeline)
+                }
             }
             Button("NO", role: .cancel) {
             }

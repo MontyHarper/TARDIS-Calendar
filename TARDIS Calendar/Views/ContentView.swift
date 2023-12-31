@@ -177,6 +177,13 @@ struct ContentView: View {
                     eventManager.makeButtons()
                 }
                 
+                // Bring an upcoming event into focus as needed.
+                let range = Timeline.calendar.date(byAdding: .second, value: 30 * 60, to: Date())!...Timeline.calendar.date(byAdding: .second, value: 30 * 60 + 1, to: Date())!
+                if let _ = eventManager.events.first(where: { range.contains($0.startDate)}
+                ) {
+                    eventManager.highlightNextEvent(timeline: timeline)
+                }
+                
             }
             
             // Animating zoom's return to default by hand

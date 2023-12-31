@@ -16,8 +16,9 @@ struct TimeTickBar: View {
         
         // TimeTick Markers
         
-        Color(hue: 0.0, saturation: 0.0, brightness: 1.0, opacity: 0.5)
+        Color(.clear)
             .frame(width: size.width, height: size.lineHeight)
+            .background(.ultraThinMaterial)
             .frame(width: size.width, height: size.lineHeight * 1.5)
 
         // These put the white marks for unlabeled time intervals - trying to see how we do without them.

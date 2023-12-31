@@ -74,6 +74,7 @@ struct HeaderView: View {
                 Text(" \(timeOfDayText)! Today is \(dateText). ")
                     .fontWeight(.black)
                     .font(.system(size: size.fontSizeMedium, weight: .bold))
+                    .foregroundColor(.blue)
                     .clipShape(RoundedRectangle(cornerSize: CGSize(width: 10, height: 5)))
                     .frame(height: size.fontSizeMedium * 1.5, alignment: .bottom)
                 
