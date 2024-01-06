@@ -255,7 +255,7 @@ struct EventView: View {
             
         } // End of ZStack
         .onLongPressGesture(minimumDuration: 0.2, maximumDistance: 20.0) {
-            isExpanded = false
+                isExpanded = false
         }
         
     } // End of expanded view
@@ -354,12 +354,11 @@ struct EventView: View {
             // If the event is expanded, present expandedView
         } else if isExpanded {
             
-            
-            ArrowView (size: size.largeEvent)
-                .zIndex(0)
-            expandedView
-                .zIndex(Double(event.priority + 10))
-            
+                ArrowView (size: size.largeEvent)
+                    .zIndex(0)
+                expandedView
+                    .zIndex(Double(event.priority + 10))
+                        
             
             // Present default view
         } else {

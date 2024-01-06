@@ -188,7 +188,8 @@ class EventManager: ObservableObject {
             if banner.endDate > Date() && banner.endDate < bannerRefreshDate {
                 bannerRefreshDate = banner.endDate
             }
-        }
+        } // End of loop
+        
         print("new banner text: ", bannerText, "\nrefresh date: ", bannerRefreshDate.formatted())
         
         if bannerText != "" {
