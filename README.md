@@ -100,8 +100,7 @@ This app needs to be set up by a caregiver before the user can use it.
 
 # Planned Improvements
 Following is the to-do list for planned improvements and new features for this app as of 1/6/23
-- Known Issues
-    - App crashes when permission to access Calendar is switched from on to off. "Terminated due to signal 9"
+
 - User Settings
 	- Allow user to provide their own user image.
 
