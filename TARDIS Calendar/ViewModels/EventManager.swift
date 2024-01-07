@@ -208,7 +208,7 @@ class EventManager: ObservableObject {
         print("new banner text: ", bannerText, "\nrefresh date: ", bannerRefreshDate.formatted())
         
         if bannerText != "" {
-            marquee = MarqueeController(message: bannerText, refresh: bannerRefreshDate, fontSize: 24 )
+            marquee = MarqueeController(bannerText, refresh: bannerRefreshDate, fontSize: 24 )
         }
         
     }

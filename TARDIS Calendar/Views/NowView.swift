@@ -30,10 +30,18 @@ struct NowView: View {
             VStack {
                 Image(systemName: "arrowtriangle.up.fill")
                     .resizable()
-                    .frame(width: size.mediumEvent * 0.2, height: 0.27 * size.height)
+                    .frame(width: size.mediumEvent * 0.2, height: 0.24 * size.height)
+                HStack {
+                    Image(systemName: "arrowtriangle.left.fill")
+                        .resizable()
+                        .frame(width: size.width * 0.12, height: 0.27 * size.mediumEvent)
+                    Image(systemName: "arrowtriangle.right.fill")
+                        .resizable()
+                        .frame(width: size.width * 0.12, height: 0.27 * size.mediumEvent)
+                }
                 Image(systemName: "arrowtriangle.down.fill")
                     .resizable()
-                    .frame(width: size.mediumEvent * 0.2, height: 0.27 * size.height)
+                    .frame(width: size.mediumEvent * 0.2, height: 0.24 * size.height)
             }
             .foregroundColor(.blue)
             .shadow(color: .white, radius: 20)

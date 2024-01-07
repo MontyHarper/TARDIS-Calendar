@@ -43,10 +43,10 @@ class MarqueeController {
     let speed = 60.0 // points/second
     let marqueeFont: UIFont // Using a UIFont because the width can be measured.
     
-    init(message: String, refresh: Date, fontSize: Double) {
-        print("making a new controller: ", message)
+    init(_ inputText: String, refresh: Date, fontSize: Double) {
+        print("making a new controller: ", inputText)
         // Trying this - adding an "end of message" so Mom won't keep reading it over and over. Don't know if that will help or not.
-        self.message = (message == "") ? "No Text Available" : message + " END OF MESSAGE  ★  "
+        self.message = (inputText == "") ? "No Text Available" : inputText + " END OF MESSAGE  ★  "
         self.refreshDate = refresh
         var text = message
         marqueeFont = UIFont.systemFont(ofSize: fontSize, weight: .black)
