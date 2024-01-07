@@ -37,6 +37,36 @@ class EventManager: ObservableObject {
         // This notification will update the calendars and events lists any time an event or calendar is changed in the user's Apple Calendar App.
         NotificationCenter.default.addObserver(self, selector: #selector(self.updateCalendarsAndEvents), name: .EKEventStoreChanged, object: eventStore)
         
+        updateCalendarsAndEvents()
+        
+    } // End init
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+        NotificationCenter.default.removeObserver(eventStore)
+    }
+    
+    @objc func updateCalendarsAndEvents() {
+   
+        guard itIsSafeToUpdate() else {
+            return
+        }
+        
+        calendarSet.updateCalendars(eventStore: eventStore) { error in
+            if let error = error {
+                StateBools.shared.noCalendarsAvailable = (error == CalendarError.noAppleCalendars)
+            } else {
+                StateBools.shared.noCalendarsAvailable = false
+                self.updateEvents() // Called from within closure to ensure calendars are updated first.
+            }
+        }
+    }
+    
+    func itIsSafeToUpdate() -> Bool {
+        
+        // Returns true if we have permission
+        // Otherwise we get permission
+        
         if StateBools.shared.noPermissionForCalendar {
             // App will request access to the Apple Calendar. If the user refuses, the system will not show the request again.
             // This syntax is deprecated but I can't run the latest XCode on my old-ass computer.
@@ -58,29 +88,14 @@ class EventManager: ObservableObject {
             eventStore.requestAccess(to: EKEntityType.event) { _, _ in }
             
 #endif
+            // Even if permission is given, we return false because the change in permission will trigger an update anyway and we don't want two instances of the update function running at once.
+            return false
             
         } else {
-            // If permission is already given, fetch new data.
-            updateCalendarsAndEvents()
-        }
-        
-    } // End init
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-        NotificationCenter.default.removeObserver(eventStore)
-    }
-    
-    @objc func updateCalendarsAndEvents() {
-        calendarSet.updateCalendars(eventStore: eventStore) { error in
-            if let error = error {
-                StateBools.shared.noCalendarsAvailable = (error == CalendarError.noAppleCalendars)
-            } else {
-                StateBools.shared.noCalendarsAvailable = false
-                self.updateEvents() // Called from within closure to ensure calendars are updated first.
-            }
+            return true
         }
     }
+    
     
     func updateEvents() {
         

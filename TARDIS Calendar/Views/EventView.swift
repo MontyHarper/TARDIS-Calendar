@@ -79,7 +79,7 @@ struct EventView: View {
         }
     }
     
-    // Currently using this description of time remaining. It seems to be the simplest, both in execution and format. The other two may not be needed.
+    // This seems to be the simplest description of time remaining, both in execution and format. However, it isn't very accurate - it will say one hour when it's one hour 55 minutes.
     var relativeTimeRemainingDescription: String {
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .full
@@ -92,8 +92,7 @@ struct EventView: View {
         return timeString.dropFirst().dropFirst().dropFirst() + " remaining\n"
     }
     
-    // Seems I may have re-invented the wheel here. I'm using the above function for now to see how we like it. This one may need to go.
-    // TODO: - look into swift's built-in time descriptions.
+    // This actually works better; gives a more accurate estimate.
     var descriptionOfTimeRemaining: String {
         guard event.startDate > now else {
             return ""
@@ -246,7 +245,7 @@ struct EventView: View {
                 }
                 
                 // Relative Time
-                Text(relativeTimeRemainingDescription)
+                Text(descriptionOfTimeRemaining)
                     .font(.system(size: size.fontSizeMedium))
                     .multilineTextAlignment(.center)
                 
