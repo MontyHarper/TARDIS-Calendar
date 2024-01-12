@@ -93,11 +93,13 @@ struct EventView: View {
     }
     
     // This actually works better; gives a more accurate estimate.
-    var descriptionOfTimeRemaining: String {
-        guard event.startDate > now else {
+    func relativeTimeDescription(_ date: Date) -> String {
+        guard event.endDate > now else {
             return ""
         }
-        let components = Timeline.calendar.dateComponents([.day, .hour, .minute], from: now, to: event.startDate)
+        
+        let components = Timeline.calendar.dateComponents([.day, .hour, .minute], from: now, to: event.startDate > now ? event.startDate : event.endDate)
+        
         let days = components.day ?? 0
         let hours = components.hour ?? 0
         let minutes = components.minute ?? 0
@@ -161,7 +163,7 @@ struct EventView: View {
                 description += "less than \((minutes + 1).lowerName()) minute" + plural
             }
         }
-        return description + " from now"
+        return description + (event.startDate > now ? " from now" : " remaining")
     }
     
     // Makes dictionary of user calendars available; used to determine the calendar type for this event.
@@ -245,7 +247,7 @@ struct EventView: View {
                 }
                 
                 // Relative Time
-                Text(descriptionOfTimeRemaining)
+                Text(relativeTimeDescription(event.startDate))
                     .font(.system(size: size.fontSizeMedium))
                     .multilineTextAlignment(.center)
                 
@@ -298,7 +300,7 @@ struct EventView: View {
                 }
                 
                 // Relative Time
-                Text(relativeTimeRemainingInEvent)
+                Text(relativeTimeDescription(event.endDate))
                     .font(.system(size: size.fontSizeMedium))
                     .multilineTextAlignment(.center)
                 Text("TAP TO DISMISS")

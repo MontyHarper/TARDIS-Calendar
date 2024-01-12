@@ -24,6 +24,9 @@ struct MarqueeView: View {
                     .foregroundColor(.primary)
                     .offset(x: controller.frame(context.date).offset, y: 0.0)
                     .fixedSize(horizontal: true, vertical: false)
+                    .onLongPressGesture(minimumDuration: 0.05, maximumDistance: 20.0) {
+                        controller.togglePause()
+                    }
             }
         } else {
             Text("There is nothing to display yet...")
@@ -42,6 +45,10 @@ class MarqueeController {
     var runningTime = 0.0
     let speed = 60.0 // points/second
     let marqueeFont: UIFont // Using a UIFont because the width can be measured.
+    var pause = false
+    var pauseText = ""
+    var pauseOffset = 0.0
+    var pauseTime = 0.0
     
     init(_ inputText: String, refresh: Date, fontSize: Double) {
         print("making a new controller: ", inputText)
@@ -63,14 +70,27 @@ class MarqueeController {
     
     // Given a time, return the text and offset that should be displayed at that moment.
     func frame(_ date: Date) -> (text: String, offset: Double) {
-        let time = (date.timeIntervalSince1970 - startTime).truncatingRemainder(dividingBy: runningTime)
-        let index = (timeMarkers.firstIndex(where: {time < $0}) ?? 0)
-        let startStringIndex = message.startIndex
-        let endStringIndex = message.endIndex
-        let midStringIndex = message.index(message.startIndex, offsetBy: index)
-        let text = String(message[midStringIndex..<endStringIndex]) + String(message[startStringIndex..<midStringIndex])
-        let offset = characterWidths[index] * ((timeMarkers[index] - time)/(timeMarkers[index] - (index == 0 ? 0 : timeMarkers[index - 1])) - 1.0)
-        return(text: text, offset: offset)
+        
+        if pause {
+            return(text: pauseText, offset: pauseOffset)
+        } else {
+            let time = (date.timeIntervalSince1970 - startTime).truncatingRemainder(dividingBy: runningTime)
+            let index = (timeMarkers.firstIndex(where: {time < $0}) ?? 0)
+            let startStringIndex = message.startIndex
+            let endStringIndex = message.endIndex
+            let midStringIndex = message.index(message.startIndex, offsetBy: index)
+            let text = String(message[midStringIndex..<endStringIndex]) + String(message[startStringIndex..<midStringIndex])
+            let offset = characterWidths[index] * ((timeMarkers[index] - time)/(timeMarkers[index] - (index == 0 ? 0 : timeMarkers[index - 1])) - 1.0)
+            pauseText = text
+            pauseOffset = offset
+            pauseTime = date.timeIntervalSince1970
+            return(text: text, offset: offset)
+        }
+    }
+    
+    func togglePause() {
+        pause.toggle()
+        startTime = startTime + (Date().timeIntervalSince1970 - pauseTime)
     }
 }
 

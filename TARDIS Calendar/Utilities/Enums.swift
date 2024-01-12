@@ -48,7 +48,7 @@ enum CalendarType: String, CaseIterable, Identifiable {
         case .medical:
             return 4
         case .daily:
-            return 1
+            return 2
         case .special:
             return 3
         default:
