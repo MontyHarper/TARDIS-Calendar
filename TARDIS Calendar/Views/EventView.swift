@@ -18,6 +18,7 @@ struct EventView: View {
     let event: Event
     @EnvironmentObject var size: Dimensions
     @EnvironmentObject var eventManager: EventManager
+    @EnvironmentObject var timeline:Timeline
     
     // TODO: - Figure out how to animate transitions from regular to expanded format and back.
     @Binding var isExpanded: Bool
@@ -25,147 +26,22 @@ struct EventView: View {
     
     let shrinkFactor: Double
     let screenWidth: Double
-    @EnvironmentObject var timeline:Timeline
     
     // Each veiw has an arrow on the timeline; this places it correctly. Do not adjust.
     let arrowOffset: Double = -7.75
     
-    // Date() stores the current time when this view is created. This keeps all calculations consistant.
-    // Event views are destroyed and re-created once per second.
-    let now = Date()
     
-    var atTime: String {
-        let eventDay = Timeline.calendar.component(.day, from: event.startDate)
-        let today = Timeline.calendar.component(.day, from: Date())
-        let eventIsToday: Bool = (eventDay == today)
-        let eventIsTomorrow: Bool = (eventDay == (today + 1))
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE"
-        let dayOfWeek = formatter.string(from: event.startDate)
-        let dayText = eventIsToday ? " Today" : (eventIsTomorrow ? " Tomorrow" : " \(dayOfWeek)")
-        return ("at " + event.startDate.formatted(date: .omitted, time: .shortened) + dayText)
-    }
-    
-    // I have three different functions to describe time remaining. I will keep them all until I settle on one. This is not currently being used.
-    // Not sure if I actually need this one
-    var timeRemaining: String {
-        var dayString = ""
-        var hourString = ""
-        var minuteString = ""
-        let parts = Timeline.calendar.dateComponents([.day, .hour, .minute], from: now, to: event.startDate)
-        if let day = parts.day {
-            dayString = day == 0 ? "" : ("\(day) day" + (day == 1 ? ", " : "s, "))
-        }
-        if let hour = parts.hour {
-            hourString = hour == 0 ? "" : ("\(hour) hour" + (hour == 1 ? ", " : "s, "))
-        }
-        if let minute = parts.minute {
-            minuteString = minute == 0 ? "less than one minute" : ("\(minute) minute" + (minute == 1 ? "." : "s."))
-        }
-        return(dayString + hourString + minuteString)
-    }
-    
-    // Keeps the event in place while it's happening.
-    var eventIsNow: Bool {
-        (event.startDate...event.endDate).contains(now)
-    }
-    
+    // MARK: Calculated Properties
+       
     // This offset value keeps the event view centered over Now while the event is happening.
     var offsetAmount: Double {
-        if eventIsNow {
+        if event.isNow {
             return screenWidth * (Timeline.nowLocation - timeline.unitX(fromTime: event.startDate.timeIntervalSince1970))
         } else {
             return 0.0
         }
     }
-    
-    // This seems to be the simplest description of time remaining, both in execution and format. However, it isn't very accurate - it will say one hour when it's one hour 55 minutes.
-    var relativeTimeRemainingDescription: String {
-        let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .full
-        return formatter.localizedString(for: event.startDate, relativeTo: Date())
-    }
-    var relativeTimeRemainingInEvent: String {
-        let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .full
-        let timeString = formatter.localizedString(for: event.endDate, relativeTo: Date())
-        return timeString.dropFirst().dropFirst().dropFirst() + " remaining\n"
-    }
-    
-    // This actually works better; gives a more accurate estimate.
-    func relativeTimeDescription(_ date: Date) -> String {
-        guard event.endDate > now else {
-            return ""
-        }
-        
-        let components = Timeline.calendar.dateComponents([.day, .hour, .minute], from: now, to: event.startDate > now ? event.startDate : event.endDate)
-        
-        let days = components.day ?? 0
-        let hours = components.hour ?? 0
-        let minutes = components.minute ?? 0
-        var description = ""
-        
-        if days >= 1 {
-            let plural = (days == 1) ? "" : "s"
-            switch hours {
-            case 0..<3:
-                description += "about \(days.lowerName()) day" + plural
-            case 3..<9:
-                description += "more than \(days.lowerName()) day" + plural
-            case 9..<15:
-                description += "about \(days.lowerName()) and a half days"
-            case 15..<21:
-                description += "less than \((days + 1).lowerName()) days"
-            case 21..<24:
-                description += "about \((days + 1).lowerName()) days"
-            default:
-                description += "\(days.lowerName()) day" + plural
-            }
-        } else if hours >= 1 {
-            let plural = (hours == 1) ? "" : "s"
-            switch hours {
-            case 0..<11:
-                switch minutes {
-                case 0..<5:
-                    description += "about \(hours.lowerName()) hour" + plural
-                case 5..<20:
-                    description += "more than \(hours.lowerName()) hour" + plural
-                case 20..<40:
-                    description += "about \(hours.lowerName()) and a half hours"
-                case 40..<55:
-                    description += "less than \((hours + 1).lowerName()) hours"
-                case 55..<60:
-                    description += "about \((hours + 1).lowerName()) hours"
-                default:
-                    description += "\(hours.lowerName()) hour" + plural
-                }
-            case 11..<13:
-                description += "about half a day"
-            case 13..<22:
-                description += "less than a day"
-            case 22..<24:
-                description += "about one day"
-            default:
-                description += "\(hours.lowerName()) hour" + plural
-            }
-        } else {
-            let plural = (minutes == 0) ? "" : "s"
-            switch minutes {
-            case 0..<20:
-                description += "less than \((minutes + 1).lowerName()) minute" + plural
-            case 20..<40:
-                description += "about half an hour"
-            case 40..<55:
-                description += "less than an hour"
-            case 55..<60:
-                description += "about an hour"
-            default:
-                description += "less than \((minutes + 1).lowerName()) minute" + plural
-            }
-        }
-        return description + (event.startDate > now ? " from now" : " remaining")
-    }
-    
+     
     // Makes dictionary of user calendars available; used to determine the calendar type for this event.
     var calendars: [String: String] =
     UserDefaults.standard.dictionary(forKey: "calendars") as? [String: String] ?? ["":""]
@@ -190,6 +66,8 @@ struct EventView: View {
         return event.priority <= 2 ? shrinkFactor : 1.0
     }
     
+    
+    // MARK: IconView
     // Here is the "normal" icon-based event view, when it isn't expanded.
     var iconView: some View {
         
@@ -232,7 +110,7 @@ struct EventView: View {
                 }
                 
                 // Time
-                Text(atTime)
+                Text(event.happensWhen)
                     .font(.system(size: size.fontSizeMedium))
                 
                 // Icon
@@ -247,7 +125,7 @@ struct EventView: View {
                 }
                 
                 // Relative Time
-                Text(relativeTimeDescription(event.startDate))
+                Text(event.relativeTimeDescription(event.startDate))
                     .font(.system(size: size.fontSizeMedium))
                     .multilineTextAlignment(.center)
                 
@@ -300,7 +178,7 @@ struct EventView: View {
                 }
                 
                 // Relative Time
-                Text(relativeTimeDescription(event.endDate))
+                Text(event.relativeTimeDescription(event.endDate))
                     .font(.system(size: size.fontSizeMedium))
                     .multilineTextAlignment(.center)
                 Text("TAP TO DISMISS")
@@ -337,12 +215,12 @@ struct EventView: View {
     var body: some View {
         
         // If the event has passed, present an empty view
-        if event.endDate < now {
+        if event.endDate < event.now {
             
             EmptyView()
             
             // If the event is currently happening, present eventIsNowView
-        } else if eventIsNow {
+        } else if event.isNow {
             
             
             ArrowView (size: size.largeEvent)

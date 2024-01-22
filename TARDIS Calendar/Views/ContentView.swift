@@ -121,7 +121,7 @@ struct ContentView: View {
                         Button("Yes", action: {stateBools.showSettings = true})
                     }
                     .sheet(isPresented: $stateBools.showSettings) {
-                        SettingsView(eventManager: eventManager)
+                        SettingsView()
                             .onDisappear {
                                 eventManager.updateEvents()
                             }
@@ -148,6 +148,7 @@ struct ContentView: View {
             .environmentObject(timeline)
             .environmentObject(eventManager)
             .environmentObject(Dimensions(screen.size))
+            .environmentObject(stateBools)
             
             // Update timer fires once per second.
             .onReceive(updateTimer) { time in

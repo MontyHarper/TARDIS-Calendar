@@ -37,6 +37,7 @@ struct MarqueeView: View {
 
 class MarqueeController {
     
+    let bannerText: String
     let message: String
     let refreshDate: Date
     var characterWidths = [Double]()
@@ -53,6 +54,7 @@ class MarqueeController {
     init(_ inputText: String, refresh: Date, fontSize: Double) {
         print("making a new controller: ", inputText)
         // Trying this - adding an "end of message" so Mom won't keep reading it over and over. Don't know if that will help or not.
+        self.bannerText = inputText
         self.message = (inputText == "") ? "No Text Available" : inputText + " END OF MESSAGE  ★  "
         self.refreshDate = refresh
         var text = message

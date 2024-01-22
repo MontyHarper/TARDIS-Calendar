@@ -19,14 +19,22 @@ struct NowView: View {
         Date(timeIntervalSince1970: timeline.now).formatted(date: .omitted, time: .shortened)
     }
     
+    static public var nowIcon: Image {
+        if let altImage = UserDefaults.standard.value(forKey: "nowIcon") as? Image {
+            return altImage
+        } else {
+            // Default image for now icon.
+            return Image(systemName:"person.circle.fill")
+        }
+    }
+    
     var body: some View {
-        
-        // TODO: - this is hard-wired for now. Will need to allow user to specify an image and retrieve it here from user defaults.
-        
-        let image = Image(systemName:"person.circle.fill")
-        
+                
+
         Group {
             
+            ZStack {
+
             VStack {
                 Image(systemName: "arrowtriangle.up.fill")
                     .resizable()
@@ -45,20 +53,16 @@ struct NowView: View {
             }
             .foregroundColor(.blue)
             .shadow(color: .white, radius: 20)
-            .zIndex(-1)
             
-//            ArrowView(size: size.mediumEvent)
-//                .zIndex(0)
-            Circle()
-                .frame(width: size.mediumEvent, height: size.mediumEvent).foregroundColor(.blue)
-                .zIndex(9)
-                .shadow(color: .white, radius: size.mediumEvent * 0.1)
-            image
-                .resizable()
-                .aspectRatio(contentMode:.fit)
-                .frame(width:size.mediumEvent * 0.9, height: size.mediumEvent * 0.9, alignment:.center)
-                .clipShape(Circle())
-                .zIndex(10)
+                Circle()
+                    .frame(width: size.mediumEvent, height: size.mediumEvent).foregroundColor(.blue)
+                    .shadow(color: .white, radius: size.mediumEvent * 0.1)
+                NowView.nowIcon
+                    .resizable()
+                    .aspectRatio(contentMode:.fit)
+                    .frame(width:size.mediumEvent * 0.9, height: size.mediumEvent * 0.9, alignment:.center)
+                    .clipShape(Circle())
+            }
             
         } // End of Group
         .frame(width: size.largeEvent * 1.5)

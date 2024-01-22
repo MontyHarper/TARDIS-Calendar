@@ -48,15 +48,21 @@ class CalendarSet: ObservableObject {
         // Grab a fresh list of calendars from the Apple Calendar App
         let getCalendars = eventStore.calendars(for: .event)
         
-        guard getCalendars.count > 0 else {
+        guard !getCalendars.isEmpty else {
             // No calendars are available to work with; this shouldn't happen. Calendar has default calendars. Yet somehow, it does happen... No, I think I figured it out and this shouldn't happen. I'll leave this here for now to see if it comes up again.
             completion(CalendarError.noAppleCalendars)
+            return
+        }
+        
+        guard (UserDefaults.standard.object(forKey: "calendars") != nil) else {
+            completion(CalendarError.noUserDictionary)
             return
         }
         
         // Grab user default "calendars" - a dictionary matching calendars to display with their calendar types. If the dictionary isn't yet available, use an empty dictionary to indicate no calendars have been selected.
         let myCalendars = UserDefaults.standard.dictionary(forKey: "calendars") as? [String : String] ?? ["" : ""]
         
+
         self.userCalendars = myCalendars
         let titles = myCalendars.keys
         

@@ -40,7 +40,7 @@ struct HeaderView: View {
         eventManager.marquee?.marqueeFont
     }
     var marqueeText: String? {
-        eventManager.marquee?.message
+        eventManager.marquee?.bannerText
     }
     var marqueeTextWidth: CGFloat? {
         marqueeText?.size(withAttributes: [.font: marqueeFont as Any]).width
@@ -89,7 +89,7 @@ struct HeaderView: View {
                         EmptyView()
                     }
                 }
-                .frame(width: showMarquee ? marqueeWidth : 0.0, height: size.lineHeight, alignment: .center)
+                .frame(width: marqueeWidth, height: size.lineHeight, alignment: .center)
                 .background(Color(hue: 0.0, saturation: 0.0, brightness: 1.0, opacity: 0.5))                .clipShape(RoundedRectangle(cornerRadius: 20))
 
                 

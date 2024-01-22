@@ -30,6 +30,7 @@
 		F18D05032B0AA6B500E5C91E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18D05022B0AA6B500E5C91E /* SettingsView.swift */; };
 		F18D051F2B0BC01C00E5C91E /* CalendarSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18D051E2B0BC01C00E5C91E /* CalendarSet.swift */; };
 		F19149272AD2649000A31D5A /* SolarDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19149262AD2649000A31D5A /* SolarDay.swift */; };
+		F19447A22B5CC23700BDC03B /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19447A12B5CC23700BDC03B /* Event.swift */; };
 		F1B5FE182A735D2200CBBCE6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B5FE172A735D2200CBBCE6 /* Extensions.swift */; };
 		F1D15B422A5FA758006F6A4E /* TARDIS_CalendarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D15B412A5FA758006F6A4E /* TARDIS_CalendarApp.swift */; };
 		F1D15B442A5FA758006F6A4E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D15B432A5FA758006F6A4E /* ContentView.swift */; };
@@ -68,6 +69,7 @@
 		F18D05022B0AA6B500E5C91E /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		F18D051E2B0BC01C00E5C91E /* CalendarSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSet.swift; sourceTree = "<group>"; };
 		F19149262AD2649000A31D5A /* SolarDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolarDay.swift; sourceTree = "<group>"; };
+		F19447A12B5CC23700BDC03B /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
 		F1B5FE172A735D2200CBBCE6 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		F1D15B3E2A5FA758006F6A4E /* TARDIS Calendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TARDIS Calendar.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1D15B412A5FA758006F6A4E /* TARDIS_CalendarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TARDIS_CalendarApp.swift; sourceTree = "<group>"; };
@@ -116,7 +118,7 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
-		F122A3062ADF1782002E82AE /* ViewModels */ = {
+		F122A3062ADF1782002E82AE /* Managers */ = {
 			isa = PBXGroup;
 			children = (
 				F122A3072ADF17C1002E82AE /* EventManager.swift */,
@@ -128,6 +130,21 @@
 				F19149262AD2649000A31D5A /* SolarDay.swift */,
 				F1F9E49C2B12AF2A00DA4026 /* StoredSolarDays.xcdatamodeld */,
 				F1D9AD392B13966E0076832F /* DataController.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
+		F194479F2B5CC17600BDC03B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		F19447A02B5CC1A300BDC03B /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				F19447A12B5CC23700BDC03B /* Event.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -154,7 +171,9 @@
 				F119C6842A7CA56A00B183F5 /* TARDIS-Calendar-Info.plist */,
 				F1D15B412A5FA758006F6A4E /* TARDIS_CalendarApp.swift */,
 				F122A2C12ADA3F2B002E82AE /* Views */,
-				F122A3062ADF1782002E82AE /* ViewModels */,
+				F19447A02B5CC1A300BDC03B /* ViewModels */,
+				F122A3062ADF1782002E82AE /* Managers */,
+				F194479F2B5CC17600BDC03B /* Models */,
 				F1F9E4992B111DBF00DA4026 /* Utilities */,
 				F1D15B452A5FA75B006F6A4E /* Assets.xcassets */,
 				F18D04F42B0009D300E5C91E /* README.md */,
@@ -262,6 +281,7 @@
 				F18D05032B0AA6B500E5C91E /* SettingsView.swift in Sources */,
 				F122A2C02AD82A7C002E82AE /* SolarEventManager.swift in Sources */,
 				F1DED93D2B3624450023BF22 /* TimeTickBar.swift in Sources */,
+				F19447A22B5CC23700BDC03B /* Event.swift in Sources */,
 				F1DED93F2B3756660023BF22 /* ButtonBar.swift in Sources */,
 				F10C32A32B16EA9000CCF83B /* AlertView.swift in Sources */,
 				F18D04F92B06BA7400E5C91E /* CurrentDateView.swift in Sources */,
@@ -341,7 +361,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app displays events from Calendar.";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -396,7 +415,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app displays events from Calendar.";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -419,8 +437,10 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "TARDIS-Calendar-Info.plist";
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Please allow access to photos in order to change the Now icon.";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app displays events from Apple's Calendar App.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app uses your approximate location to display acurate sunrise and sunset times.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Please allow access to photos in order to change the Now icon.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -453,8 +473,10 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "TARDIS-Calendar-Info.plist";
+				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Please allow access to photos in order to change the Now icon.";
 				INFOPLIST_KEY_NSCalendarsUsageDescription = "This app displays events from Apple's Calendar App.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app uses your approximate location to display acurate sunrise and sunset times.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Please allow access to photos in order to change the Now icon.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

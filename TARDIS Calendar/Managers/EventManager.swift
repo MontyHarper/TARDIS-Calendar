@@ -4,7 +4,7 @@
 //
 //  Created by Monty Harper on 10/17/23.
 //
-//  Captures new events; provides an array of Event view models.
+//  Captures new events; provides an array of currently active events
 //
 
 import EventKit
@@ -48,13 +48,13 @@ class EventManager: ObservableObject {
     
     @objc func updateCalendarsAndEvents() {
    
-        guard itIsSafeToUpdate() else {
+        guard itIsSafeToUpdate() == true else {
             return
         }
-        
+                
         calendarSet.updateCalendars(eventStore: eventStore) { error in
             if let error = error {
-                StateBools.shared.noCalendarsAvailable = (error == CalendarError.noAppleCalendars)
+                StateBools.shared.noCalendarsAvailable = (error == CalendarError.noAppleCalendars) || (error == CalendarError.noUserDictionary)
             } else {
                 StateBools.shared.noCalendarsAvailable = false
                 self.updateEvents() // Called from within closure to ensure calendars are updated first.
@@ -63,6 +63,8 @@ class EventManager: ObservableObject {
     }
     
     func itIsSafeToUpdate() -> Bool {
+        
+        print("itIsSafeToUpdate called")
         
         // Returns true if we have permission
         // Otherwise we get permission
@@ -247,68 +249,3 @@ class EventManager: ObservableObject {
     }
 }
 
-
-// Event is a wrapper for EKEvent, Event Kit's raw event Type.
-// - Provides a type for each event
-// - Provides a unique id for each event
-// - Conforms events to Idenditfiable and Comparable protocols
-// - Rounds starting time so it can be used as an alternate identification (No two events should start at the same time.)
-// - Exposes various other values.
-
-class Event: Identifiable, Comparable {
-    
-    var event: EKEvent
-    var type: String
-            
-    init(event: EKEvent, type: String) {
-        self.event = event
-        self.type = type
-    }
-        
-    var id: UUID {
-        UUID()
-    }
-    
-    var startDate: Date {
-        // Ensures start time is rounded to the minute.
-        let components = Timeline.calendar.dateComponents([.year,.month,.day,.hour,.minute], from: event.startDate)
-        return Timeline.calendar.date(from: components)!
-    }
-    var endDate: Date {
-        event.endDate
-    }
-    var title: String {
-        event.title
-    }
-    var calendarTitle: String {
-        event.calendar.title
-    }
-    var calendarColor: Color {
-        let cg = event.calendar.cgColor ?? CGColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 1.0)
-        return Color(cgColor: cg)
-    }
-    var priority: Int {
-        if let number = CalendarType(rawValue:type)?.priority() {
-            return number
-        } else {
-            return 0
-        }
-    }
-    
-    
-    // Protocol conformance for Comparable
-    static func < (lhs: Event, rhs: Event) -> Bool {
-        if lhs.startDate < rhs.startDate {
-            return true
-        } else if lhs.startDate > rhs.startDate {
-            return false
-        } else {
-            return lhs.priority < rhs.priority
-        }
-    }
-    
-    static func == (lhs: Event, rhs: Event) -> Bool {
-        lhs.startDate == rhs.startDate && lhs.priority == rhs.priority
-    }
-
-}
