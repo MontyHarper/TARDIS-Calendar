@@ -138,9 +138,7 @@ struct ContentView: View {
                     .position(x: screen.size.width * 0.5, y: screen.size.height * 0.85)
                 
                 
-                
                 AlertView()
-                
                 
                 
             } // End of main ZStack
@@ -161,21 +159,18 @@ struct ContentView: View {
                 let today = Timeline.calendar.dateComponents([.day], from: Date())
                 if today != currentDay {
                     print("called update calendars from new day in contentview")
-                    eventManager.updateCalendarsAndEvents()
+                    eventManager.updateEverything()
                     solarEventManager.updateSolarDays(){_ in}
                     currentDay = today
                 }
                 
                 // Update marquee and/or next buttons if either has expired.
-                
-                if let marquee = eventManager.marquee {
-                    if Date() > marquee.refreshDate {
-                        eventManager.makeBanners()
-                    }
+                if Date() > eventManager.bannerMaker.refreshDate {
+                    eventManager.bannerMaker.updateBanners()
                 }
                 
-                if eventManager.buttonsExpire < Date() {
-                    eventManager.makeButtons()
+                if Date() > eventManager.buttonMaker.refreshDate {
+                    eventManager.buttonMaker.updateButtons()
                 }
                 
                 // Bring an upcoming event into focus as needed.

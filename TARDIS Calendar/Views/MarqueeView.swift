@@ -15,7 +15,12 @@ struct MarqueeView: View {
 
     var body: some View {
         
-        if let controller = eventManager.marquee {
+        let controller = eventManager.bannerMaker.marquee
+        
+        if eventManager.bannerMaker.bannerText == "" {
+            Text("There is nothing to display yet...")
+        } else {
+            
             TimelineView(.animation) {context in
                 Text(controller.frame(context.date).text)
                     .padding()
@@ -28,8 +33,6 @@ struct MarqueeView: View {
                         controller.togglePause()
                     }
             }
-        } else {
-            Text("There is nothing to display yet...")
         }
     }
 }
@@ -39,7 +42,6 @@ class MarqueeController {
     
     let bannerText: String
     let message: String
-    let refreshDate: Date
     var characterWidths = [Double]()
     var timeMarkers = [TimeInterval]()
     var startTime = 0.0
@@ -51,12 +53,11 @@ class MarqueeController {
     var pauseOffset = 0.0
     var pauseTime = 0.0
     
-    init(_ inputText: String, refresh: Date, fontSize: Double) {
+    init(_ inputText: String, fontSize: Double) {
         print("making a new controller: ", inputText)
         // Trying this - adding an "end of message" so Mom won't keep reading it over and over. Don't know if that will help or not.
         self.bannerText = inputText
         self.message = (inputText == "") ? "No Text Available" : inputText + " END OF MESSAGE  ★  "
-        self.refreshDate = refresh
         var text = message
         marqueeFont = UIFont.systemFont(ofSize: fontSize, weight: .black)
         for _ in 0..<message.count {

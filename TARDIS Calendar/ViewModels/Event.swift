@@ -37,7 +37,6 @@ struct Event: Identifiable, Comparable {
     var endDate: Date {
         event.endDate
     }
-    let now = Date()
     var title: String {
         event.title
     }
@@ -63,7 +62,7 @@ struct Event: Identifiable, Comparable {
         return ("at " + event.startDate.formatted(date: .omitted, time: .shortened) + dayText)
     }
     var isNow: Bool {
-        (event.startDate...event.endDate).contains(now)
+        (event.startDate...event.endDate).contains(Date())
     }
     
     // MARK: - Options for calculating a relative time description
@@ -75,7 +74,7 @@ struct Event: Identifiable, Comparable {
         var dayString = ""
         var hourString = ""
         var minuteString = ""
-        let parts = Timeline.calendar.dateComponents([.day, .hour, .minute], from: now, to: event.startDate)
+        let parts = Timeline.calendar.dateComponents([.day, .hour, .minute], from: Date(), to: event.startDate)
         if let day = parts.day {
             dayString = day == 0 ? "" : ("\(day) day" + (day == 1 ? ", " : "s, "))
         }
@@ -106,11 +105,11 @@ struct Event: Identifiable, Comparable {
     // I'm thinking this works better than the others; gives a more accurate estimate, and works either for time "from now" or time "remaining" in an event.
     
     func relativeTimeDescription(_ date: Date) -> String {
-        guard event.endDate > now else {
+        guard event.endDate > Date() else {
             return ""
         }
         
-        let components = Timeline.calendar.dateComponents([.day, .hour, .minute], from: now, to: event.startDate > now ? event.startDate : event.endDate)
+        let components = Timeline.calendar.dateComponents([.day, .hour, .minute], from: Date(), to: event.startDate > Date() ? event.startDate : event.endDate)
         
         let days = components.day ?? 0
         let hours = components.hour ?? 0
@@ -175,7 +174,7 @@ struct Event: Identifiable, Comparable {
                 description += "less than \((minutes + 1).lowerName()) minute" + plural
             }
         }
-        return description + (event.startDate > now ? " from now" : " remaining")
+        return description + (event.startDate > Date() ? " from now" : " remaining")
     }
     
     

@@ -28,9 +28,14 @@
 		F18D04FD2B0824F500E5C91E /* LayoutValueKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18D04FC2B0824F500E5C91E /* LayoutValueKeys.swift */; };
 		F18D05012B0A99B600E5C91E /* StateBools.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18D05002B0A99B600E5C91E /* StateBools.swift */; };
 		F18D05032B0AA6B500E5C91E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18D05022B0AA6B500E5C91E /* SettingsView.swift */; };
-		F18D051F2B0BC01C00E5C91E /* CalendarSet.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18D051E2B0BC01C00E5C91E /* CalendarSet.swift */; };
+		F18D051F2B0BC01C00E5C91E /* CalendarManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18D051E2B0BC01C00E5C91E /* CalendarManager.swift */; };
 		F19149272AD2649000A31D5A /* SolarDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19149262AD2649000A31D5A /* SolarDay.swift */; };
 		F19447A22B5CC23700BDC03B /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19447A12B5CC23700BDC03B /* Event.swift */; };
+		F19447A62B60CBE400BDC03B /* AppleCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19447A52B60CBE400BDC03B /* AppleCalendar.swift */; };
+		F19447A82B60CD7900BDC03B /* EventStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19447A72B60CD7900BDC03B /* EventStore.swift */; };
+		F19447AA2B61B80E00BDC03B /* ButtonModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19447A92B61B80E00BDC03B /* ButtonModel.swift */; };
+		F19447AC2B61BE6200BDC03B /* ButtonMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19447AB2B61BE6200BDC03B /* ButtonMaker.swift */; };
+		F19447AE2B61C23000BDC03B /* BannerMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F19447AD2B61C23000BDC03B /* BannerMaker.swift */; };
 		F1B5FE182A735D2200CBBCE6 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1B5FE172A735D2200CBBCE6 /* Extensions.swift */; };
 		F1D15B422A5FA758006F6A4E /* TARDIS_CalendarApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D15B412A5FA758006F6A4E /* TARDIS_CalendarApp.swift */; };
 		F1D15B442A5FA758006F6A4E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D15B432A5FA758006F6A4E /* ContentView.swift */; };
@@ -67,9 +72,14 @@
 		F18D04FC2B0824F500E5C91E /* LayoutValueKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutValueKeys.swift; sourceTree = "<group>"; };
 		F18D05002B0A99B600E5C91E /* StateBools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateBools.swift; sourceTree = "<group>"; };
 		F18D05022B0AA6B500E5C91E /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		F18D051E2B0BC01C00E5C91E /* CalendarSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSet.swift; sourceTree = "<group>"; };
+		F18D051E2B0BC01C00E5C91E /* CalendarManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarManager.swift; sourceTree = "<group>"; };
 		F19149262AD2649000A31D5A /* SolarDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolarDay.swift; sourceTree = "<group>"; };
 		F19447A12B5CC23700BDC03B /* Event.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		F19447A52B60CBE400BDC03B /* AppleCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleCalendar.swift; sourceTree = "<group>"; };
+		F19447A72B60CD7900BDC03B /* EventStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStore.swift; sourceTree = "<group>"; };
+		F19447A92B61B80E00BDC03B /* ButtonModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonModel.swift; sourceTree = "<group>"; };
+		F19447AB2B61BE6200BDC03B /* ButtonMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonMaker.swift; sourceTree = "<group>"; };
+		F19447AD2B61C23000BDC03B /* BannerMaker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerMaker.swift; sourceTree = "<group>"; };
 		F1B5FE172A735D2200CBBCE6 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		F1D15B3E2A5FA758006F6A4E /* TARDIS Calendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "TARDIS Calendar.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F1D15B412A5FA758006F6A4E /* TARDIS_CalendarApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TARDIS_CalendarApp.swift; sourceTree = "<group>"; };
@@ -122,14 +132,14 @@
 			isa = PBXGroup;
 			children = (
 				F122A3072ADF17C1002E82AE /* EventManager.swift */,
-				F18D051E2B0BC01C00E5C91E /* CalendarSet.swift */,
+				F18D051E2B0BC01C00E5C91E /* CalendarManager.swift */,
+				F19447A72B60CD7900BDC03B /* EventStore.swift */,
+				F19447AB2B61BE6200BDC03B /* ButtonMaker.swift */,
+				F19447AD2B61C23000BDC03B /* BannerMaker.swift */,
 				F122A30D2AE02A54002E82AE /* Timeline.swift */,
 				F1102AF92A6DDCA6007534C1 /* TimeTicks.swift */,
 				F122A2BF2AD82A7C002E82AE /* SolarEventManager.swift */,
 				F122A2BB2AD2FB0F002E82AE /* LocationManager.swift */,
-				F19149262AD2649000A31D5A /* SolarDay.swift */,
-				F1F9E49C2B12AF2A00DA4026 /* StoredSolarDays.xcdatamodeld */,
-				F1D9AD392B13966E0076832F /* DataController.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -137,6 +147,10 @@
 		F194479F2B5CC17600BDC03B /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				F19149262AD2649000A31D5A /* SolarDay.swift */,
+				F1F9E49C2B12AF2A00DA4026 /* StoredSolarDays.xcdatamodeld */,
+				F1D9AD392B13966E0076832F /* DataController.swift */,
+				F19447A52B60CBE400BDC03B /* AppleCalendar.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -145,6 +159,7 @@
 			isa = PBXGroup;
 			children = (
 				F19447A12B5CC23700BDC03B /* Event.swift */,
+				F19447A92B61B80E00BDC03B /* ButtonModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -280,6 +295,7 @@
 				F122A2C72ADA4B10002E82AE /* NowView.swift in Sources */,
 				F18D05032B0AA6B500E5C91E /* SettingsView.swift in Sources */,
 				F122A2C02AD82A7C002E82AE /* SolarEventManager.swift in Sources */,
+				F19447AA2B61B80E00BDC03B /* ButtonModel.swift in Sources */,
 				F1DED93D2B3624450023BF22 /* TimeTickBar.swift in Sources */,
 				F19447A22B5CC23700BDC03B /* Event.swift in Sources */,
 				F1DED93F2B3756660023BF22 /* ButtonBar.swift in Sources */,
@@ -293,18 +309,22 @@
 				F122A2BC2AD2FB0F002E82AE /* LocationManager.swift in Sources */,
 				F1D9AD3A2B13966E0076832F /* DataController.swift in Sources */,
 				F122A2C32ADA4AD1002E82AE /* BackgroundView.swift in Sources */,
+				F19447A82B60CD7900BDC03B /* EventStore.swift in Sources */,
 				F1102AFA2A6DDCA6007534C1 /* TimeTicks.swift in Sources */,
 				F166ACBB2B2750F800AE27E3 /* MarqueeView.swift in Sources */,
 				F19149272AD2649000A31D5A /* SolarDay.swift in Sources */,
 				F122A2C92ADA4B20002E82AE /* TimeTickViews.swift in Sources */,
+				F19447A62B60CBE400BDC03B /* AppleCalendar.swift in Sources */,
 				F1D15B442A5FA758006F6A4E /* ContentView.swift in Sources */,
+				F19447AC2B61BE6200BDC03B /* ButtonMaker.swift in Sources */,
 				F1F9E49E2B12AF2A00DA4026 /* StoredSolarDays.xcdatamodeld in Sources */,
 				F18D04FD2B0824F500E5C91E /* LayoutValueKeys.swift in Sources */,
 				F18D04FB2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift in Sources */,
 				F1D15B422A5FA758006F6A4E /* TARDIS_CalendarApp.swift in Sources */,
-				F18D051F2B0BC01C00E5C91E /* CalendarSet.swift in Sources */,
+				F18D051F2B0BC01C00E5C91E /* CalendarManager.swift in Sources */,
 				F14A8A472B331A390049217C /* Dimensions.swift in Sources */,
 				F14A8A432B32A9D90049217C /* HeaderView.swift in Sources */,
+				F19447AE2B61C23000BDC03B /* BannerMaker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

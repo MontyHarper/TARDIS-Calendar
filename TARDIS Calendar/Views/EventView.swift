@@ -215,7 +215,7 @@ struct EventView: View {
     var body: some View {
         
         // If the event has passed, present an empty view
-        if event.endDate < event.now {
+        if event.endDate < Date() {
             
             EmptyView()
             

@@ -37,7 +37,8 @@ struct SettingsView: View {
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
                     Button("Done") {
-                        eventManager.calendarSet.saveUserCalendars()
+                        eventManager.saveUserCalendars()
+                        eventManager.updateEverything()
                         dismiss()
                     }
                     .buttonStyle(.borderedProminent)
@@ -55,10 +56,10 @@ struct SettingsView: View {
     
     @ViewBuilder var calendarSelectionView: some View {
         
-        if eventManager.calendarSet.appleCalendars.count > 0 {
+        if !eventManager.appleCalendars.isEmpty {
             
             // Lists all calendars present in the user's Apple Calendar App.
-            List($eventManager.calendarSet.appleCalendars) {$calendar in
+            List($eventManager.appleCalendars) {$calendar in
                 HStack {
                     // Use toggles to mark which calendars this app will display events from.
                     Toggle("Use this calendar", isOn: $calendar.isSelected)
@@ -88,7 +89,7 @@ struct SettingsView: View {
             .navigationTitle("Choose Calendars to Display")
             
             
-        } else if StateBools.shared.noPermissionForCalendar {
+        } else if !EventStore.shared.permissionIsGiven {
             
             
             ScrollView {

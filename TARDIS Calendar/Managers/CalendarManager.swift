@@ -1,5 +1,5 @@
 //
-//  CalendarSet.swift
+//  CalendarManager.swift
 //  TARDIS Calendar
 //
 //  Created by Monty Harper on 11/20/23.
@@ -11,42 +11,34 @@ import EventKit
 import Foundation
 import SwiftUI
 
-
-// This is a wrapper for EventKit's raw EKCalendar Type.
-// - Conforms calendars to identifiable and hashable
-// - Gives each calendar an id and a type
-struct AppleCalendar: Identifiable, Hashable {
-    
-    var calendar: EKCalendar
-    var isSelected: Bool // Source of truth
-    var type: String
-    var id = UUID()
-    
-    var title: String {
-        calendar.title
-    }
-    var color: Color {
-        Color(calendar.cgColor)
-    }
-}
-
-class CalendarSet: ObservableObject {
+class CalendarManager: ObservableObject {
     
     private(set) var userCalendars: [String: String] = [:] // List of calendars to connect to and their types; Persisted in UserDefaults
     @Published var appleCalendars: [AppleCalendar] = [] // List of all calendars in the Apple Calendar App
     @Published var selectedCalendars: Set<UUID> = Set([]) // Source of truth for which Apple Calendar App calendars are selected.
     
-    var calendarsToSearch: [EKCalendar] { // Apple Calendars that are selected.
-        appleCalendars.filter({$0.isSelected}).map({$0.calendar})
+    
+    init() {
+        EventStore.shared.requestPermission()
+        // Will ask the user for permission to access Calendar
+        // Also instantiates a singleton EventStore for the whole app
+        // This only happens once; the system only responds to it once anyway
+        // If the response is no, the app will function, showing an empty calendar
+        // The actual response is not needed here
     }
     
-    func updateCalendars(eventStore: EKEventStore, completion: @escaping (CalendarError?) -> Void) {
+    func updateCalendars(completion: @escaping (CalendarError?) -> Void) {
         
         // Reset list of Apple Calendar App calendars to empty.
         self.appleCalendars = []
         
+        guard EventStore.shared.permissionIsGiven else {
+            completion(CalendarError.permissionDenied)
+            return
+        }
+        
         // Grab a fresh list of calendars from the Apple Calendar App
-        let getCalendars = eventStore.calendars(for: .event)
+        let getCalendars = EventStore.shared.store.calendars(for: .event)
         
         guard !getCalendars.isEmpty else {
             // No calendars are available to work with; this shouldn't happen. Calendar has default calendars. Yet somehow, it does happen... No, I think I figured it out and this shouldn't happen. I'll leave this here for now to see if it comes up again.
@@ -60,22 +52,20 @@ class CalendarSet: ObservableObject {
         }
         
         // Grab user default "calendars" - a dictionary matching calendars to display with their calendar types. If the dictionary isn't yet available, use an empty dictionary to indicate no calendars have been selected.
-        let myCalendars = UserDefaults.standard.dictionary(forKey: "calendars") as? [String : String] ?? ["" : ""]
+        userCalendars = UserDefaults.standard.dictionary(forKey: "calendars") as? [String : String] ?? ["" : ""]
         
-
-        self.userCalendars = myCalendars
-        let titles = myCalendars.keys
+        let titles = userCalendars.keys
         
         // Construct an AppleCalendar for each calendar in the user's Apple Calendar App. We are attatching isSelected and type to each EKCalendar. This will allow for easy editing of the user's calendars dictionary.
         
         for calendar in getCalendars {
             let isSelected = titles.contains(calendar.title)
             var type = "none"
-            if let myType = myCalendars[calendar.title] {
+            if let myType = userCalendars[calendar.title] {
                 type = myType
             }
             let newCalendar = AppleCalendar(calendar: calendar, isSelected: isSelected, type: type)
-            self.appleCalendars.append(newCalendar)
+            appleCalendars.append(newCalendar)
         }
         
         selectedCalendars = Set(self.appleCalendars.filter({$0.isSelected}).map({$0.id}))
@@ -95,5 +85,7 @@ class CalendarSet: ObservableObject {
         }
         UserDefaults.standard.set(myDictionary, forKey: "calendars")
         userCalendars = myDictionary
+        
+        print("Calendars saved: ", myDictionary)
     }
 }
