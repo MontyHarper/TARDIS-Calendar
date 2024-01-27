@@ -43,7 +43,13 @@ class StateBools: ObservableObject {
     }
     @Published var newUser: Bool // User is considered new the first time app is launched, but not subsequent times. Use to open app to Settings with a welcome message.
     var noCalendarsAvailable = false
-    var noCalendarsSelected = true
+    var noCalendarsSelected: Bool {
+        if let calendars = UserDefaults.standard.object(forKey: UserDefaultKey.Calendars.rawValue) as? [String:String] {
+            return calendars.isEmpty
+        } else {
+            return true
+        }
+    }
     var noPermissionForCalendar: Bool {
         !(EKEventStore.authorizationStatus(for: .event) == .authorized)
     }
@@ -78,6 +84,5 @@ class StateBools: ObservableObject {
             UserDefaults.standard.set(true, forKey: "useDefaultNowIcon")
             useDefaultNowIcon = true
         }
-        noCalendarsSelected = (UserDefaults.standard.object(forKey: "calendars") == nil)
     }
 }

@@ -8,12 +8,12 @@
 import Foundation
 import SwiftUI
 
-class ButtonMaker {
+class ButtonMaker: ObservableObject {
     
     var eventManager: EventManager!
     
-    var buttons = [ButtonModel]()
-    var refreshDate = Date()
+    @Published var buttons = [ButtonModel]()
+    var refreshDate = Timeline.maxDay
     
     
     func updateButtons() {

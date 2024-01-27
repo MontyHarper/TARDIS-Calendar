@@ -95,5 +95,10 @@ enum CalendarError: Error {
     }
 }
 
+enum UserDefaultKey: String {
+    case Calendars
+    
+}
+
 
 

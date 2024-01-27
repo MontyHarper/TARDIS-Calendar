@@ -37,10 +37,10 @@ struct HeaderView: View {
         UIFont.systemFont(ofSize: size.fontSizeMedium, weight: .black)
     }
     var marqueeFont: UIFont? {
-        eventManager.bannerMaker.marquee.marqueeFont
+        eventManager.bannerMaker.marquee?.marqueeFont
     }
     var marqueeText: String? {
-        eventManager.bannerMaker.marquee.bannerText
+        eventManager.bannerMaker.marquee?.bannerText
     }
     var marqueeTextWidth: CGFloat? {
         marqueeText?.size(withAttributes: [.font: marqueeFont as Any]).width

@@ -38,7 +38,6 @@ struct SettingsView: View {
                 ToolbarItem(placement: .bottomBar) {
                     Button("Done") {
                         eventManager.saveUserCalendars()
-                        eventManager.updateEverything()
                         dismiss()
                     }
                     .buttonStyle(.borderedProminent)
@@ -98,6 +97,14 @@ struct SettingsView: View {
                 Text("\nYou have not given permission for this app to access your Apple Calendars App. The TARDIS app can only display events from your Apple Calendar App. Without permission to access those events, your TARDIS Calendar will have nothing to display.\n\n Please find TARDIS Calendar in your Settings app and switch \"Calendars\" to ON.")
             }
             .padding()
+            
+        } else {
+            Text("Something's wrong.")
+                .task {
+                    print("why are no calendars listed?")
+                    print("Permission given: ", EventStore.shared.permissionIsGiven)
+                    print("Calendars empty: ", eventManager.appleCalendars.isEmpty)
+                }
         }
     } // End of calendarSelectionView
     

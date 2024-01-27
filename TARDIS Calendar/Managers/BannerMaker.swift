@@ -14,7 +14,7 @@ class BannerMaker {
     var banners = [EKEvent]()
     var bannerText = ""
     var refreshDate = Timeline.maxDay
-    var marquee = MarqueeController("", fontSize: 24)
+    var marquee: MarqueeController?
     let eventStore = EventStore.shared.store
     
     var eventManager: EventManager!
@@ -29,7 +29,7 @@ class BannerMaker {
         let end = Timeline.maxDay
         
         // Search for events in selected calendars that are banner type
-        let calendarsToSearch = eventManager.appleCalendars.filter({$0.isSelected && $0.type == "banner"}).map({$0.calendar})
+        let calendarsToSearch = eventManager.appleCalendars.filter({$0.isSelected && $0.type == CalendarType.banner.rawValue}).map({$0.calendar})
         
         // Set up search predicate
         let findEKEvents = eventStore.predicateForEvents(withStart: start, end: end, calendars: calendarsToSearch)

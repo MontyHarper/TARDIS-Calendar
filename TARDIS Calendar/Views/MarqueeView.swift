@@ -15,23 +15,24 @@ struct MarqueeView: View {
 
     var body: some View {
         
-        let controller = eventManager.bannerMaker.marquee
-        
-        if eventManager.bannerMaker.bannerText == "" {
-            Text("There is nothing to display yet...")
-        } else {
+        if let controller = eventManager.bannerMaker.marquee {
             
-            TimelineView(.animation) {context in
-                Text(controller.frame(context.date).text)
-                    .padding()
-                    .lineLimit(1)
-                    .font(Font(controller.marqueeFont))
-                    .foregroundColor(.primary)
-                    .offset(x: controller.frame(context.date).offset, y: 0.0)
-                    .fixedSize(horizontal: true, vertical: false)
-                    .onLongPressGesture(minimumDuration: 0.05, maximumDistance: 20.0) {
-                        controller.togglePause()
-                    }
+            if eventManager.bannerMaker.bannerText == "" {
+                Text("There is nothing to display yet...")
+            } else {
+                
+                TimelineView(.animation) {context in
+                    Text(controller.frame(context.date).text)
+                        .padding()
+                        .lineLimit(1)
+                        .font(Font(controller.marqueeFont))
+                        .foregroundColor(.primary)
+                        .offset(x: controller.frame(context.date).offset, y: 0.0)
+                        .fixedSize(horizontal: true, vertical: false)
+                        .onLongPressGesture(minimumDuration: 0.05, maximumDistance: 20.0) {
+                            controller.togglePause()
+                        }
+                }
             }
         }
     }

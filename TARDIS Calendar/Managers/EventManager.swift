@@ -17,28 +17,36 @@ class EventManager: CalendarManager {
     @Published var events = [Event]() // Upcoming events for the maximum number of days displayed.
     @Published var isExpanded = [Bool]() // For each event, should the view be rendered as expanded? This is the source of truth for expansion of event views.
     var bannerMaker = BannerMaker()
-    var buttonMaker = ButtonMaker()
+    @Published var buttonMaker = ButtonMaker()
         
     // newEvents temporarily stores newly downloaded events whle processing.
     private var newEvents = [Event]()
     private let eventStore = EventStore.shared.store
-    
-
-    
+        
     override init() {
         
-        // This asks the user for permission to access Calendar.
         super.init()
         
         // These two both need an eventManager to function
         buttonMaker.eventManager = self
         bannerMaker.eventManager = self
         
-        // This notification will update the calendars and events lists any time an event or calendar is changed in the user's Apple Calendar App.
-        NotificationCenter.default.addObserver(self, selector: #selector(self.updateEverything), name: .EKEventStoreChanged, object: eventStore)
-        
-        updateEverything()
-        
+        // Will ask the user for permission to access Calendar
+        // Also instantiates a singleton EventStore for the whole app
+        // This only happens once; the system only responds to it only once anyway
+        // If the response is no, the app will function, showing an empty calendar
+        // The actual response is not needed here
+        // The update is in a trailing closure to prevent the eventManager from updating before permission is given
+        EventStore.shared.requestPermission() {
+            
+            print("Do we have permission before updating everything? ", EventStore.shared.permissionIsGiven)
+            
+            // This notification will update the calendars and events lists any time an event or calendar is changed in the user's Apple Calendar App.
+            // Set up notifications AFTER permission is requested to avoid two updates triggered at once.
+            NotificationCenter.default.addObserver(self, selector: #selector(self.updateEverything), name: .EKEventStoreChanged, object: self.eventStore)
+            
+            self.updateEverything()
+        }
     } // End init
     
 
@@ -48,20 +56,34 @@ class EventManager: CalendarManager {
             return
         }
                 
-        updateCalendars() { [self] error in
+        updateCalendars() {error in
+            
             if let error = error {
-                StateBools.shared.noCalendarsAvailable = (error == CalendarError.noAppleCalendars) || (error == CalendarError.noUserDictionary)
-            } else {
-                StateBools.shared.noCalendarsAvailable = false
-                self.updateEvents()
-                self.bannerMaker.updateBanners()
-                self.buttonMaker.updateButtons()
+                print("Calendar Error: ", error as Any)
+                switch error {
+                case .permissionDenied, .noAppleCalendars, .noUserDictionary:
+                    StateBools.shared.noCalendarsAvailable = true
+                    return
+                default:
+                    StateBools.shared.noCalendarsAvailable = false
+                }
             }
+            
+            // Keep these inside the updateCalendars closure so we know calendars are available before trying to update anything else.
+            self.updateEvents() {
+                
+                // Keep this insice updateEvents closure because buttons depend on events.
+                self.buttonMaker.updateButtons()
+                
+            }
+            self.bannerMaker.updateBanners()
+            
         }
     }
+
         
     
-    func updateEvents() {
+    func updateEvents(closure: ()->Void) {
         
         print("updateEvents has been triggered")
         
@@ -90,11 +112,17 @@ class EventManager: CalendarManager {
             return event == sameDate.max()
         })
         
-        // Update events
-        events = newEvents
+        // Update events on main thread
         
-        // Restore dates that are expanded.
-        isExpanded = events.indices.map({expandedDates.contains(events[$0].startDate)})
+        DispatchQueue.main.async {
+            
+            self.events = self.newEvents
+            
+            // Restore dates that are expanded.
+            self.isExpanded = self.events.indices.map({expandedDates.contains(self.events[$0].startDate)})
+        }
+        
+        closure()
         
     } // End of updateEvents
     
@@ -122,5 +150,21 @@ class EventManager: CalendarManager {
         StateBools.shared.animateSpan = true
     }
     
+    // Call to persist user-selected calendar list to UserDefaults.
+    func saveUserCalendars() {
+        var myDictionary: [String: String] = [:]
+        for calendar in appleCalendars {
+            if calendar.isSelected {
+                myDictionary[calendar.title] = calendar.type
+            }
+        }
+        UserDefaults.standard.set(myDictionary, forKey: UserDefaultKey.Calendars.rawValue)
+        
+        userCalendars = myDictionary
+        
+        print("Calendars saved: ", myDictionary)
+                
+        updateEverything()
+    }
 }
 

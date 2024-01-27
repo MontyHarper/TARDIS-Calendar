@@ -23,24 +23,29 @@ class EventStore {
         EKEventStore.authorizationStatus(for: .event) == .authorized
     }
     
-    func requestPermission() {
+    func requestPermission(completion: @escaping () -> Void) {
         
         // The purpose of this method is to trigger a request for permission when user first starts up the app. We don't need the result here. If permission status changes, the permissionIsGiven bool will automatically change values, and Notification Center will trigger a new update.
         
         // Ask permission the new way if available
 #if swift(>=5.9)
         if #available(iOS 17.0, *) {
-            store.requestFullAccessToEvents { _, _ in }
+            store.requestFullAccessToEvents { _, _ in
+                completion()
+            }
             
         } else {
             // Ask permission the old way if not
-            store.requestAccess(to: EKEntityType.event) { _, _ in }
+            store.requestAccess(to: EKEntityType.event) { _, _ in
+                completion()
+            }
         }
         
 #else
-        store.requestAccess(to: EKEntityType.event) { _, _ in }
+        store.requestAccess(to: EKEntityType.event) { _, _ in
+            completion()
+        }
         
 #endif
     }
-    
 }
