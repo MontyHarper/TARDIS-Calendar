@@ -20,8 +20,6 @@ class StateBools: ObservableObject {
     static var shared = StateBools()
     var networkMonitor = NetworkMonitor()
     
-    
-    // TODO: - Use an enum to track UserDefault keys to avoid typos.
     var animateSpan = false // When true, calendar view is auto-zooming back to default zoom.
     
     // Flag internet as down only if it's been down awhile. This way the user is not plagued with messages about trivial interruptions to the network. Change minSeconds to adjust the amount of time the connection needs to be lost before a notification pops up.
@@ -38,7 +36,7 @@ class StateBools: ObservableObject {
     var marqueeNotShowing = true
     var missingSolarDays = 0 { // Keeps count of how many times SolarDays cannot be downloaded;
         didSet {
-            UserDefaults.standard.set(missingSolarDays, forKey: "missingSolarDays")
+            UserDefaults.standard.set(missingSolarDays, forKey: UserDefaultKey.MissingSolarDays.rawValue)
         }
     }
     @Published var newUser: Bool // User is considered new the first time app is launched, but not subsequent times. Use to open app to Settings with a welcome message.
@@ -53,7 +51,7 @@ class StateBools: ObservableObject {
     var noPermissionForCalendar: Bool {
         !(EKEventStore.authorizationStatus(for: .event) == .authorized)
     }
-    var noPermissionForLocation = false // Cannot be accessed directly (as far as I can figure out). Will be reset as soon as Events are updated.
+    var authorizedForLocationAccess = false // Cannot be accessed directly (as far as I can figure out). Will be reset as soon as Events are updated.
     var showProgressView = false // Used to indicate the background is loading.
     var showMissingSolarDaysWarning: Bool { // If enough days are missing that the calendar will look wrong, show a warning.
         missingSolarDays >= 4
@@ -61,7 +59,7 @@ class StateBools: ObservableObject {
     var showSettings: Bool // Opens the settings page where user can select calendars to show.
     @Published var showSettingsAlert = false // Warns that a calendar must be selected.
     var showWarning: Bool { // Use to activate the AlertView, which will then show whichever warning is appropriate, with an attached alert for more information.
-        noPermissionForCalendar || noCalendarsAvailable || noCalendarsSelected || internetIsDown || noPermissionForLocation || showMissingSolarDaysWarning
+        noPermissionForCalendar || noCalendarsAvailable || noCalendarsSelected || internetIsDown || !authorizedForLocationAccess || showMissingSolarDaysWarning
     }
     var solarDaysAvailable = false // When false, background returns a solid color.
     var solarDaysUpdateLocked = false
@@ -69,19 +67,19 @@ class StateBools: ObservableObject {
     
     
     private init() {
-        missingSolarDays = UserDefaults.standard.integer(forKey: "missingSolarDays")
-        if UserDefaults.standard.bool(forKey: "newUser") {
+        missingSolarDays = UserDefaults.standard.integer(forKey: UserDefaultKey.MissingSolarDays.rawValue)
+        if UserDefaults.standard.bool(forKey: UserDefaultKey.NewUser.rawValue) {
             newUser = false
             showSettings = false
         } else {
-            UserDefaults.standard.set(true, forKey: "newUser")
+            UserDefaults.standard.set(true, forKey: UserDefaultKey.NewUser.rawValue)
             newUser = true
             showSettings = true
         }
-        if UserDefaults.standard.bool(forKey: "useDefaultNowIcon") {
-            useDefaultNowIcon = UserDefaults.standard.bool(forKey: "useDefaultNowIcon")
+        if UserDefaults.standard.bool(forKey: UserDefaultKey.UseDefaultNowIcon.rawValue) {
+            useDefaultNowIcon = UserDefaults.standard.bool(forKey: UserDefaultKey.UseDefaultNowIcon.rawValue)
         } else {
-            UserDefaults.standard.set(true, forKey: "useDefaultNowIcon")
+            UserDefaults.standard.set(true, forKey: UserDefaultKey.UseDefaultNowIcon.rawValue)
             useDefaultNowIcon = true
         }
     }

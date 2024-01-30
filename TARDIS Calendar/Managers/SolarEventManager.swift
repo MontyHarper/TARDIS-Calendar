@@ -20,14 +20,17 @@ import SwiftUI
 class SolarEventManager: ObservableObject, LocationUpdateReceiver {
     
     var solarDays: [SolarDay] = []
-    var currentLatitude = 36.110170
-    var currentLongitude = -97.058570
     var locationManager = LocationManager()
     // Use of CoreData is a requirement for my assignment.
     var dataController = DataController()
     var solarDaysBackupContext: NSManagedObjectContext
-    let stateBools = StateBools.shared
     
+    var currentLatitude: Double = 0.0
+    var currentLongitude: Double = 0.0
+    
+    let stateBools = StateBools.shared
+    let defaultLatitude = 36.110170
+    let defaultLongitude = -97.058570
     
     init() {
         
@@ -76,8 +79,10 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
         }
     }
 
-    func receiveLocationUpdate() {
+    func receiveLocationUpdate(latitude: Double, longitude: Double) {
         print ("received location update notification")
+        UserDefaults.standard.set(longitude,forKey:UserDefaultKey.Longitude.rawValue)
+        UserDefaults.standard.set(latitude,forKey:UserDefaultKey.Latitude.rawValue)
         if !stateBools.solarDaysUpdateLocked {
             updateSolarDays(){success in
                 self.updateSolarDaysCompletion(success: success)
@@ -86,7 +91,12 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
             stateBools.locationChangeAwaitingUpdate = true
         }
     }
+    
+    func receiveAuthorizationStatusChange(authorized: Bool) {
+        StateBools.shared.authorizedForLocationAccess = authorized
+    }
         
+    // MARK: - Update Solar Days
     // This method fetches solar event data for the max number of days possibly shown onscreen.
     // This is called...
     // - once from init
@@ -96,12 +106,24 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
         
         stateBools.solarDaysUpdateLocked = true // To avoid running this function twice concurrently; also displays ProgressView while updating.
         
-        // Retrieve last known location.
-        if let latitude = UserDefaults.standard.object(forKey: "latitude") {
-            currentLatitude = latitude as? Double ?? 36.110170
-        }
-        if let longitude = UserDefaults.standard.object(forKey: "longitude") {
-            currentLongitude = longitude as? Double ?? -97.058570
+        
+        // MARK: - Retrieve location.
+        // First try the location manager's current location; if that fails try location saved in user defaults; if that fails, use default location.
+                
+        if let latitude = locationManager.currentLatitude, let longitude = locationManager.currentLongitude {
+            
+            currentLatitude = latitude
+            currentLongitude = longitude
+            
+        } else if let latitude = UserDefaults.standard.object(forKey: UserDefaultKey.Latitude.rawValue) as? Double, let longitude = UserDefaults.standard.object(forKey: UserDefaultKey.Longitude.rawValue) as? Double {
+            
+            currentLatitude = latitude
+            currentLongitude = longitude
+            
+        } else {
+            
+            currentLatitude = defaultLatitude
+            currentLongitude = defaultLongitude
         }
         
         print("update solar days was called")
@@ -115,14 +137,16 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
         let date = startDate
 
         print("lon \(currentLongitude), lat \(currentLatitude)")
-
-        // This function will recursively call itself from its own completion handler.
-        // It's set up this way so that the solar days will be added to the array in order i.e. for thread safety.
-        // TODO: - I think this can also be done with an async sequence? But I haven't figured that bit of magic out yet. Maybe for a future re-factor. For now, this seems to be working great.
         
         fetchSolarDay(date: date, endDate: endDate, result: result)
     }
     
+    
+    // MARK: Fetch Solar Day
+    // Fetches a single solar day.
+    // This function will recursively call itself from its own completion handler.
+    // It's set up this way so that the solar days will be added to the array in order i.e. for thread safety.
+    // TODO: - I think this can also be done with an async sequence? But I haven't figured that bit of magic out yet. Maybe for a future re-factor. For now, this seems to be working great.
     
     func fetchSolarDay(date: Date, endDate: Date, result: @escaping (Bool) -> Void) {
         
@@ -187,7 +211,7 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
                 
     } // End of fetchSolarDay()
     
-        
+    // MARK: - ScreenStops
     // This method returns an array of stops that matches the timeline currently showing on screen. The leading time and trailing time are each matched to an interpolated color, allowing the user to zoom smoothly without colors jumping around at the edge of the screen.
     func screenStops(timeline: Timeline) -> [Gradient.Stop] {
                 
@@ -292,6 +316,7 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
         
     } // end of screenStops function
     
+    // MARK: - Interpolate
     // This function returns a new color, interpolated to match a new time between two given stops.
     func interpolate(_ stop1: (Color, Double), _ stop2: (Color, Double), to newTime: Double) -> Color {
         
@@ -311,6 +336,8 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
     }
     
     
+    // MARK: - Fetch Backup
+    // This function fetches a backup array of solar days stored in CoreData, in case needed.
     func fetchBackup(success: (Bool) -> Void ) {
         
         print("fetching backup solar days")

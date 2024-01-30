@@ -18,6 +18,7 @@ class CalendarManager: ObservableObject {
     
     init() {
         userCalendars = UserDefaults.standard.dictionary(forKey: UserDefaultKey.Calendars.rawValue) as? [String : String] ?? ["" : ""]
+        updateCalendars(completion: {error in})
     }
     
     func updateCalendars(completion: @escaping (CalendarError?) -> Void) {
@@ -56,10 +57,9 @@ class CalendarManager: ObservableObject {
         
         DispatchQueue.main.async {
             self.appleCalendars = newCalendars
+            completion(nil)
         }
-    
-        completion(nil)
-        
+
     } // End function updateCalendars()
     
 }

@@ -72,7 +72,7 @@ struct AlertView: View {
             return (warning: warning, alert: alert)
         }
         
-        if stateBools.noPermissionForLocation {
+        if !stateBools.authorizedForLocationAccess {
             let warning = "Day and Night Are Not Showing Correctly."
             let alert = "Sunrise and sunsets are depicted with colors in the background. To show them at correct times, permission is needed to access your general location.\n\nPlease find TARDIS Calendar in your Settings App and change the permissions."
             return (warning: warning, alert: alert)

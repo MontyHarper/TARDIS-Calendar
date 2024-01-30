@@ -47,5 +47,10 @@ class ButtonMaker: ObservableObject {
         // Make a button to span the whole timeline.
         button = ButtonModel(eventManager: eventManager, id: "all")
         buttons.append(button)
+        
+        print("Events in events: ", eventManager.events.count)
+        print("Types: ", eventManager.events.map({$0.calendarTitle}))
+        print("I made new buttons: ", buttons.map({$0.bottomText}))
     }
+    
 }

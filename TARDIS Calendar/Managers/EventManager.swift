@@ -72,7 +72,7 @@ class EventManager: CalendarManager {
             // Keep these inside the updateCalendars closure so we know calendars are available before trying to update anything else.
             self.updateEvents() {
                 
-                // Keep this insice updateEvents closure because buttons depend on events.
+                // Keep this inside updateEvents closure because buttons depend on events.
                 self.buttonMaker.updateButtons()
                 
             }
@@ -80,10 +80,8 @@ class EventManager: CalendarManager {
             
         }
     }
-
-        
     
-    func updateEvents(closure: ()->Void) {
+    func updateEvents(closure: @escaping ()->Void) {
         
         print("updateEvents has been triggered")
         
@@ -94,35 +92,49 @@ class EventManager: CalendarManager {
         // Search for events in selected calendars that are not banner type
         let calendarsToSearch = appleCalendars.filter({$0.isSelected && $0.type != "banner"}).map({$0.calendar})
         
-        // Set up search predicate
-        let findEKEvents = eventStore.predicateForEvents(withStart: start, end: end, calendars: calendarsToSearch)
-        
-        // Save which dates are shown in expanded view.
-        let expandedDates = Set(isExpanded.indices.filter({isExpanded[$0]}).map({events[$0].startDate}))
+        if calendarsToSearch.isEmpty {
+            
+            print("Updating events but there are no calendars to search.")
+            // TODO: change to receive on main in the view
+            DispatchQueue.main.async {
+                self.events = [Event]()
+                self.isExpanded = [Bool]()
+                closure()
+            }
+            
+        } else {
+            
+            // Set up search predicate
+            let findEKEvents = eventStore.predicateForEvents(withStart: start, end: end, calendars: calendarsToSearch)
+            
+            // Save which dates are shown in expanded view.
+            let expandedDates = Set(isExpanded.indices.filter({isExpanded[$0]}).map({events[$0].startDate}))
+            
+            // Store the search results, converting EKEvents to Events.
+            newEvents = eventStore.events(matching: findEKEvents).map({ekevent in
+                Event(event: ekevent, type: userCalendars[ekevent.calendar.title] ?? "none")
+            })
+            
+            // Filter the results to remove lower priority events scheduled at the same time as higher priority events...
+            // TODO: - Test this!
+            newEvents = newEvents.filter({event in
+                let sameDate = self.newEvents.filter({$0.startDate == event.startDate})
+                return event == sameDate.max()
+            })
+            
+            // Update events on main thread
+            
+            DispatchQueue.main.async {
                 
-        // Store the search results, converting EKEvents to Events.
-        newEvents = eventStore.events(matching: findEKEvents).map({ekevent in
-            Event(event: ekevent, type: userCalendars[ekevent.calendar.title] ?? "none")
-        })
-        
-        // Filter the results to remove lower priority events scheduled at the same time as higher priority events...
-        // TODO: - Test this!
-        newEvents = newEvents.filter({event in
-            let sameDate = self.newEvents.filter({$0.startDate == event.startDate})
-            return event == sameDate.max()
-        })
-        
-        // Update events on main thread
-        
-        DispatchQueue.main.async {
-            
-            self.events = self.newEvents
-            
-            // Restore dates that are expanded.
-            self.isExpanded = self.events.indices.map({expandedDates.contains(self.events[$0].startDate)})
+                self.events = self.newEvents
+                
+                // Restore dates that are expanded.
+                self.isExpanded = self.events.indices.map({expandedDates.contains(self.events[$0].startDate)})
+                
+                closure()
+            }
         }
         
-        closure()
         
     } // End of updateEvents
     
@@ -163,7 +175,7 @@ class EventManager: CalendarManager {
         userCalendars = myDictionary
         
         print("Calendars saved: ", myDictionary)
-                
+               
         updateEverything()
     }
 }

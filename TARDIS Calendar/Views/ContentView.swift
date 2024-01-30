@@ -123,7 +123,9 @@ struct ContentView: View {
                     .sheet(isPresented: $stateBools.showSettings) {
                         SettingsView()
                             .onDisappear {
-                                eventManager.updateEverything()
+                                
+  //                              eventManager.updateEverything()
+                                
                             }
                     }
                 

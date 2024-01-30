@@ -97,6 +97,11 @@ enum CalendarError: Error {
 
 enum UserDefaultKey: String {
     case Calendars
+    case Latitude
+    case Longitude
+    case MissingSolarDays
+    case NewUser
+    case UseDefaultNowIcon
     
 }
 
