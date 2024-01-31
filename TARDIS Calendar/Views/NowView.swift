@@ -16,7 +16,10 @@ struct NowView: View {
     @EnvironmentObject var timeline: Timeline
     @EnvironmentObject var size: Dimensions
     var timeText: String {
-        Date(timeIntervalSince1970: timeline.now).formatted(date: .omitted, time: .shortened)
+        Date().formatted(date: .omitted, time: .shortened)
+    }
+    var dayOfWeekText: String {
+        Date().formatted(Date.FormatStyle().weekday(.wide))
     }
     
     static public var nowIcon: Image {
@@ -68,20 +71,25 @@ struct NowView: View {
         .frame(width: size.largeEvent * 1.5)
         .overlay{
             VStack {
-                Text("The time is")
-                    .font(.system(size: size.fontSizeSmall))
-                Text(" \(timeText) ")
-                    .font(.system(size: size.fontSizeLarge * 1.25, weight: .black))
+                VStack {
+                    Text("The time is")
+                        .font(.system(size: size.fontSizeSmall))
+                    Text(" \(timeText) ")
+                        .font(.system(size: size.fontSizeLarge * 1.25, weight: .black))
+                }
+                .foregroundColor(.blue)
+                .background(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                
+                
+                Text(dayOfWeekText)
+                    .font(.system(size: size.fontSizeLarge))
+                    .foregroundStyle(.ultraThinMaterial)
             }
-            .foregroundColor(.blue)
-            .background(.ultraThinMaterial)
-            .clipShape(RoundedRectangle(cornerRadius: 10))
             .offset(x: 0.0, y: size.largeEvent * 0.7)
         }
     }
 }
-
-    
 
 
 

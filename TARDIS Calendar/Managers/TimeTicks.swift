@@ -30,12 +30,6 @@ struct TimeTick {
         let trailingDate = timeline.trailingDate
         let now = Date(timeIntervalSince1970: timeline.now)
         
-        // First tick is always "Now"
-        array.append(TimeTick(date: now, xLocation: Timeline.nowLocation, label: "NOW"))
-        // Second tick at half an hour
-        let halfAnHour = calendar.date(byAdding: .minute, value: 30, to: now)!
-        array.append(TimeTick(date: halfAnHour, xLocation: timeline.unitX(fromTime: halfAnHour.timeIntervalSince1970), label: "Half an Hour"))
-        
         // Calculate the number of hours represented on screen.
         let onScreenHours = calendar.dateComponents([.hour], from: leadingDate, to: trailingDate).hour!
         
@@ -45,7 +39,14 @@ struct TimeTick {
         case 0...Int(40/(1-Timeline.nowLocation)):
             // labels will show hours
             
-            // Begin at the current time plus one hour
+            // First tick is "Now"
+            array.append(TimeTick(date: now, xLocation: Timeline.nowLocation, label: "NOW"))
+            
+            // Second tick at half an hour
+            let halfAnHour = calendar.date(byAdding: .minute, value: 30, to: now)!
+            array.append(TimeTick(date: halfAnHour, xLocation: timeline.unitX(fromTime: halfAnHour.timeIntervalSince1970), label: "Half an Hour"))
+            
+            // Continue with the current time plus one hour
             var tickDate = calendar.date(byAdding: .hour, value: 1, to: now)!
             
             // Iterate until the last hour
@@ -105,9 +106,14 @@ struct TimeTick {
         default:
             // labels will show days
             
+            // TODO: - keep this change?
+            // Experimenting with showing day name instead of "now" when we are zoomed out far enough to show days. In case we need to go back I've commented out the previous code.
+            
             // Begin with today if noon is more than six hours away; otherwise begin with tomorrow.
-            let noon = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: now)?.timeIntervalSince1970
-            var tickDate: Date = ((noon! - timeline.now) > 6 * 60 * 60) ? calendar.startOfDay(for: now) : calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: now)!)
+            //            let noon = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: now)?.timeIntervalSince1970
+            //            var tickDate: Date = ((noon! - timeline.now) > 6 * 60 * 60) ? calendar.startOfDay(for: now) : calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: now)!)
+            
+            var tickDate = calendar.startOfDay(for: now)
             
             // Iterate until the last day
             while tickDate <= calendar.startOfDay(for: trailingDate) {

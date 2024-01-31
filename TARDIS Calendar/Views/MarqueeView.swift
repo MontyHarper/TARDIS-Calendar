@@ -12,27 +12,22 @@ struct MarqueeView: View {
 
     @EnvironmentObject var eventManager: EventManager
     @EnvironmentObject var size: Dimensions
-
+    
     var body: some View {
         
         if let controller = eventManager.bannerMaker.marquee {
             
-            if eventManager.bannerMaker.bannerText == "" {
-                Text("There is nothing to display yet...")
-            } else {
-                
-                TimelineView(.animation) {context in
-                    Text(controller.frame(context.date).text)
-                        .padding()
-                        .lineLimit(1)
-                        .font(Font(controller.marqueeFont))
-                        .foregroundColor(.primary)
-                        .offset(x: controller.frame(context.date).offset, y: 0.0)
-                        .fixedSize(horizontal: true, vertical: false)
-                        .onLongPressGesture(minimumDuration: 0.05, maximumDistance: 20.0) {
-                            controller.togglePause()
-                        }
-                }
+            TimelineView(.animation) {context in
+                Text(controller.frame(context.date).text)
+                    .padding()
+                    .lineLimit(1)
+                    .font(Font(controller.marqueeFont))
+                    .foregroundColor(.primary)
+                    .offset(x: controller.frame(context.date).offset, y: 0.0)
+                    .fixedSize(horizontal: true, vertical: false)
+                    .onLongPressGesture(minimumDuration: 0.05, maximumDistance: 20.0) {
+                        controller.togglePause()
+                    }
             }
         }
     }

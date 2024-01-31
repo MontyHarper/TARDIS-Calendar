@@ -95,7 +95,6 @@ struct HeaderView: View {
                 
                 // Row 3: TimeTicks
                 TimeTickBar()
-                
             }
             
             
