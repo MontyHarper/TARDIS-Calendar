@@ -26,8 +26,8 @@ struct Event: Identifiable, Comparable {
         self.type = type
     }
     
-    // TODO: - 
-    let id = UUID() // Does this ever get used?
+    // To conform to Identifiable
+    let id = UUID()
     
     var startDate: Date {
         // Ensures start time is rounded to the minute.

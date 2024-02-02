@@ -66,6 +66,7 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
         } else {
             // Data is unavailable.
             // Attempt to fetch a stored version of solarDays that can be used instead.
+            // TODO: - This count will be off if failed updates are due to location change. Instead, store date of last successful update. 
             self.stateBools.missingSolarDays += 1
             self.fetchBackup() {success in
                 self.stateBools.showProgressView = false

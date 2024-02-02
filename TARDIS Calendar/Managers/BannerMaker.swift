@@ -17,13 +17,16 @@ class BannerMaker {
     var marquee: MarqueeController?
     let eventStore = EventStore.shared.store
     
-    // TODO: get rid of reference loop
-    weak var eventManager: EventManager!
+    weak var eventManager: EventManager?
     
     func updateBanners() {
         
         bannerText = ""
         refreshDate = Timeline.maxDay
+        
+        guard let eventManager = eventManager else {
+            return
+        }
         
         // Set up date parameters
         let start = Timeline.minDay

@@ -78,7 +78,7 @@ struct AlertView: View {
             return (warning: warning, alert: alert)
         }
         
-        // This should not happen. Consider removing and make sure days are updated when internet status or permissions status or location changes.
+        
         if stateBools.showMissingSolarDaysWarning {
             let warning = "Day and Night Are Not Showing Correctly."
             let alert = "It has been \(stateBools.missingSolarDays) days since you've been able to access sunrise and sunset information. Times depicted in the background are no longer accurate. Sorry, but we don't know why this is happening."

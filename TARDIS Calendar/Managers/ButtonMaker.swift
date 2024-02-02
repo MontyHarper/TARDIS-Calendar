@@ -10,16 +10,21 @@ import SwiftUI
 
 class ButtonMaker: ObservableObject {
     
-    var eventManager: EventManager!
+    // Question: does this fix the reference loop?
+    weak var eventManager: EventManager?
     
     @Published var buttons = [ButtonModel]()
     var refreshDate = Timeline.maxDay
     
     
     func updateButtons() {
-    
+        
         buttons = []
         refreshDate = Timeline.maxDay
+        
+        guard let eventManager = eventManager else {
+            return
+        }
         
         // Make a next event button
         var button = ButtonModel(eventManager: eventManager, id: "first")
@@ -52,5 +57,6 @@ class ButtonMaker: ObservableObject {
         print("Types: ", eventManager.events.map({$0.calendarTitle}))
         print("I made new buttons: ", buttons.map({$0.bottomText}))
     }
+    
     
 }
