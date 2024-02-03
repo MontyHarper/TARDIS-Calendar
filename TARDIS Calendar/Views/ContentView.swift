@@ -83,7 +83,7 @@ struct ContentView: View {
             ZStack {
                 
                 // Background shows time of day by color
-                BackgroundView(timeline: timeline, solarEventManager: solarEventManager)
+                BackgroundView(solarEventManager: solarEventManager)
                     .opacity(1.0)
                     .zIndex(-100)
                 // Zoom in and out by changing trailingTime
@@ -96,12 +96,6 @@ struct ContentView: View {
                         .position(x: screen.size.width * 0.5, y: screen.size.height * 0.5)
                         .scaleEffect(3)
                 }
-                
-                
-                
-                
-                // View on top of background is arranged into three groups; Header, which include current date, marquee, and time ticks, timeline for events, and "next" buttons. Grouping is just conceptual, and needed because there are more than ten items in this ZStack. Individual elements are placed exactly.
-                
                 
                 // headerView combines current date, marquee with scrolling messages, and time tick markers.
                 HeaderView()

@@ -15,7 +15,7 @@ import SwiftUI
 
 struct BackgroundView: View {
     
-    var timeline: Timeline
+    @EnvironmentObject var timeline: Timeline
     var solarEventManager: SolarEventManager
     
     var body: some View {

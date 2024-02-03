@@ -19,6 +19,7 @@ import SwiftUI
 
 class SolarEventManager: ObservableObject, LocationUpdateReceiver {
     
+    
     var solarDays: [SolarDay] = []
     var locationManager = LocationManager()
     // Use of CoreData is a requirement for my assignment.
@@ -180,7 +181,7 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
                 let decoder = JSONDecoder()
                 do {
                     let results = try decoder.decode(Results.self, from: data)
-                    var solarDay = results.results
+                    let solarDay = results.results
                     self.solarDays.append(solarDay)
                     
                 } catch {
@@ -361,7 +362,7 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
         }
         
         // Hold on to the last solar day available.
-        var lastDay = proposedSolarDays[proposedSolarDays.count - 1]
+        let lastDay = proposedSolarDays[proposedSolarDays.count - 1]
         
         // Remove days earlier than our starting date.
         proposedSolarDays = proposedSolarDays.filter({$0.dateDate >= Timeline.minDay})

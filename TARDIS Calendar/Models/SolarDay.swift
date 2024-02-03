@@ -106,10 +106,6 @@ extension SolarDay {
         dawn = day.dawn!
         dusk = day.dusk!
         solar_noon = day.solar_noon!
- //       golden_hour = day.golden_hour!
- //       day_length = day.day_length!
- //       timezone = day.timezone!
- //       utc_offset = Int(exactly: day.utc_offset)!
         date = day.date!
     }
 }
@@ -125,10 +121,6 @@ extension StoredSolarDay {
         dawn = day.dawn
         dusk = day.dusk
         solar_noon = day.solar_noon
-//        golden_hour = day.golden_hour
-//        day_length = day.day_length
-//        timezone = day.timezone
-//        utc_offset = Int16(exactly: day.utc_offset) ?? 0
         date = day.date
     }
 }
