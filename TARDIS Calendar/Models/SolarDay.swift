@@ -26,58 +26,56 @@ struct SolarDay: Codable {
     let dawn: String
     let dusk: String
     let solar_noon: String
-    let golden_hour: String
-    let day_length: String
-    let timezone: String
-    let utc_offset: Int
-    // dateString needs to be a var so it can be assigned as needed by fetchBackup in the solar days manager.
-    var dateString: String
-    
+    let date: String
     
     static let calendar = Timeline.calendar
     
-    // Convert this solar day's date to date and time for start of day
-    // Serves as id for this solar day; do not remove.
-    var date: Date {
+    // Date formatter
+    static var df: DateFormatter {
         let df = DateFormatter()
         df.dateFormat = "YYYY-MM-dd"
-        return SolarDay.calendar.startOfDay(for: df.date(from: dateString)!)
+        return df
     }
     
-    // Date formatter for time with dateString
+    // Time formatter
     static var tf: DateFormatter {
         let tf = DateFormatter()
         tf.dateFormat = "h:mm:ss a YYYY-MM-dd"
         return tf
     }
+    
+    // Unwrapped date
+    var dateDate: Date {
+        SolarDay.df.date(from: date) ?? Date()
+    }
         
     // Each of the following returns a time value in seconds.
     var firstLightTime: Double {
-        SolarDay.tf.date(from: first_light + " " + dateString)!.timeIntervalSince1970
+        SolarDay.tf.date(from: first_light + " " + date)!.timeIntervalSince1970
     }
     
     var dawnTime: Double {
-        SolarDay.tf.date(from: dawn + " " + dateString)!.timeIntervalSince1970
+        SolarDay.tf.date(from: dawn + " " + date)!.timeIntervalSince1970
     }
     
     var sunriseTime: Double {
-        SolarDay.tf.date(from: sunrise + " " + dateString)!.timeIntervalSince1970
+        SolarDay.tf.date(from: sunrise + " " + date)!.timeIntervalSince1970
     }
     
     var solarNoonTime: Double {
-        SolarDay.tf.date(from: solar_noon + " " + dateString)!.timeIntervalSince1970
+        SolarDay.tf.date(from: solar_noon + " " + date)!.timeIntervalSince1970
     }
     
     var sunsetTime: Double {
-        SolarDay.tf.date(from: sunset + " " + dateString)!.timeIntervalSince1970
+        SolarDay.tf.date(from: sunset + " " + date)!.timeIntervalSince1970
     }
     
     var duskTime: Double {
-        SolarDay.tf.date(from: dusk + " " + dateString)!.timeIntervalSince1970
+        SolarDay.tf.date(from: dusk + " " + date)!.timeIntervalSince1970
     }
     
     var lastLightTime: Double {
-        SolarDay.tf.date(from: last_light + " " + dateString)!.timeIntervalSince1970
+        SolarDay.tf.date(from: last_light + " " + date)!.timeIntervalSince1970
     }
     
     var colorsAndTimes: [(Color, Double)] {
@@ -108,11 +106,11 @@ extension SolarDay {
         dawn = day.dawn!
         dusk = day.dusk!
         solar_noon = day.solar_noon!
-        golden_hour = day.golden_hour!
-        day_length = day.day_length!
-        timezone = day.timezone!
-        utc_offset = Int(exactly: day.utc_offset)!
-        dateString = day.dateString!
+ //       golden_hour = day.golden_hour!
+ //       day_length = day.day_length!
+ //       timezone = day.timezone!
+ //       utc_offset = Int(exactly: day.utc_offset)!
+        date = day.date!
     }
 }
 
@@ -127,10 +125,10 @@ extension StoredSolarDay {
         dawn = day.dawn
         dusk = day.dusk
         solar_noon = day.solar_noon
-        golden_hour = day.golden_hour
-        day_length = day.day_length
-        timezone = day.timezone
-        utc_offset = Int16(exactly: day.utc_offset) ?? 0
-        dateString = day.dateString
+//        golden_hour = day.golden_hour
+//        day_length = day.day_length
+//        timezone = day.timezone
+//        utc_offset = Int16(exactly: day.utc_offset) ?? 0
+        date = day.date
     }
 }

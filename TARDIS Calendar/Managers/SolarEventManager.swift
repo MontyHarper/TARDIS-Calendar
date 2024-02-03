@@ -66,7 +66,7 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
         } else {
             // Data is unavailable.
             // Attempt to fetch a stored version of solarDays that can be used instead.
-            // TODO: - This count will be off if failed updates are due to location change. Instead, store date of last successful update. 
+            // TODO: - This count will be off if failed updates are due to location change. Instead, store date of last successful update.
             self.stateBools.missingSolarDays += 1
             self.fetchBackup() {success in
                 self.stateBools.showProgressView = false
@@ -133,8 +133,8 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
         solarDays = []
         
         // Set up a range of dates
-        let startDate = Timeline.minDay
-        let endDate = Timeline.maxDay
+        let startDate = Timeline.minDay // Start of day
+        let endDate = Timeline.maxDay // Start of day
         let date = startDate
 
         print("lon \(currentLongitude), lat \(currentLatitude)")
@@ -159,7 +159,9 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
         
         let formattedDate = formatter.string(from: date)
         
+        // TODO: - factor out url into a separate object, in case we ever need to change the source API
         let urlString = "https://api.sunrisesunset.io/json?lat=" + String(currentLatitude) + "&lng=" + String(currentLongitude) + "&date=" + formattedDate
+       
         guard let url = URL(string: urlString) else {
             // This should never happen; the urlString is a valid URL
             print("unable to form a URL for fetching solar day \(formattedDate)")
@@ -173,19 +175,12 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
             // If data is returned,
             if let data = data {
                 
-                // Insert the date into the data so that each solarDay can have an associated date.
-                var dataString = String(decoding: data, as: UTF8.self)
-                let index = dataString.firstIndex(of: "}")!
-                dataString.insert(contentsOf: ",\"dateString\":\"\(formattedDate)\"", at: index)
-                let newData = Data(dataString.utf8)
-                // Print statement to use for debugging purposes; seems to be working well now.
-                // print(String(decoding: newData, as: UTF8.self))
-                
+                print("Data: ", String(data: data, encoding: .utf8) as Any)
                 // Add results to the array of solar events.
                 let decoder = JSONDecoder()
                 do {
-                    let results = try decoder.decode(Results.self, from: newData)
-                    let solarDay = results.results
+                    let results = try decoder.decode(Results.self, from: data)
+                    var solarDay = results.results
                     self.solarDays.append(solarDay)
                     
                 } catch {
@@ -238,7 +233,7 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
         dayLoop: while day <= lastDay {
                                     
             // Find this day's solar events. If they dont exist, exit the loop
-            guard let index = solarDays.firstIndex(where: {$0.date == day}) else {
+            guard let index = solarDays.firstIndex(where: {$0.dateDate == day}) else {
                 break dayLoop
             }
             let solarEvents = solarDays[index].colorsAndTimes
@@ -252,7 +247,7 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
                 // Find the event for the next stop; go to the next day if needed
                 var nextEvent: (Color, Double)
                 if i + 1 == solarEvents.count {
-                    if let index = solarDays.firstIndex(where: {$0.date == nextDay}) {
+                    if let index = solarDays.firstIndex(where: {$0.dateDate == nextDay}) {
                         nextEvent = solarDays[index].colorsAndTimes[0]
                     } else {
                         // If we've run out of events (shouldn't happen), just use the current event again.
@@ -354,7 +349,7 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
             return
         }
 
-        var proposedSolarDays = solarDaysBackup.map({SolarDay(day: $0)}).sorted(by: {$0.date < $1.date})
+        var proposedSolarDays = solarDaysBackup.map({SolarDay(day: $0)}).sorted(by: {$0.dateDate < $1.dateDate})
         
         print("solar days backed up: \(proposedSolarDays)")
         
@@ -369,11 +364,11 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
         var lastDay = proposedSolarDays[proposedSolarDays.count - 1]
         
         // Remove days earlier than our starting date.
-        proposedSolarDays = proposedSolarDays.filter({$0.date >= Timeline.minDay})
+        proposedSolarDays = proposedSolarDays.filter({$0.dateDate >= Timeline.minDay})
         
         // Add missing days by repeating data from the last available solar day.
         // Find the latest stored date.
-        let lastAvailableDate = proposedSolarDays[proposedSolarDays.count - 1].date
+        let lastAvailableDate = proposedSolarDays[proposedSolarDays.count - 1].dateDate
         
         // Start with the later of that date or the min date required, and add a solar day for each day from there to the max date required.
         let df = DateFormatter()
@@ -381,7 +376,6 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
         var date = Timeline.minDay <= lastAvailableDate ? lastAvailableDate : Timeline.minDay
         var tagOnDays: [SolarDay] = []
         while date <= Timeline.maxDay {
-            lastDay.dateString = df.string(from: date)
             tagOnDays.append(lastDay)
             date = Timeline.calendar.date(byAdding: .day, value: 1, to: date)!
         }
@@ -418,11 +412,7 @@ class SolarEventManager: ObservableObject, LocationUpdateReceiver {
             saveTheDay.dawn = day.dawn
             saveTheDay.dusk = day.dusk
             saveTheDay.solar_noon = day.solar_noon
-            saveTheDay.golden_hour = day.golden_hour
-            saveTheDay.day_length = day.day_length
-            saveTheDay.timezone = day.timezone
-            saveTheDay.utc_offset = Int16(exactly: day.utc_offset) ?? 0
-            saveTheDay.dateString = day.dateString
+            saveTheDay.date = day.date
             
             do {
                 try solarDaysBackupContext.save()
