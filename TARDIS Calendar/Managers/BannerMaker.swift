@@ -13,8 +13,15 @@ class BannerMaker {
     
     var banners = [EKEvent]()
     var bannerText = ""
-    var refreshDate = Timeline.maxDay
-    var marquee: MarqueeController?
+    var refreshDate = Timeline.maxDay {
+        didSet {
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + (refreshDate.timeIntervalSince1970 - Date().timeIntervalSince1970)) {
+                self.updateBanners()
+            }
+        }
+    }
+    
+    var marquee: MarqueeViewModel?
     let eventStore = EventStore.shared.store
     
     weak var eventManager: EventManager?
@@ -22,7 +29,7 @@ class BannerMaker {
     func updateBanners() {
         
         bannerText = ""
-        refreshDate = Timeline.maxDay
+        var newRefreshDate = Timeline.maxDay
         
         guard let eventManager = eventManager else {
             return
@@ -52,17 +59,19 @@ class BannerMaker {
                 if banner.startDate < Date() && banner.endDate > Date() {
                     bannerText += banner.title + "  ★  "
                 }
-                if banner.startDate > Date() && banner.startDate < refreshDate {
-                    refreshDate = banner.startDate
+                if banner.startDate > Date() && banner.startDate < newRefreshDate {
+                    newRefreshDate = banner.startDate
                 }
-                if banner.endDate > Date() && banner.endDate < refreshDate {
-                    refreshDate = banner.endDate
+                if banner.endDate > Date() && banner.endDate < newRefreshDate {
+                    newRefreshDate = banner.endDate
                 }
             } // End of loop
             
+            refreshDate = newRefreshDate
+            
             print("new banner text: ", bannerText, "\nrefresh date: ", refreshDate.formatted())
             
-            marquee = MarqueeController(bannerText, fontSize: 24 )
+            marquee = MarqueeViewModel(bannerText, fontSize: 24 )
         }
     }
 }

@@ -10,13 +10,11 @@ import SwiftUI
 
 struct MarqueeView: View {
 
-    @EnvironmentObject var eventManager: EventManager
-    @EnvironmentObject var size: Dimensions
+    // - ToDo DASHA
+    var controller: MarqueeViewModel
     
     var body: some View {
-        
-        if let controller = eventManager.bannerMaker.marquee {
-            
+                    
             TimelineView(.animation) {context in
                 Text(controller.frame(context.date).text)
                     .padding()
@@ -29,12 +27,11 @@ struct MarqueeView: View {
                         controller.togglePause()
                     }
             }
-        }
     }
 }
 
 
-class MarqueeController {
+class MarqueeViewModel {
     
     let bannerText: String
     let message: String

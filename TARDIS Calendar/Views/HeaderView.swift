@@ -80,13 +80,16 @@ struct HeaderView: View {
                 
                 // Row 2: marquee text
                 ZStack {
-                    if showMarquee {
-                        MarqueeView()
-                    } else if let showText = marqueeText {
-                        Text(" ★ \(showText)")
-                            .font(Font(marqueeFont!))
-                    } else {
-                        EmptyView()
+                    
+                        if showMarquee {
+                            if let marquee = eventManager.bannerMaker.marquee {
+                            MarqueeView(controller: marquee)
+                        } else if let showText = marqueeText {
+                            Text(" ★ \(showText)")
+                                .font(Font(marqueeFont!))
+                        } else {
+                            EmptyView()
+                        }
                     }
                 }
                 .frame(width: marqueeWidth, height: size.lineHeight, alignment: .center)

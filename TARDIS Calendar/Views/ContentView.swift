@@ -161,9 +161,9 @@ struct ContentView: View {
                 }
                 
                 // Update marquee and/or next buttons if either has expired.
-                if Date() > eventManager.bannerMaker.refreshDate {
-                    eventManager.bannerMaker.updateBanners()
-                }
+//                if Date() > eventManager.bannerMaker.refreshDate {
+//                    eventManager.bannerMaker.updateBanners()
+//                }
                 
                 if Date() > eventManager.buttonMaker.refreshDate {
                     eventManager.buttonMaker.updateButtons()
