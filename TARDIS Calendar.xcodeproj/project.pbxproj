@@ -12,12 +12,14 @@
 		F1102AFA2A6DDCA6007534C1 /* TimeTicks.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1102AF92A6DDCA6007534C1 /* TimeTicks.swift */; };
 		F119C6672A7B59A200B183F5 /* EventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F119C6662A7B59A200B183F5 /* EventView.swift */; };
 		F122A2BC2AD2FB0F002E82AE /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A2BB2AD2FB0F002E82AE /* LocationManager.swift */; };
-		F122A2C02AD82A7C002E82AE /* SolarEventManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A2BF2AD82A7C002E82AE /* SolarEventManager.swift */; };
 		F122A2C32ADA4AD1002E82AE /* BackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A2C22ADA4AD1002E82AE /* BackgroundView.swift */; };
 		F122A2C72ADA4B10002E82AE /* NowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A2C62ADA4B10002E82AE /* NowView.swift */; };
 		F122A2C92ADA4B20002E82AE /* TimeTickViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A2C82ADA4B20002E82AE /* TimeTickViews.swift */; };
 		F122A3082ADF17C1002E82AE /* EventManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A3072ADF17C1002E82AE /* EventManager.swift */; };
 		F122A30E2AE02A54002E82AE /* Timeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A30D2AE02A54002E82AE /* Timeline.swift */; };
+		F13BC5202B7C7AA1008C491E /* SolarEventManagerOld.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13BC51F2B7C7AA1008C491E /* SolarEventManagerOld.swift */; };
+		F13BC5222B7C7C87008C491E /* SolarEventManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13BC5212B7C7C87008C491E /* SolarEventManager.swift */; };
+		F13BC5242B7DAA20008C491E /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13BC5232B7DAA20008C491E /* NetworkManager.swift */; };
 		F14A8A432B32A9D90049217C /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14A8A422B32A9D90049217C /* HeaderView.swift */; };
 		F14A8A472B331A390049217C /* Dimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14A8A462B331A390049217C /* Dimensions.swift */; };
 		F166ACBB2B2750F800AE27E3 /* MarqueeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F166ACBA2B2750F800AE27E3 /* MarqueeView.swift */; };
@@ -56,12 +58,14 @@
 		F119C6662A7B59A200B183F5 /* EventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventView.swift; sourceTree = "<group>"; };
 		F119C6842A7CA56A00B183F5 /* TARDIS-Calendar-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "TARDIS-Calendar-Info.plist"; sourceTree = SOURCE_ROOT; };
 		F122A2BB2AD2FB0F002E82AE /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
-		F122A2BF2AD82A7C002E82AE /* SolarEventManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolarEventManager.swift; sourceTree = "<group>"; };
 		F122A2C22ADA4AD1002E82AE /* BackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundView.swift; sourceTree = "<group>"; };
 		F122A2C62ADA4B10002E82AE /* NowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowView.swift; sourceTree = "<group>"; };
 		F122A2C82ADA4B20002E82AE /* TimeTickViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTickViews.swift; sourceTree = "<group>"; };
 		F122A3072ADF17C1002E82AE /* EventManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventManager.swift; sourceTree = "<group>"; };
 		F122A30D2AE02A54002E82AE /* Timeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timeline.swift; sourceTree = "<group>"; };
+		F13BC51F2B7C7AA1008C491E /* SolarEventManagerOld.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SolarEventManagerOld.swift; sourceTree = "<group>"; };
+		F13BC5212B7C7C87008C491E /* SolarEventManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolarEventManager.swift; sourceTree = "<group>"; };
+		F13BC5232B7DAA20008C491E /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		F14A8A422B32A9D90049217C /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		F14A8A462B331A390049217C /* Dimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dimensions.swift; sourceTree = "<group>"; };
 		F166ACBA2B2750F800AE27E3 /* MarqueeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarqueeView.swift; sourceTree = "<group>"; };
@@ -138,8 +142,10 @@
 				F19447AD2B61C23000BDC03B /* BannerMaker.swift */,
 				F122A30D2AE02A54002E82AE /* Timeline.swift */,
 				F1102AF92A6DDCA6007534C1 /* TimeTicks.swift */,
-				F122A2BF2AD82A7C002E82AE /* SolarEventManager.swift */,
+				F13BC51F2B7C7AA1008C491E /* SolarEventManagerOld.swift */,
+				F13BC5212B7C7C87008C491E /* SolarEventManager.swift */,
 				F122A2BB2AD2FB0F002E82AE /* LocationManager.swift */,
+				F13BC5232B7DAA20008C491E /* NetworkManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -291,10 +297,10 @@
 				F122A30E2AE02A54002E82AE /* Timeline.swift in Sources */,
 				F122A3082ADF17C1002E82AE /* EventManager.swift in Sources */,
 				F18D04F72B06B35100E5C91E /* ArrowView.swift in Sources */,
+				F13BC5242B7DAA20008C491E /* NetworkManager.swift in Sources */,
 				F18D05012B0A99B600E5C91E /* StateBools.swift in Sources */,
 				F122A2C72ADA4B10002E82AE /* NowView.swift in Sources */,
 				F18D05032B0AA6B500E5C91E /* SettingsView.swift in Sources */,
-				F122A2C02AD82A7C002E82AE /* SolarEventManager.swift in Sources */,
 				F19447AA2B61B80E00BDC03B /* ButtonModel.swift in Sources */,
 				F1DED93D2B3624450023BF22 /* TimeTickBar.swift in Sources */,
 				F19447A22B5CC23700BDC03B /* Event.swift in Sources */,
@@ -307,7 +313,9 @@
 				F1B5FE182A735D2200CBBCE6 /* Extensions.swift in Sources */,
 				F1F9E49B2B11220C00DA4026 /* Enums.swift in Sources */,
 				F122A2BC2AD2FB0F002E82AE /* LocationManager.swift in Sources */,
+				F13BC5222B7C7C87008C491E /* SolarEventManager.swift in Sources */,
 				F1D9AD3A2B13966E0076832F /* DataController.swift in Sources */,
+				F13BC5202B7C7AA1008C491E /* SolarEventManagerOld.swift in Sources */,
 				F122A2C32ADA4AD1002E82AE /* BackgroundView.swift in Sources */,
 				F19447A82B60CD7900BDC03B /* EventStore.swift in Sources */,
 				F1102AFA2A6DDCA6007534C1 /* TimeTicks.swift in Sources */,
