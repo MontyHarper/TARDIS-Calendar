@@ -13,6 +13,8 @@ struct TARDIS_CalendarApp: App {
         
     @Environment(\.scenePhase) private var scenePhase
     
+    var dataManager = DataManager()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

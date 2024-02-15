@@ -10,12 +10,24 @@
 import Foundation
 
 
-class SolarEventManager {
+class SolarEventManager: LocationUpdateReceiver {
+    
     
     var solarDays = [SolarDay]() {
         didSet {
             saveSolarDaysBackup()
             // set timer to update solar days when day changes
+            var secondsToTimer: Double
+            let tomorrow: Date? = Timeline.calendar.date(byAdding: .day, value: 1, to: Date())
+            if let tomorrow = tomorrow {
+                let timerDate = Timeline.calendar.startOfDay(for: tomorrow)
+                secondsToTimer = timerDate.timeIntervalSince1970 - Date().timeIntervalSince1970
+            } else {
+                secondsToTimer = 24*60*60
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + secondsToTimer) {
+                self.updateSolarDays()
+            }
         }
     }
     
@@ -25,6 +37,7 @@ class SolarEventManager {
     init() {
         updateSolarDays()
         // Set up LocationManager to update days as needed
+        locationManager.delegate = self
     }
     
     func updateSolarDays() {
@@ -35,7 +48,8 @@ class SolarEventManager {
         // Determine which days actually need fetching
         // Recursively fetch the days
         // Or Fetch days from backup as needed
-    }
+        
+    } // End of updateSolarDays
     
     func fetchSolarDaysFromBackup(minDay: Date, maxDay: Date) {
         // Fetch days from UserDefaults
@@ -44,5 +58,16 @@ class SolarEventManager {
     
     func saveSolarDaysBackup() {
         // Save days to UserDefaults
+        if let encoded = try? JSONEncoder().encode(solarDays) {
+            UserDefaults.standard.set(encoded, forKey: UserDefaultKey.SolarDaysBackup.rawValue)
+        }
+    }
+    
+    func receiveLocationUpdate(latitude: Double, longitude: Double) {
+        <#code#>
+    }
+    
+    func receiveAuthorizationStatusChange(authorized: Bool) {
+        <#code#>
     }
 }

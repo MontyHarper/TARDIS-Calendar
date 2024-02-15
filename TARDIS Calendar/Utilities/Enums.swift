@@ -102,6 +102,7 @@ enum UserDefaultKey: String {
     case MissingSolarDays
     case NewUser
     case UseDefaultNowIcon
+    case SolarDaysBackup
     
 }
 
