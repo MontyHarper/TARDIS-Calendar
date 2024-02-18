@@ -13,18 +13,26 @@ struct TARDIS_CalendarApp: App {
         
     @Environment(\.scenePhase) private var scenePhase
     
-    var dataManager = DataManager()
+    var eventManager = EventManager()
+    var solarEventManager = SolarEventManager()
+    var timeline = Timeline()
+    var stateBools = StateBools()
     
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(eventManager)
+                .environmentObject(solarEventManager)
+                .environmentObject(timeline)
+                .environmentObject(stateBools)
         }
         .onChange(of: scenePhase) {phase in
             switch phase {
             case .background:
-                Timeline.shared.resetZoom()
+                timeline.resetZoom()
             case .active:
                 print("app is active")
+                // TODO: - check if this is a new day; if so, update solarDays and Events.
             case .inactive:
                 print("app is inactive")
             default:

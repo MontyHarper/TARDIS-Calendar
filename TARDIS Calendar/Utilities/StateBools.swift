@@ -11,13 +11,12 @@
 import EventKit
 import Foundation
 
-// Singleton for sharing names and values of state-related booleans.
+// For sharing names and values of state-related booleans.
 // Names containing "Info" will pop up an alert with more info when a message is tapped.
 // Names containing "Alert" will put an alert on screen (without a preceding message).
 
 class StateBools: ObservableObject {
      
-    static var shared = StateBools()
     var networkMonitor = NetworkMonitor()
     
     var animateSpan = false // When true, calendar view is auto-zooming back to default zoom.
@@ -66,7 +65,7 @@ class StateBools: ObservableObject {
     @Published var useDefaultNowIcon: Bool
     
     
-    private init() {
+    init() {
         missingSolarDays = UserDefaults.standard.integer(forKey: UserDefaultKey.MissingSolarDays.rawValue)
         if UserDefaults.standard.bool(forKey: UserDefaultKey.NewUser.rawValue) {
             newUser = false

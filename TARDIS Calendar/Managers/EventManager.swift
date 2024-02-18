@@ -12,7 +12,7 @@ import Foundation
 import SwiftUI
 import UIKit
 
-class EventManager: CalendarManager {
+class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
     
     @Published var events = [Event]() // Upcoming events for the maximum number of days displayed.
     @Published var isExpanded = [Bool]() // For each event, should the view be rendered as expanded? This is the source of truth for expansion of event views.
@@ -22,6 +22,8 @@ class EventManager: CalendarManager {
     // newEvents temporarily stores newly downloaded events whle processing.
     private var newEvents = [Event]()
     private let eventStore = EventStore.shared.store
+    
+    @EnvironmentObject var stateBools: StateBools
         
     override init() {
         
@@ -62,10 +64,10 @@ class EventManager: CalendarManager {
                 print("Calendar Error: ", error as Any)
                 switch error {
                 case .permissionDenied, .noAppleCalendars, .noUserDictionary:
-                    StateBools.shared.noCalendarsAvailable = true
+                    self.stateBools.noCalendarsAvailable = true
                     return
                 default:
-                    StateBools.shared.noCalendarsAvailable = false
+                    self.stateBools.noCalendarsAvailable = false
                 }
             }
             
@@ -159,7 +161,7 @@ class EventManager: CalendarManager {
         if let targetEvent = targetEvent {
             expandEvent(event: targetEvent)
         }
-        StateBools.shared.animateSpan = true
+        stateBools.animateSpan = true
     }
     
     // Call to persist user-selected calendar list to UserDefaults.

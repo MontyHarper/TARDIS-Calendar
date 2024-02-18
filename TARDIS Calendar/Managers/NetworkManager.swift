@@ -8,6 +8,8 @@
 import Foundation
 import Network
 
+// This is a very generic manager with a fetch data function that will work for any type of data coming in from any URL request.
+
 class NetworkManager {
     
     private let session = URLSession.shared
@@ -37,7 +39,7 @@ class NetworkManager {
 }
 
 
-// Specific URLs for network tasks
+// Here are the specific URLs for the network tasks this app will actually use.
 
 extension NetworkManager {
     
@@ -46,9 +48,18 @@ extension NetworkManager {
     var solarDayUrlBase: String {  "https://api.sunrisesunset.io/"
     }
     
-    func solarDayURL(longitude: Double, latitude: Double, formattedDate: String) -> URL? {
+    func solarDayURL(longitude: Double, latitude: Double, formattedDate: String) -> URL {
         
         let urlString = solarDayUrlBase + "json?lat=" + String(latitude) + "&lng=" + String(longitude) + "&date=" + formattedDate
-        return URL(string: urlString)
+        return URL(string: urlString)!
+    }
+    
+    func fetchSolarDay(longitude: Double, latitude: Double, formattedDate: String, completion: @escaping (SolarDay?) -> Void) {
+                
+        let urlForRequest = URL(string: (solarDayUrlBase + "json?lat=" + String(latitude) + "&lng=" + String(longitude) + "&date=" + formattedDate))!
+        
+        fetchData(by: urlForRequest) { (solarDay: SolarDay?) in
+            completion(solarDay)
+        }
     }
 }

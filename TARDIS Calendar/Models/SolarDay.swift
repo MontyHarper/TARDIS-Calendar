@@ -94,6 +94,10 @@ struct SolarDay: Codable {
             (color: .midnight, time: lastLightTime)
         ]
     }
+    
+    var numberOfEvents: Int {
+        colorsAndTimes.count
+    }
 }
 
 extension SolarDay {

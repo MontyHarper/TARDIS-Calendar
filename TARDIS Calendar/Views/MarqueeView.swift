@@ -10,7 +10,6 @@ import SwiftUI
 
 struct MarqueeView: View {
 
-    // - ToDo DASHA
     var controller: MarqueeViewModel
     
     var body: some View {

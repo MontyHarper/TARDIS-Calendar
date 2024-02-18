@@ -13,7 +13,7 @@ struct AlertView: View {
     
     // TODO: - I believe this kind of alert is deprecated, and this View could be updated to take advantage of the newer version of .alert which includes a title, details, and a built-in dismiss button. https://developer.apple.com/documentation/swiftui/view/alert(_:ispresented:presenting:actions:message:)-8584l
     @State private var showAlert = false
-    @StateObject var stateBools = StateBools.shared
+    @EnvironmentObject var stateBools: StateBools
     @EnvironmentObject var size: Dimensions
     var formatter = RelativeDateTimeFormatter()
     let dateWentDown = UserDefaults.standard.object(forKey: "lastTimeInternetWentDown") as? Date ?? Date()

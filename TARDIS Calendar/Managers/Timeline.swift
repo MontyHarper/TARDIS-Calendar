@@ -28,16 +28,13 @@ import Foundation
 import SwiftUI
 
 class Timeline: ObservableObject {
-    
-    // Setting up timeline as a singleton so its properties and methods can be accessed from anywhere.
-    static var shared = Timeline()
-    
+        
     // These two values define any given timeline.
     @Published var now: Double // current time in seconds
     @Published var trailingTime: Double // time at the right edge of the screen in seconds.
     
     // Private init so we can be sure there is only one timeline for the whole app.
-    private init() {
+    init() {
         now = Date().timeIntervalSince1970
         trailingTime = Date().timeIntervalSince1970 + Timeline.defaultSpan // default trailingTime
     }

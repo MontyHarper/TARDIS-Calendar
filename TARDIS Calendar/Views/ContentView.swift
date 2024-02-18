@@ -13,10 +13,10 @@ import SwiftUI
 struct ContentView: View {
         
     // Access to view models
-    @StateObject private var timeline = Timeline.shared
-    @StateObject private var eventManager = EventManager()
-    @StateObject private var solarEventManager = SolarEventManager()
-    @StateObject private var stateBools = StateBools.shared
+    @EnvironmentObject private var timeline: Timeline
+    @EnvironmentObject private var eventManager: EventManager
+    @EnvironmentObject private var solarEventManager: SolarEventManager
+    @EnvironmentObject private var stateBools: StateBools
     
     // State variables
     @State private var inactivityTimer: Timer?
@@ -139,10 +139,7 @@ struct ContentView: View {
                 
             } // End of main ZStack
             .statusBarHidden(true)
-            .environmentObject(timeline)
-            .environmentObject(eventManager)
             .environmentObject(Dimensions(screen.size))
-            .environmentObject(stateBools)
             
             // Update timer fires once per second.
             .onReceive(updateTimer) { time in
