@@ -41,7 +41,8 @@ struct HeaderView: View {
         eventManager.bannerMaker.marquee?.marqueeFont
     }
     var marqueeText: String? {
-        eventManager.bannerMaker.marquee?.bannerText
+        print("grabbing marqueeText: ", eventManager.bannerMaker.marquee?.bannerText ?? "nil")
+        return eventManager.bannerMaker.marquee?.bannerText
     }
     var marqueeTextWidth: CGFloat? {
         marqueeText?.size(withAttributes: [.font: marqueeFont as Any]).width
@@ -49,7 +50,7 @@ struct HeaderView: View {
     var marqueeWidth: Double {
         min(size.width * 0.85, (marqueeTextWidth ?? size.width * 0.85) * 1.1)
     }
-    var showMarquee: Bool {
+    private var showMarquee: Bool {
         if let marqueeTextWidth = marqueeTextWidth {
             return (marqueeTextWidth > marqueeWidth)
         } else {
@@ -84,14 +85,14 @@ struct HeaderView: View {
                     
                         if showMarquee {
                             if let marquee = eventManager.bannerMaker.marquee {
-                            MarqueeView(controller: marquee)
+                                MarqueeView(controller: marquee)
+                            }
                         } else if let showText = marqueeText {
                             Text(" ★ \(showText)")
                                 .font(Font(marqueeFont!))
                         } else {
                             EmptyView()
                         }
-                    }
                 }
                 .frame(width: marqueeWidth, height: size.lineHeight, alignment: .center)
                 .background(Color(hue: 0.0, saturation: 0.0, brightness: 1.0, opacity: 0.5))                .clipShape(RoundedRectangle(cornerRadius: 20))

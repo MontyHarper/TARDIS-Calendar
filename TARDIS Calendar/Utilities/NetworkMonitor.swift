@@ -20,7 +20,7 @@ class NetworkMonitor: ObservableObject {
     // "internetWasDown" saves the previous state of connection so it will persist across the app being inactive, so we can let the user know how long since information could have been updated.
     // Necessary because every time the app starts, the current connection status is registered as a change, even if it hasn't really changed.
     var internetWasDown: Bool {
-        UserDefaults.standard.bool(forKey: "internetWasDown")
+        UserDefaults.standard.bool(forKey: UserDefaultKey.InternetWasDown.rawValue)
     }
     var internetIsDown = true
 
@@ -29,9 +29,9 @@ class NetworkMonitor: ObservableObject {
             self.internetIsDown = !(path.status == .satisfied)
             // If the connection is down and it was not down before, reset the time it went down.
             if self.internetIsDown && !self.internetWasDown {
-                UserDefaults.standard.set(Date(), forKey: "lastTimeInternetWentDown")
+                UserDefaults.standard.set(Date(), forKey: UserDefaultKey.DateInternetWentDown.rawValue)
             }
-            UserDefaults.standard.set(self.internetIsDown, forKey: "internetWasDown")
+            UserDefaults.standard.set(self.internetIsDown, forKey: UserDefaultKey.InternetWasDown.rawValue)
             Task {
                 await MainActor.run {
                     self.objectWillChange.send()

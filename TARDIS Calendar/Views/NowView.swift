@@ -23,7 +23,7 @@ struct NowView: View {
     }
     
     static public var nowIcon: Image {
-        if let altImage = UserDefaults.standard.value(forKey: "nowIcon") as? Image {
+        if let altImage = UserDefaults.standard.value(forKey: UserDefaultKey.NowIcon.rawValue) as? Image {
             return altImage
         } else {
             // Default image for now icon.

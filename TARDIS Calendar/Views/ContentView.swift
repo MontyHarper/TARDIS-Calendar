@@ -15,10 +15,10 @@ struct ContentView: View {
     // Access to view models
     @EnvironmentObject private var eventManager: EventManager
     @EnvironmentObject private var solarEventManager: SolarEventManager
-    
+    @StateObject private var screenStops = ScreenStops()
     
     // State variables
-    @State private var timeline = Timeline.shared
+    @StateObject private var timeline = Timeline.shared
     @State private var stateBools = StateBools.shared
     @State private var inactivityTimer: Timer?
     @State private var currentDay = Timeline.shared.calendar.dateComponents([.day], from: Date())
@@ -36,7 +36,6 @@ struct ContentView: View {
     
     // Used to track drag gesture for the one-finger zoom function.
     static private var dragStart = 0.0
-    
     
     var body: some View {
         
@@ -84,7 +83,7 @@ struct ContentView: View {
             ZStack {
                 
                 // Background shows time of day by color
-                BackgroundView()
+                BackgroundView(screenStops: screenStops)
                     .opacity(1.0)
                     .zIndex(-100)
                 // Zoom in and out by changing trailingTime
@@ -141,10 +140,13 @@ struct ContentView: View {
             } // End of main ZStack
             .statusBarHidden(true)
             .environmentObject(Dimensions(screen.size))
+            .onAppear {
+                screenStops.solarEventManager = solarEventManager
+            }
             
             // Update timer fires once per second.
             .onReceive(updateTimer) { time in
-                
+                            
                 // Advance the timeline
                 timeline.updateNow()
                 print(timeline.now)

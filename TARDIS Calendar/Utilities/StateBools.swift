@@ -26,7 +26,7 @@ class StateBools: ObservableObject {
     var internetIsDown: Bool { // Displays a warning message on screen.
         let minSeconds: Double = 2*60*60 // two hours
         let down = networkMonitor.internetIsDown
-        let downSince = UserDefaults.standard.object(forKey: "lastTimeInternetWentDown") as? Date ?? Date()
+        let downSince = UserDefaults.standard.object(forKey: UserDefaultKey.DateInternetWentDown.rawValue) as? Date ?? Date()
         let downAwhile = downSince.timeIntervalSince1970 >= minSeconds
         // Note: downAwhile will still be true once the connection has re-established, so we need both bools to be true here.
         return down && downAwhile

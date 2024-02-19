@@ -15,11 +15,11 @@ import SwiftUI
 
 struct BackgroundView: View {
     
-    @EnvironmentObject var solarEventManager: SolarEventManager
+    var screenStops: ScreenStops
     
     var body: some View {
         
-        LinearGradient(gradient: Gradient(stops: ScreenStops(solarEventManager: solarEventManager).stops), startPoint: .leading, endPoint: .trailing)
+        LinearGradient(gradient: Gradient(stops: screenStops.stops), startPoint: .leading, endPoint: .trailing)
             .ignoresSafeArea()
     }
 }

@@ -28,6 +28,10 @@ class BannerMaker {
     
     private var timeline = Timeline.shared
     
+    init() {
+        updateBanners()
+    }
+    
     func updateBanners() {
         
         bannerText = ""

@@ -138,6 +138,7 @@
 				F19447A72B60CD7900BDC03B /* EventStore.swift */,
 				F19447AB2B61BE6200BDC03B /* ButtonMaker.swift */,
 				F19447AD2B61C23000BDC03B /* BannerMaker.swift */,
+				F13BC5252B81B973008C491E /* ScreenStops.swift */,
 				F122A30D2AE02A54002E82AE /* Timeline.swift */,
 				F13BC5212B7C7C87008C491E /* SolarEventManager.swift */,
 				F13BC5232B7DAA20008C491E /* NetworkManager.swift */,
@@ -161,7 +162,6 @@
 			children = (
 				F19447A12B5CC23700BDC03B /* Event.swift */,
 				F19447A92B61B80E00BDC03B /* ButtonModel.swift */,
-				F13BC5252B81B973008C491E /* ScreenStops.swift */,
 				F1102AF92A6DDCA6007534C1 /* TimeTicks.swift */,
 			);
 			path = ViewModels;

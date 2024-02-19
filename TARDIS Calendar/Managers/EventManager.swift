@@ -16,7 +16,7 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
     
     @Published var events = [Event]() // Upcoming events for the maximum number of days displayed.
     @Published var isExpanded = [Bool]() // For each event, should the view be rendered as expanded? This is the source of truth for expansion of event views.
-    var bannerMaker = BannerMaker()
+    @Published var bannerMaker = BannerMaker()
     @Published var buttonMaker = ButtonMaker()
         
     // newEvents temporarily stores newly downloaded events whle processing.
@@ -145,13 +145,13 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
     
     // Called when user taps one of the navigation buttons.
     func buttonAction(type: String) {
-        
+                
         switch type {
             
-        case "First":
+        case "first":
             highlightNextEvent()
             
-        case "All":
+        case "all":
             closeAll()
             let targetEvent = events.last(where: {$0.startDate > Date()})
             timeline.setTargetSpan(date: targetEvent?.startDate)
@@ -160,7 +160,7 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
         default:
             if let targetEvent = events.first(where: {$0.type == type && $0.startDate > Date()}) {
                 timeline.setTargetSpan(date: targetEvent.startDate)
-                expandEvent(event: targetEvent)
+                expandEvent(targetEvent)
                 stateBools.animateSpan = true
             }
         }
@@ -173,7 +173,7 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
     
     
     // leaves only the requested event expanded
-    func expandEvent(event: Event) {
+    func expandEvent(_ event: Event) {
         closeAll()
         if let index = events.indices.first(where: {events[$0] == event}) {
             isExpanded[index] = true
@@ -181,12 +181,11 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
     }
     
     func highlightNextEvent() {
-        let targetEvent = events.first(where: {$0.startDate > Date()})
-        timeline.setTargetSpan(date: targetEvent?.startDate)
-        if let targetEvent = targetEvent {
-            expandEvent(event: targetEvent)
+        if let targetEvent = events.first(where: {$0.startDate > Date()}) {
+            timeline.setTargetSpan(date: targetEvent.startDate)
+            expandEvent(targetEvent)
+            stateBools.animateSpan = true
         }
-        stateBools.animateSpan = true
     }
     
     // Call to persist user-selected calendar list to UserDefaults.

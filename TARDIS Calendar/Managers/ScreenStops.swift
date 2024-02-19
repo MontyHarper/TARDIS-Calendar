@@ -10,25 +10,36 @@
 import SwiftUI
 
 
-struct ScreenStops {
+class ScreenStops: ObservableObject {
     
-    var stops = [Gradient.Stop]()
+    @Published var stops = [Gradient.Stop]()
+        
+    var solarEventManager: SolarEventManager?
     
-    private var timeline = Timeline.shared
+    var stateBools = StateBools.shared
     
-    var solarEventManager: SolarEventManager
-    
-    @State private var stateBools = StateBools.shared
+    init() {
+        updateScreenStops()
+    }
+
     
     // Contains solar events for all the days the calendar COULD display.
     var solarDays: [SolarDay] {
-        solarEventManager.solarDays
+        if let solarEventManager = solarEventManager {
+            return solarEventManager.solarDays
+        } else {
+            return []
+        }
     }
     
+    // MARK: - Update ScreenStops
     
-    init(solarEventManager: SolarEventManager) {
+    func updateScreenStops() {
         
-        self.solarEventManager = solarEventManager
+        let timeline = Timeline.shared
+        var newStops = [Gradient.Stop]()
+        
+        print("calculating screen stops: ", stops)
         
         guard !solarDays.isEmpty else {
             stops = [Gradient.Stop(color: Color.noon, location: 0.0)]
@@ -87,8 +98,8 @@ struct ScreenStops {
                     
                     let leadingStopColor = interpolate(event, nextEvent, to: leadingTime)
                     let trailingStopColor = interpolate(event, nextEvent, to: trailingTime)
-                    stops.append(.init(color: leadingStopColor, location: 0.0))
-                    stops.append(.init(color: trailingStopColor, location: 1.0))
+                    newStops.append(.init(color: leadingStopColor, location: 0.0))
+                    newStops.append(.init(color: trailingStopColor, location: 1.0))
                     
                     break dayLoop // We've added the final stop
                 }
@@ -97,7 +108,7 @@ struct ScreenStops {
                 if stopTime <= leadingTime && nextStopTime >= leadingTime {
                     
                     let leadingStopColor = interpolate(event, nextEvent, to: leadingTime)
-                    stops.append(.init(color: leadingStopColor, location: 0.0))
+                    newStops.append(.init(color: leadingStopColor, location: 0.0))
                     
                 }
                 
@@ -105,7 +116,7 @@ struct ScreenStops {
                 if stopTime >= leadingTime && nextStopTime <= trailingTime {
                     
                     // Add screenStop for event, converting timespace to unitspace.
-                    stops.append(.init(color: event.0, location: timeline.unitX(fromTime: event.1)))
+                    newStops.append(.init(color: event.0, location: timeline.unitX(fromTime: event.1)))
                 }
                 
                 // Next check if this is the last event located onscreen.
@@ -113,9 +124,9 @@ struct ScreenStops {
                     
                     // If so, we need to create two screenStops, one for the current event, and one at the trailing edge of the screen, interpolated between the current and next event.
                     
-                    stops.append(.init(color: event.0, location: timeline.unitX(fromTime: event.1)))
+                    newStops.append(.init(color: event.0, location: timeline.unitX(fromTime: event.1)))
                     let trailingStopColor = interpolate(event, nextEvent, to: trailingTime)
-                    stops.append(.init(color: trailingStopColor, location: 1.0))
+                    newStops.append(.init(color: trailingStopColor, location: 1.0))
                     
                     break dayLoop // exit loop; we have added the final stop
                 }
@@ -124,9 +135,12 @@ struct ScreenStops {
             
             day = nextDay
             
-        } // end of dayLoop
+        } // End of dayLoop
         
-    } // end of init
+        stops = newStops
+        
+    } // End of updateScreenStops
+    
     
     // MARK: - Interpolate
     // This function returns a new color, interpolated to match a new time between two given stops.

@@ -8,10 +8,7 @@
 //
 
 import EventKit
-import Foundation
 import SwiftUI
-
-
 
 struct EventView: View {
     
@@ -44,12 +41,13 @@ struct EventView: View {
      
     // Makes dictionary of user calendars available; used to determine the calendar type for this event.
     var calendars: [String: String] =
-    UserDefaults.standard.dictionary(forKey: "calendars") as? [String: String] ?? ["":""]
+    UserDefaults.standard.dictionary(forKey: UserDefaultKey.Calendars.rawValue) as? [String: String] ?? ["":""]
     
     
     // Each calendar type has an associated icon in the CalendarType enum.
     // Use the "daily" icon as a default in case something goes wrong.
     var icon: Image {
+            
         if let icon = CalendarType(rawValue: calendars[event.calendarTitle] ?? CalendarType.daily.rawValue)?.icon() {
             return icon
         } else {
@@ -81,7 +79,7 @@ struct EventView: View {
                 .frame(width: size.smallEvent * 0.95 * shrink, height: size.smallEvent * 0.95 * shrink)
         } // End of ZStack
         .onLongPressGesture(minimumDuration: 0.05, maximumDistance: 20.0) {
-            eventManager.expandEvent(event: event)
+            eventManager.expandEvent(event)
         }
     } // End of iconView
     

@@ -16,7 +16,7 @@ struct AlertView: View {
     @State private var stateBools = StateBools.shared
     @EnvironmentObject var size: Dimensions
     var formatter = RelativeDateTimeFormatter()
-    let dateWentDown = UserDefaults.standard.object(forKey: "lastTimeInternetWentDown") as? Date ?? Date()
+    let dateWentDown = UserDefaults.standard.object(forKey: UserDefaultKey.DateInternetWentDown.rawValue) as? Date ?? Date()
     
     var body: some View {
                 

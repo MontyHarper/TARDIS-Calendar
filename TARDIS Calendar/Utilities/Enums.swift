@@ -32,7 +32,7 @@ enum CalendarType: String, CaseIterable, Identifiable {
         case .daily:
            return Image(systemName: "calendar.circle.fill")
         case .special:
-           return Image(systemName: "person.2.circle")
+           return Image(systemName: "face.smiling")
         default:
            return Image(systemName: "calendar.circle.fill")
         }
@@ -102,7 +102,10 @@ enum UserDefaultKey: String {
     case MissingSolarDays
     case NewUser
     case UseDefaultNowIcon
+    case NowIcon
     case SolarDaysBackup
+    case InternetWasDown
+    case DateInternetWentDown
     
 }
 
