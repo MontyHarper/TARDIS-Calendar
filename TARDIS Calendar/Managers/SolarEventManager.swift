@@ -26,10 +26,10 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
             // Setting a timer to update solar days again tomorrow.
             var secondsToTimer: Double
             // Preferable to use the calendar; a change could happen mid-day if the user's location changes.
-            let tomorrow: Date? = Timeline.calendar.date(byAdding: .day, value: 1, to: Date())
+            let tomorrow: Date? = Timeline.shared.calendar.date(byAdding: .day, value: 1, to: Date())
             // Calendar doesn't know if there will be a tomorrow!
             if let tomorrow = tomorrow {
-                let timerDate = Timeline.calendar.startOfDay(for: tomorrow)
+                let timerDate = Timeline.shared.calendar.startOfDay(for: tomorrow)
                 secondsToTimer = timerDate.timeIntervalSince1970 - Date().timeIntervalSince1970
             } else {
                 // If there's no tomorrow, update again in 24 hours anyway.
@@ -43,10 +43,10 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     // MARK: - Private Properties
     
-    @EnvironmentObject private var stateBools: StateBools
-    
+    private var stateBools = StateBools.shared
     private let locationManager = CLLocationManager()
     private let networkManager = NetworkManager()
+    private let timeline = Timeline.shared
     
     private var formatter: DateFormatter {
         let formatter = DateFormatter()
@@ -92,13 +92,13 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         var newSolarDays = solarDays
         
         // Required date range.
-        let minDay = Timeline.minDay
-        let maxDay = Timeline.maxDay
+        let minDay = timeline.minDay
+        let maxDay = timeline.maxDay
         
         // We need the user's location in order to retrieve solar days from the API.
         guard stateBools.authorizedForLocationAccess else {
             // If we are not authorized, use stored solarDays to approximate a backdrop.
-            fetchSolarDaysFromBackup(minDay: minDay, maxDay: maxDay)
+            fetchSolarDaysFromBackup(minDay: minDay)
             return
         }
         
@@ -114,7 +114,7 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         // Note this depends on many factors including how many days the app may have been inactive before re-awakened.
         var dayZero: Date {
             if let finalDay = newSolarDays.last?.dateDate {
-                if let nextDay = Timeline.calendar.date(byAdding: .day, value: 1, to: finalDay) {
+                if let nextDay = timeline.calendar.date(byAdding: .day, value: 1, to: finalDay) {
                     return nextDay
                 } else { // There is no tomorrow; replace all days in a fit of hopeless optimism.
                     return minDay
@@ -133,7 +133,7 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
                 if let solarDay = solarDay {
                     newSolarDays.append(solarDay)
                     if day < maxDay {
-                        let nextDay = Timeline.calendar.date(byAdding: .day, value: 1, to: day)!
+                        let nextDay = self.timeline.calendar.date(byAdding: .day, value: 1, to: day)!
                         fetchNext(day: nextDay) {}
                     } else {
                         return

@@ -16,7 +16,8 @@ struct ButtonView: View {
     
     var size: Dimensions
     var button: ButtonModel
-    @EnvironmentObject var timeline: Timeline
+    @EnvironmentObject var eventManager: EventManager
+
     @State var rotateAmount: Double = 0.0
     
     var body: some View {
@@ -43,7 +44,7 @@ struct ButtonView: View {
             withAnimation(.linear(duration: 0.75)) {
                 rotateAmount += 360
             }
-            button.action(timeline)
+            eventManager.buttonAction(type: button.id)
         }
     }
 }

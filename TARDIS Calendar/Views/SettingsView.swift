@@ -17,10 +17,11 @@ struct SettingsView: View {
     
     @EnvironmentObject var eventManager: EventManager
     @EnvironmentObject var size: Dimensions
-    @EnvironmentObject var stateBools: StateBools
-    @State private var showWelcome = StateBools.shared.newUser && StateBools.shared.noCalendarsSelected
+    @State private var stateBools = StateBools.shared
+    @State private var showWelcome = false
     @State private var iconPhoto: PhotosPickerItem?
     @Environment(\.dismiss) var dismiss
+    
     
     var body: some View {
         
@@ -44,10 +45,13 @@ struct SettingsView: View {
                 }
             }
         } // End of NavigationView
+        .onAppear {
+            showWelcome = stateBools.newUser && stateBools.noCalendarsSelected
+        }
         
         // Welcome message for a new user...
         // TODO: - Update this to the newer version of alert, once you can upgrade your computer.
-        .alert("Welcome to TARDIS Calendar!\n\nPlease select \"Choose Calendars\" to select which Apple calendars to display.\n\nYou can always return to this page by tripple-tapping the upper-right-hand corner of the screen.", isPresented: $showWelcome) {
+        .alert("Welcome to TARDIS Calendar!\n\nPlease select \"Choose Calendars\" to mark which Apple calendars you want to display.\n\nYou can always return to this page by tripple-tapping the upper-right-hand corner of the screen.", isPresented: $showWelcome) {
             Button("OK", role: .cancel, action: {})
         }
     } // End body

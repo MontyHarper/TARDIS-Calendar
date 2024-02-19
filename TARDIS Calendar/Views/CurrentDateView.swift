@@ -14,8 +14,8 @@ import SwiftUI
 
 struct CurrentDateView: View {
     
-    @EnvironmentObject var timeline: Timeline
-    
+    @State private var timeline = Timeline.shared
+
     var formatter:DateFormatter {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, MMMM d, yyyy"

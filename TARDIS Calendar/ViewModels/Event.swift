@@ -21,6 +21,8 @@ struct Event: Identifiable, Comparable {
     var event: EKEvent
     var type: String
             
+    let calendar = Timeline.shared.calendar
+    
     init(event: EKEvent, type: String) {
         self.event = event
         self.type = type
@@ -31,8 +33,8 @@ struct Event: Identifiable, Comparable {
     
     var startDate: Date {
         // Ensures start time is rounded to the minute.
-        let components = Timeline.calendar.dateComponents([.year,.month,.day,.hour,.minute], from: event.startDate)
-        return Timeline.calendar.date(from: components)!
+        let components = calendar.dateComponents([.year,.month,.day,.hour,.minute], from: event.startDate)
+        return calendar.date(from: components)!
     }
     var endDate: Date {
         event.endDate
@@ -51,8 +53,8 @@ struct Event: Identifiable, Comparable {
         CalendarType(rawValue:type)?.priority() ?? .zero
     }
     var happensWhen: String {
-        let eventDay = Timeline.calendar.component(.day, from: startDate)
-        let today = Timeline.calendar.component(.day, from: Date())
+        let eventDay = calendar.component(.day, from: startDate)
+        let today = calendar.component(.day, from: Date())
         let eventIsToday: Bool = (eventDay == today)
         let eventIsTomorrow: Bool = (eventDay == (today + 1))
         let formatter = DateFormatter()
@@ -74,7 +76,7 @@ struct Event: Identifiable, Comparable {
         var dayString = ""
         var hourString = ""
         var minuteString = ""
-        let parts = Timeline.calendar.dateComponents([.day, .hour, .minute], from: Date(), to: event.startDate)
+        let parts = calendar.dateComponents([.day, .hour, .minute], from: Date(), to: event.startDate)
         if let day = parts.day {
             dayString = day == 0 ? "" : ("\(day) day" + (day == 1 ? ", " : "s, "))
         }
@@ -109,7 +111,7 @@ struct Event: Identifiable, Comparable {
             return ""
         }
         
-        let components = Timeline.calendar.dateComponents([.day, .hour, .minute], from: Date(), to: event.startDate > Date() ? event.startDate : event.endDate)
+        let components = calendar.dateComponents([.day, .hour, .minute], from: Date(), to: event.startDate > Date() ? event.startDate : event.endDate)
         
         let days = components.day ?? 0
         let hours = components.hour ?? 0

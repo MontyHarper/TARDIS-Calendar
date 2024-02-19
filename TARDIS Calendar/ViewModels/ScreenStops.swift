@@ -13,9 +13,12 @@ import SwiftUI
 struct ScreenStops {
     
     var stops = [Gradient.Stop]()
-    @EnvironmentObject var timeline: Timeline
-    @EnvironmentObject var stateBools: StateBools
-    @EnvironmentObject var solarEventManager: SolarEventManager
+    
+    private var timeline = Timeline.shared
+    
+    var solarEventManager: SolarEventManager
+    
+    @State private var stateBools = StateBools.shared
     
     // Contains solar events for all the days the calendar COULD display.
     var solarDays: [SolarDay] {
@@ -23,7 +26,9 @@ struct ScreenStops {
     }
     
     
-    init() {
+    init(solarEventManager: SolarEventManager) {
+        
+        self.solarEventManager = solarEventManager
         
         guard !solarDays.isEmpty else {
             stops = [Gradient.Stop(color: Color.noon, location: 0.0)]
@@ -35,7 +40,7 @@ struct ScreenStops {
         let leadingTime = timeline.leadingTime
         let trailingDate = timeline.trailingDate
         let trailingTime = timeline.trailingTime
-        let calendar = Timeline.calendar
+        let calendar = timeline.calendar
         
         // Begin with the leadingDate (first date visible on screen)
         var day: Date = calendar.startOfDay(for:leadingDate)

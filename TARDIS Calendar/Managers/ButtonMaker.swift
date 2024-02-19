@@ -10,17 +10,17 @@ import SwiftUI
 
 class ButtonMaker: ObservableObject {
     
+    @Published var buttons = [ButtonModel]()
+    
     // Question: does this fix the reference loop?
     weak var eventManager: EventManager?
-    
-    @Published var buttons = [ButtonModel]()
-    var refreshDate = Timeline.maxDay
-    
-    
+        
+    var refreshDate = Timeline.shared.maxDay
+        
     func updateButtons() {
         
         buttons = []
-        refreshDate = Timeline.maxDay
+        refreshDate = Timeline.shared.maxDay
         
         guard let eventManager = eventManager else {
             return

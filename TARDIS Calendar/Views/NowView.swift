@@ -13,8 +13,8 @@ import SwiftUI
 
 struct NowView: View {
          
-    @EnvironmentObject var timeline: Timeline
     @EnvironmentObject var size: Dimensions
+
     var timeText: String {
         Date().formatted(date: .omitted, time: .shortened)
     }

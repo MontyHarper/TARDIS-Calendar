@@ -13,14 +13,15 @@ import SwiftUI
 struct ContentView: View {
         
     // Access to view models
-    @EnvironmentObject private var timeline: Timeline
     @EnvironmentObject private var eventManager: EventManager
     @EnvironmentObject private var solarEventManager: SolarEventManager
-    @EnvironmentObject private var stateBools: StateBools
+    
     
     // State variables
+    @State private var timeline = Timeline.shared
+    @State private var stateBools = StateBools.shared
     @State private var inactivityTimer: Timer?
-    @State private var currentDay = Timeline.calendar.dateComponents([.day], from: Date())
+    @State private var currentDay = Timeline.shared.calendar.dateComponents([.day], from: Date())
     
     // Constants that configure the UI. To mess with the look of the calendar, mess with these.
     let yOfLabelBar = 0.1 // y position of date label bar in unit space
@@ -57,7 +58,7 @@ struct ContentView: View {
                     // Save the location of this drag for the next event.
                     ContentView.dragStart = gesture.location.x
                     // Drag gesture needs to occur on the future side of now, far enough from now that it doesn't cause the zoom to jump wildly
-                    guard end > Timeline.nowLocation + 0.1 && start > Timeline.nowLocation + 0.1 else {
+                    guard end > timeline.nowLocation + 0.1 && start > timeline.nowLocation + 0.1 else {
                         return
                     }
                     // This call changes the trailing time in our timeline, if we haven't gone beyond the boundaries.
@@ -83,7 +84,7 @@ struct ContentView: View {
             ZStack {
                 
                 // Background shows time of day by color
-                BackgroundView(solarEventManager: solarEventManager)
+                BackgroundView()
                     .opacity(1.0)
                     .zIndex(-100)
                 // Zoom in and out by changing trailingTime
@@ -149,11 +150,11 @@ struct ContentView: View {
                 print(timeline.now)
                 
                 // Check for new day; update calendar and solar events once per day.
-                let today = Timeline.calendar.dateComponents([.day], from: Date())
+                let today = timeline.calendar.dateComponents([.day], from: Date())
                 if today != currentDay {
                     print("called update calendars from new day in contentview")
                     eventManager.updateEverything()
-                    solarEventManager.updateSolarDays(){_ in}
+                    solarEventManager.updateSolarDays()
                     currentDay = today
                 }
                 
@@ -167,10 +168,10 @@ struct ContentView: View {
                 }
                 
                 // Bring an upcoming event into focus as needed.
-                let range = Timeline.calendar.date(byAdding: .second, value: 30 * 60, to: Date())!...Timeline.calendar.date(byAdding: .second, value: 30 * 60 + 1, to: Date())!
+                let range = timeline.calendar.date(byAdding: .second, value: 30 * 60, to: Date())!...timeline.calendar.date(byAdding: .second, value: 30 * 60 + 1, to: Date())!
                 if let _ = eventManager.events.first(where: { range.contains($0.startDate)}
                 ) {
-                    eventManager.highlightNextEvent(timeline: timeline)
+                    eventManager.highlightNextEvent()
                 }
                 
             }

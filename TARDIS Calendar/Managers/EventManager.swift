@@ -23,8 +23,9 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
     private var newEvents = [Event]()
     private let eventStore = EventStore.shared.store
     
-    @EnvironmentObject var stateBools: StateBools
-        
+    @State private var stateBools = StateBools.shared
+    @State private var timeline = Timeline.shared
+
     override init() {
         
         super.init()
@@ -88,8 +89,8 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
         print("updateEvents has been triggered")
         
         // Set up date parameters
-        let start = Timeline.minDay
-        let end = Timeline.maxDay
+        let start = timeline.minDay
+        let end = timeline.maxDay
         
         // Search for events in selected calendars that are not banner type
         let calendarsToSearch = appleCalendars.filter({$0.isSelected && $0.type != "banner"}).map({$0.calendar})
@@ -137,9 +138,33 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
             }
         }
         
-        
     } // End of updateEvents
     
+    
+// MARK: - User Interactions
+    
+    // Called when user taps one of the navigation buttons.
+    func buttonAction(type: String) {
+        
+        switch type {
+            
+        case "First":
+            highlightNextEvent()
+            
+        case "All":
+            closeAll()
+            let targetEvent = events.last(where: {$0.startDate > Date()})
+            timeline.setTargetSpan(date: targetEvent?.startDate)
+            stateBools.animateSpan = true
+            
+        default:
+            if let targetEvent = events.first(where: {$0.type == type && $0.startDate > Date()}) {
+                timeline.setTargetSpan(date: targetEvent.startDate)
+                expandEvent(event: targetEvent)
+                stateBools.animateSpan = true
+            }
+        }
+    }
     
     // Called when user taps the background; closes any expanded views.
     func closeAll() {
@@ -155,7 +180,7 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
         }
     }
     
-    func highlightNextEvent(timeline: Timeline) {
+    func highlightNextEvent() {
         let targetEvent = events.first(where: {$0.startDate > Date()})
         timeline.setTargetSpan(date: targetEvent?.startDate)
         if let targetEvent = targetEvent {

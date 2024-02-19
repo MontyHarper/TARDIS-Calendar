@@ -17,6 +17,7 @@ import Foundation
 
 class StateBools: ObservableObject {
      
+    static var shared = StateBools()
     var networkMonitor = NetworkMonitor()
     
     var animateSpan = false // When true, calendar view is auto-zooming back to default zoom.
@@ -38,7 +39,7 @@ class StateBools: ObservableObject {
             UserDefaults.standard.set(missingSolarDays, forKey: UserDefaultKey.MissingSolarDays.rawValue)
         }
     }
-    @Published var newUser: Bool // User is considered new the first time app is launched, but not subsequent times. Use to open app to Settings with a welcome message.
+    var newUser: Bool
     var noCalendarsAvailable = false
     var noCalendarsSelected: Bool {
         if let calendars = UserDefaults.standard.object(forKey: UserDefaultKey.Calendars.rawValue) as? [String:String] {
@@ -60,12 +61,13 @@ class StateBools: ObservableObject {
     var showWarning: Bool { // Use to activate the AlertView, which will then show whichever warning is appropriate, with an attached alert for more information.
         noPermissionForCalendar || noCalendarsAvailable || noCalendarsSelected || internetIsDown || !authorizedForLocationAccess || showMissingSolarDaysWarning
     }
+    var showWelcome: Bool = false
     var solarDaysAvailable = false // When false, background returns a solid color.
     var solarDaysUpdateLocked = false
     @Published var useDefaultNowIcon: Bool
     
     
-    init() {
+    private init() {
         missingSolarDays = UserDefaults.standard.integer(forKey: UserDefaultKey.MissingSolarDays.rawValue)
         if UserDefaults.standard.bool(forKey: UserDefaultKey.NewUser.rawValue) {
             newUser = false

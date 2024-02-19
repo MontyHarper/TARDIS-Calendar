@@ -13,7 +13,7 @@ class BannerMaker {
     
     var banners = [EKEvent]()
     var bannerText = ""
-    var refreshDate = Timeline.maxDay {
+    var refreshDate = Timeline.shared.maxDay {
         didSet {
             DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + (refreshDate.timeIntervalSince1970 - Date().timeIntervalSince1970)) {
                 self.updateBanners()
@@ -26,18 +26,20 @@ class BannerMaker {
     
     weak var eventManager: EventManager?
     
+    private var timeline = Timeline.shared
+    
     func updateBanners() {
         
         bannerText = ""
-        var newRefreshDate = Timeline.maxDay
+        var newRefreshDate = timeline.maxDay
         
         guard let eventManager = eventManager else {
             return
         }
         
         // Set up date parameters
-        let start = Timeline.minDay
-        let end = Timeline.maxDay
+        let start = timeline.minDay
+        let end = timeline.maxDay
         
         // Search for events in selected calendars that are banner type
         let calendarsToSearch = eventManager.appleCalendars.filter({$0.isSelected && $0.type == CalendarType.banner.rawValue}).map({$0.calendar})

@@ -12,8 +12,9 @@ struct EventTimelineView: View {
     
     @EnvironmentObject var eventManager: EventManager
     @EnvironmentObject var size: Dimensions
-    @EnvironmentObject var timeline: Timeline
-    
+
+    @State private var timeline = Timeline.shared
+
     let yOfTimeline = 0.5
     
     var body: some View {
@@ -39,9 +40,9 @@ struct EventTimelineView: View {
             
             // Circle representing current time.
             NowView()
-                .position(x: Timeline.nowLocation * size.width, y: yOfTimeline * size.height)
+                .position(x: timeline.nowLocation * size.width, y: yOfTimeline * size.height)
                 .onTapGesture {
-                    eventManager.highlightNextEvent(timeline: timeline)
+                    eventManager.highlightNextEvent()
                 }
         }
     }
