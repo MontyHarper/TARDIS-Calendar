@@ -15,7 +15,6 @@ struct ContentView: View {
     // Access to view models
     @EnvironmentObject private var eventManager: EventManager
     @EnvironmentObject private var solarEventManager: SolarEventManager
-    @StateObject private var screenStops = ScreenStops()
     
     // State variables
     @StateObject private var timeline = Timeline.shared
@@ -83,7 +82,7 @@ struct ContentView: View {
             ZStack {
                 
                 // Background shows time of day by color
-                BackgroundView(screenStops: screenStops)
+                BackgroundView(timeline: timeline)
                     .opacity(1.0)
                     .zIndex(-100)
                 // Zoom in and out by changing trailingTime
@@ -140,9 +139,6 @@ struct ContentView: View {
             } // End of main ZStack
             .statusBarHidden(true)
             .environmentObject(Dimensions(screen.size))
-            .onAppear {
-                screenStops.solarEventManager = solarEventManager
-            }
             
             // Update timer fires once per second.
             .onReceive(updateTimer) { time in

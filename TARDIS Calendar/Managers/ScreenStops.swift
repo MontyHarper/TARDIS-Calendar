@@ -9,44 +9,23 @@
 
 import SwiftUI
 
+// This struct just basically houses one function.
 
-class ScreenStops: ObservableObject {
+struct ScreenStops {
     
-    @Published var stops = [Gradient.Stop]()
-        
-    var solarEventManager: SolarEventManager?
-    
-    var stateBools = StateBools.shared
-    
-    init() {
-        updateScreenStops()
-    }
+    // MARK: - Generate Stops
+    // TODO: Refactor?
+    // Could you generate one array of screenstops that encompasses all the solar days, create a gradient out of that in your UI, and size / offset that gradient in response to the timeline so the part you want appears onscreen?
 
-    
-    // Contains solar events for all the days the calendar COULD display.
-    var solarDays: [SolarDay] {
-        if let solarEventManager = solarEventManager {
-            return solarEventManager.solarDays
-        } else {
-            return []
-        }
-    }
-    
-    // MARK: - Update ScreenStops
-    
-    func updateScreenStops() {
-        
-        let timeline = Timeline.shared
-        var newStops = [Gradient.Stop]()
-        
-        print("calculating screen stops: ", stops)
+    static func generate(for solarDays: [SolarDay], timeline: Timeline) -> [Gradient.Stop] {
         
         guard !solarDays.isEmpty else {
-            stops = [Gradient.Stop(color: Color.noon, location: 0.0)]
-            return
+            print("Trying to generate screen stops but solarDays is empty: ", Date())
+            return [Gradient.Stop(color: Color.noon, location: 0.0)]
         }
         
-        // Set up initial values
+        print("Generating screen stops: ", Date())
+        var stops = [Gradient.Stop]()
         let leadingDate = timeline.leadingDate
         let leadingTime = timeline.leadingTime
         let trailingDate = timeline.trailingDate
@@ -98,8 +77,8 @@ class ScreenStops: ObservableObject {
                     
                     let leadingStopColor = interpolate(event, nextEvent, to: leadingTime)
                     let trailingStopColor = interpolate(event, nextEvent, to: trailingTime)
-                    newStops.append(.init(color: leadingStopColor, location: 0.0))
-                    newStops.append(.init(color: trailingStopColor, location: 1.0))
+                    stops.append(.init(color: leadingStopColor, location: 0.0))
+                    stops.append(.init(color: trailingStopColor, location: 1.0))
                     
                     break dayLoop // We've added the final stop
                 }
@@ -108,7 +87,7 @@ class ScreenStops: ObservableObject {
                 if stopTime <= leadingTime && nextStopTime >= leadingTime {
                     
                     let leadingStopColor = interpolate(event, nextEvent, to: leadingTime)
-                    newStops.append(.init(color: leadingStopColor, location: 0.0))
+                    stops.append(.init(color: leadingStopColor, location: 0.0))
                     
                 }
                 
@@ -116,7 +95,7 @@ class ScreenStops: ObservableObject {
                 if stopTime >= leadingTime && nextStopTime <= trailingTime {
                     
                     // Add screenStop for event, converting timespace to unitspace.
-                    newStops.append(.init(color: event.0, location: timeline.unitX(fromTime: event.1)))
+                    stops.append(.init(color: event.0, location: timeline.unitX(fromTime: event.1)))
                 }
                 
                 // Next check if this is the last event located onscreen.
@@ -124,9 +103,9 @@ class ScreenStops: ObservableObject {
                     
                     // If so, we need to create two screenStops, one for the current event, and one at the trailing edge of the screen, interpolated between the current and next event.
                     
-                    newStops.append(.init(color: event.0, location: timeline.unitX(fromTime: event.1)))
+                    stops.append(.init(color: event.0, location: timeline.unitX(fromTime: event.1)))
                     let trailingStopColor = interpolate(event, nextEvent, to: trailingTime)
-                    newStops.append(.init(color: trailingStopColor, location: 1.0))
+                    stops.append(.init(color: trailingStopColor, location: 1.0))
                     
                     break dayLoop // exit loop; we have added the final stop
                 }
@@ -137,14 +116,14 @@ class ScreenStops: ObservableObject {
             
         } // End of dayLoop
         
-        stops = newStops
+        return stops
         
     } // End of updateScreenStops
     
     
     // MARK: - Interpolate
     // This function returns a new color, interpolated to match a new time between two given stops.
-    func interpolate(_ stop1: (Color, Double), _ stop2: (Color, Double), to newTime: Double) -> Color {
+    static func interpolate(_ stop1: (Color, Double), _ stop2: (Color, Double), to newTime: Double) -> Color {
         
         let color1 = stop1.0
         let color2 = stop2.0

@@ -10,16 +10,14 @@
 import Foundation
 import SwiftUI
 
-// The stops array is re-created once per second, to adjust for changes over time.
-// This view is also re-created when the user changes the span of the screen.
-
 struct BackgroundView: View {
     
-    var screenStops: ScreenStops
+    var timeline: Timeline
+    @EnvironmentObject private var solarEventManager: SolarEventManager
     
     var body: some View {
         
-        LinearGradient(gradient: Gradient(stops: screenStops.stops), startPoint: .leading, endPoint: .trailing)
+        LinearGradient(gradient: Gradient(stops: ScreenStops.generate(for: solarEventManager.solarDays, timeline: timeline)), startPoint: .leading, endPoint: .trailing)
             .ignoresSafeArea()
     }
 }
