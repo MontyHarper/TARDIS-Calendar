@@ -102,9 +102,9 @@ enum UserDefaultKey: String {
     case Calendars
     case DateInternetWentDown
     case InternetWasDown
+    case LastSolarDayDownloaded
     case Latitude
     case Longitude
-    case MissingSolarDays
     case NewUser
     case NowIcon
     case SolarDaysBackup

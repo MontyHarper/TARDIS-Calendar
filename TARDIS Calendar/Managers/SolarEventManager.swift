@@ -136,7 +136,7 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         
         // Trigger recursive functon and store the results
         fetchNext(day: dayZero) {
-            print("made it to last solar day!")
+            UserDefaults.standard.set(Date(), forKey: UserDefaultKey.LastSolarDayDownloaded.rawValue)
             self.solarDays = self.newSolarDays
         }
                 

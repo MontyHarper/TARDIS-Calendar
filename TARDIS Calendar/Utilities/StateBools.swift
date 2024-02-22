@@ -33,9 +33,12 @@ class StateBools: ObservableObject {
     }
     
     var marqueeNotShowing = true
-    var missingSolarDays = 0 { // Keeps count of how many times SolarDays cannot be downloaded;
-        didSet {
-            UserDefaults.standard.set(missingSolarDays, forKey: UserDefaultKey.MissingSolarDays.rawValue)
+    var missingSolarDays: Int {
+        if let lastDate = UserDefaults.standard.object(forKey: UserDefaultKey.LastSolarDayDownloaded.rawValue) as? Date {
+            let diff = Timeline.shared.calendar.dateComponents([.day], from: lastDate, to: Date())
+            return diff.day ?? 0
+        } else {
+            return 0
         }
     }
     var newUser: Bool
@@ -69,7 +72,7 @@ class StateBools: ObservableObject {
     
     
     private init() {
-        missingSolarDays = UserDefaults.standard.integer(forKey: UserDefaultKey.MissingSolarDays.rawValue)
+
         if UserDefaults.standard.bool(forKey: UserDefaultKey.NewUser.rawValue) {
             newUser = false
             showSettings = false

@@ -42,12 +42,10 @@
 		F1D15B442A5FA758006F6A4E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D15B432A5FA758006F6A4E /* ContentView.swift */; };
 		F1D15B462A5FA75B006F6A4E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F1D15B452A5FA75B006F6A4E /* Assets.xcassets */; };
 		F1D15B492A5FA75B006F6A4E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F1D15B482A5FA75B006F6A4E /* Preview Assets.xcassets */; };
-		F1D9AD3A2B13966E0076832F /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D9AD392B13966E0076832F /* DataController.swift */; };
 		F1DED93D2B3624450023BF22 /* TimeTickBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DED93C2B3624450023BF22 /* TimeTickBar.swift */; };
 		F1DED93F2B3756660023BF22 /* ButtonBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DED93E2B3756660023BF22 /* ButtonBar.swift */; };
 		F1DED9412B3B164D0023BF22 /* EventTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DED9402B3B164D0023BF22 /* EventTimelineView.swift */; };
 		F1F9E49B2B11220C00DA4026 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1F9E49A2B11220C00DA4026 /* Enums.swift */; };
-		F1F9E49E2B12AF2A00DA4026 /* StoredSolarDays.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F1F9E49C2B12AF2A00DA4026 /* StoredSolarDays.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -88,12 +86,10 @@
 		F1D15B432A5FA758006F6A4E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F1D15B452A5FA75B006F6A4E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F1D15B482A5FA75B006F6A4E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		F1D9AD392B13966E0076832F /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		F1DED93C2B3624450023BF22 /* TimeTickBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTickBar.swift; sourceTree = "<group>"; };
 		F1DED93E2B3756660023BF22 /* ButtonBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonBar.swift; sourceTree = "<group>"; };
 		F1DED9402B3B164D0023BF22 /* EventTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTimelineView.swift; sourceTree = "<group>"; };
 		F1F9E49A2B11220C00DA4026 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
-		F1F9E49D2B12AF2A00DA4026 /* SolarDay.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SolarDay.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -150,8 +146,6 @@
 			isa = PBXGroup;
 			children = (
 				F19149262AD2649000A31D5A /* SolarDay.swift */,
-				F1F9E49C2B12AF2A00DA4026 /* StoredSolarDays.xcdatamodeld */,
-				F1D9AD392B13966E0076832F /* DataController.swift */,
 				F19447A52B60CBE400BDC03B /* AppleCalendar.swift */,
 			);
 			path = Models;
@@ -310,7 +304,6 @@
 				F1B5FE182A735D2200CBBCE6 /* Extensions.swift in Sources */,
 				F1F9E49B2B11220C00DA4026 /* Enums.swift in Sources */,
 				F13BC5222B7C7C87008C491E /* SolarEventManager.swift in Sources */,
-				F1D9AD3A2B13966E0076832F /* DataController.swift in Sources */,
 				F122A2C32ADA4AD1002E82AE /* BackgroundView.swift in Sources */,
 				F19447A82B60CD7900BDC03B /* EventStore.swift in Sources */,
 				F1102AFA2A6DDCA6007534C1 /* TimeTicks.swift in Sources */,
@@ -321,7 +314,6 @@
 				F19447A62B60CBE400BDC03B /* AppleCalendar.swift in Sources */,
 				F1D15B442A5FA758006F6A4E /* ContentView.swift in Sources */,
 				F19447AC2B61BE6200BDC03B /* ButtonMaker.swift in Sources */,
-				F1F9E49E2B12AF2A00DA4026 /* StoredSolarDays.xcdatamodeld in Sources */,
 				F18D04FD2B0824F500E5C91E /* LayoutValueKeys.swift in Sources */,
 				F18D04FB2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift in Sources */,
 				F1D15B422A5FA758006F6A4E /* TARDIS_CalendarApp.swift in Sources */,
@@ -543,19 +535,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		F1F9E49C2B12AF2A00DA4026 /* StoredSolarDays.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				F1F9E49D2B12AF2A00DA4026 /* SolarDay.xcdatamodel */,
-			);
-			currentVersion = F1F9E49D2B12AF2A00DA4026 /* SolarDay.xcdatamodel */;
-			path = StoredSolarDays.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = F1D15B362A5FA758006F6A4E /* Project object */;
 }

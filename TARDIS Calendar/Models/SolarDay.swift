@@ -100,31 +100,3 @@ struct SolarDay: Codable {
     }
 }
 
-extension SolarDay {
-    
-    init(day: StoredSolarDay) {
-        sunrise = day.sunrise!
-        sunset = day.sunset!
-        first_light = day.first_light!
-        last_light = day.last_light!
-        dawn = day.dawn!
-        dusk = day.dusk!
-        solar_noon = day.solar_noon!
-        date = day.date!
-    }
-}
-
-extension StoredSolarDay {
-    
-    convenience init(day: SolarDay) {
-        self.init()
-        sunrise = day.sunrise
-        sunset = day.sunset
-        first_light = day.first_light
-        last_light = day.last_light
-        dawn = day.dawn
-        dusk = day.dusk
-        solar_noon = day.solar_noon
-        date = day.date
-    }
-}
