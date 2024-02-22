@@ -28,7 +28,8 @@ struct TARDIS_CalendarApp: App {
                 Timeline.shared.resetZoom()
             case .active:
                 print("app is active")
-                // TODO: - check if this is a new day; if so, update solarDays and Events.
+                eventManager.updateEverything()
+                solarEventManager.updateSolarDays()
             case .inactive:
                 print("app is inactive")
             default:
