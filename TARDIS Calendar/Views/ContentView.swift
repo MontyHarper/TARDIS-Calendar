@@ -82,7 +82,7 @@ struct ContentView: View {
             ZStack {
                 
                 // Background shows time of day by color
-                BackgroundView(timeline: timeline)
+                BackgroundView(solarEventManager: solarEventManager)
                     .opacity(1.0)
                     .zIndex(-100)
                 // Zoom in and out by changing trailingTime
@@ -139,6 +139,7 @@ struct ContentView: View {
             } // End of main ZStack
             .statusBarHidden(true)
             .environmentObject(Dimensions(screen.size))
+            .environmentObject(timeline)
             
             // Update timer fires once per second.
             .onReceive(updateTimer) { time in

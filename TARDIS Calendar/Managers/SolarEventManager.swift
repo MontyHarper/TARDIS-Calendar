@@ -16,9 +16,11 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     // MARK: - Published Properties
     
-    @Published var solarDays = [SolarDay]() {
+    var solarDays = [SolarDay]() {
         
         didSet {
+            
+            print("solarDays is now: ", solarDays)
             
             // Keeping a backup in UserDefaults to use in case API is unavailable.
             saveSolarDaysBackup()
@@ -47,7 +49,12 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
     private let networkManager = NetworkManager()
     private let timeline = Timeline.shared
-    
+    private var newSolarDays = [SolarDay]() {
+        didSet {
+            print("newSolarDays is now: ", newSolarDays)
+        }
+    }
+        
     private var formatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
@@ -66,18 +73,18 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     override init() {
         super.init()
-        
+                
         // Set default values for user location, in case authorization is denied.
         UserDefaults.standard.set(-97.058570, forKey: UserDefaultKey.Longitude.rawValue)
         UserDefaults.standard.set(36.110170, forKey: UserDefaultKey.Latitude.rawValue)
         
-        // Note that solarDays will be updated by the locationManager as soon as it gets initialize.
         locationManager.delegate = self
         // This authorization request should happen only once, when the app is first launched.
         locationManager.requestWhenInUseAuthorization()
         // The following requests a location to start off with, which will be processed through the didUpdateLocation method below.
         // SignificantLocationChange means 500 meters or more.
         locationManager.startMonitoringSignificantLocationChanges()
+
     }
     
     // Necessary to keep the app from launching if location changes while app is inactive.
@@ -87,25 +94,17 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     // MARK: - Methods for Updating
     
-    func updateSolarDays() {
-        
-        var newSolarDays = solarDays
+    func updateSolarDays(all: Bool = false) {
+                
+        newSolarDays = solarDays
         
         // Required date range.
         let minDay = timeline.minDay
         let maxDay = timeline.maxDay
         
-        // We need the user's location in order to retrieve solar days from the API.
-        guard stateBools.authorizedForLocationAccess else {
-            // If we are not authorized, use stored solarDays to approximate a backdrop.
-            fetchSolarDaysFromBackup(minDay: minDay)
-            return
-        }
-        
         // Remove any SolarDays that are no longer valid.
-        if stateBools.locationChangeAwaitingUpdate {
+        if all {
             newSolarDays = [] // Change of location invalidates all the days.
-            stateBools.locationChangeAwaitingUpdate = false
         } else {
             newSolarDays = newSolarDays.filter({$0.dateDate >= minDay}) // Remove outdated days.
         }
@@ -126,29 +125,36 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         
         // If there are no days to update, return without doing anything.
         guard dayZero <= maxDay else {return}
+        
+        
+        // Trigger recursive functon and store the results
+        fetchNext(day: dayZero) {
+            print("made it to last solar day!")
+            self.solarDays = self.newSolarDays
+        }
                 
         // Recursive function to fetch days in order
-        func fetchNext(day: Date, closure: () -> Void) {
+        func fetchNext(day: Date, closure: @escaping () -> Void) {
+            
+            print("fetching solar day for: ", day.formatted())
+            
             networkManager.fetchSolarDay(longitude: longitude, latitude: latitude, formattedDate: formatter.string(from: dayZero)) { solarDay in
                 if let solarDay = solarDay {
-                    newSolarDays.append(solarDay)
+                    self.newSolarDays.append(solarDay)
                     if day < maxDay {
                         let nextDay = self.timeline.calendar.date(byAdding: .day, value: 1, to: day)!
-                        fetchNext(day: nextDay) {}
+                        fetchNext(day: nextDay, closure: closure)
                     } else {
+                        closure()
                         return
                     }
                 } else {
                     // bad network call
+                    print("Tried to fetch day but ran into an error.")
                     self.fetchSolarDaysFromBackup(minDay: minDay)
                 }
             }
         } // End of fetchNext(day:)
-        
-        // Trigger recursive functon and store the results
-        fetchNext(day: dayZero) {
-            solarDays = newSolarDays
-        }
         
     } // End of updateSolarDays
     
@@ -199,26 +205,25 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         let latitude = newLocation.coordinate.latitude
         UserDefaults.standard.set(longitude, forKey: UserDefaultKey.Longitude.rawValue)
         UserDefaults.standard.set(latitude, forKey: UserDefaultKey.Latitude.rawValue)
-        stateBools.locationChangeAwaitingUpdate = true
         
-        updateSolarDays()
+        updateSolarDays(all: true)
     }
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
 
-        switch manager.authorizationStatus {
-        case .authorizedAlways, .authorizedWhenInUse:
-            stateBools.authorizedForLocationAccess = true
-        default:
-            stateBools.authorizedForLocationAccess = false
-        }
-        print("Location Authorization Changed: \(manager.authorizationStatus)")
-
+        let status = manager.authorizationStatus
+        
+        print("Location Authorization Changed: \(status)")
+        
+        let access = (status == .authorizedAlways || status == .authorizedWhenInUse)
+        UserDefaults.standard.set(access, forKey: UserDefaultKey.AuthorizedForLocationAccess.rawValue)
+        
+        updateSolarDays()
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         
         // TODO: - handle possible errors
-        print("location manager failed with error: \(error)")
+        print("location manager failed with error: \(error.localizedDescription)")
     }
 }

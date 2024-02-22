@@ -13,12 +13,13 @@ import CoreLocation
 import Foundation
 import SwiftUI
 
-struct Results:Codable {
+struct Results: Codable {
     let results: SolarDay
     let status: String
 }
 
 struct SolarDay: Codable {
+    let date: String
     let sunrise: String
     let sunset: String
     let first_light: String
@@ -26,8 +27,7 @@ struct SolarDay: Codable {
     let dawn: String
     let dusk: String
     let solar_noon: String
-    let date: String
-    
+        
     static let calendar = Timeline.shared.calendar
     
     // Date formatter

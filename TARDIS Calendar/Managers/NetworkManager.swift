@@ -21,15 +21,19 @@ class NetworkManager {
         let task = session.dataTask(with: request) { data, response, error in
             
             guard let data = data else {
+                print("solar day bad data")
                 completion(nil)
                 return
             }
             
             let decoder = JSONDecoder()
             do {
+                print("Solar day data: ", String(decoding: data, as: UTF8.self)
+)
                 let results = try decoder.decode(T.self, from: data)
                 completion(results)
             } catch {
+                print("solar day not decoded")
                 completion(nil)
                 return
             }
@@ -58,8 +62,9 @@ extension NetworkManager {
                 
         let urlForRequest = URL(string: (solarDayUrlBase + "json?lat=" + String(latitude) + "&lng=" + String(longitude) + "&date=" + formattedDate))!
         
-        fetchData(by: urlForRequest) { (solarDay: SolarDay?) in
-            completion(solarDay)
+        fetchData(by: urlForRequest) { (results: Results?) in
+            print("I've got results for the solar day: ", results as Any)
+            completion(results?.results)
         }
     }
 }

@@ -96,17 +96,19 @@ enum CalendarError: Error {
 }
 
 enum UserDefaultKey: String {
+    
+    // Alphabetical Order
+    case AuthorizedForLocationAccess
     case Calendars
+    case DateInternetWentDown
+    case InternetWasDown
     case Latitude
     case Longitude
     case MissingSolarDays
     case NewUser
-    case UseDefaultNowIcon
     case NowIcon
     case SolarDaysBackup
-    case InternetWasDown
-    case DateInternetWentDown
-    
+    case UseDefaultNowIcon
 }
 
 

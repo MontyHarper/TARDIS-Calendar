@@ -32,7 +32,6 @@ class StateBools: ObservableObject {
         return down && downAwhile
     }
     
-    var locationChangeAwaitingUpdate = false
     var marqueeNotShowing = true
     var missingSolarDays = 0 { // Keeps count of how many times SolarDays cannot be downloaded;
         didSet {
@@ -51,7 +50,9 @@ class StateBools: ObservableObject {
     var noPermissionForCalendar: Bool {
         !(EKEventStore.authorizationStatus(for: .event) == .authorized)
     }
-    var authorizedForLocationAccess = false // Cannot be accessed directly (as far as I can figure out). Will be reset as soon as Events are updated.
+    var authorizedForLocationAccess: Bool {
+        UserDefaults.standard.bool(forKey: UserDefaultKey.AuthorizedForLocationAccess.rawValue)
+    }
     var showProgressView = false // Used to indicate the background is loading.
     var showMissingSolarDaysWarning: Bool { // If enough days are missing that the calendar will look wrong, show a warning.
         missingSolarDays >= 4
