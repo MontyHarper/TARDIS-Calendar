@@ -24,7 +24,6 @@ struct ScreenStops {
             return [Gradient.Stop(color: Color.noon, location: 0.0)]
         }
         
-        print("Generating screen stops: ", Date())
         var stops = [Gradient.Stop]()
         let leadingDate = timeline.leadingDate
         let leadingTime = timeline.leadingTime

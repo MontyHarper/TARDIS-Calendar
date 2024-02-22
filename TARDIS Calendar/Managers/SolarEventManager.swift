@@ -7,6 +7,7 @@
 //  This Class keeps an up-to-date array of solar days, from which the app creates a background view representing sunrise and sunset with color gradients.
 //
 
+import Combine
 import CoreLocation
 import SwiftUI
 
@@ -49,11 +50,8 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     private let locationManager = CLLocationManager()
     private let networkManager = NetworkManager()
     private let timeline = Timeline.shared
-    private var newSolarDays = [SolarDay]() {
-        didSet {
-            print("newSolarDays is now: ", newSolarDays)
-        }
-    }
+    private var newSolarDays = [SolarDay]()
+    private var internetConnection: AnyCancellable?
         
     private var formatter: DateFormatter {
         let formatter = DateFormatter()
@@ -85,6 +83,13 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         // SignificantLocationChange means 500 meters or more.
         locationManager.startMonitoringSignificantLocationChanges()
 
+        // This notification will update everything if the internet connection is lost and returns.
+        internetConnection = NetworkMonitor().objectWillChange.sink {_ in
+            print("internet connection has changed")
+            if !self.stateBools.internetIsDown {
+                self.updateSolarDays()
+            }
+        }
     }
     
     // Necessary to keep the app from launching if location changes while app is inactive.
@@ -96,6 +101,8 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     func updateSolarDays(all: Bool = false) {
                 
+        print("updating solar days")
+        
         newSolarDays = solarDays
         
         // Required date range.

@@ -41,7 +41,6 @@ struct HeaderView: View {
         eventManager.bannerMaker.marquee?.marqueeFont
     }
     var marqueeText: String? {
-        print("grabbing marqueeText: ", eventManager.bannerMaker.marquee?.bannerText ?? "nil")
         return eventManager.bannerMaker.marquee?.bannerText
     }
     var marqueeTextWidth: CGFloat? {

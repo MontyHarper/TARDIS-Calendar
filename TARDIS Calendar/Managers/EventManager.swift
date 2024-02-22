@@ -7,6 +7,7 @@
 //  Captures new events; provides an array of currently active events
 //
 
+import Combine
 import EventKit
 import Foundation
 import SwiftUI
@@ -22,9 +23,11 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
     // newEvents temporarily stores newly downloaded events whle processing.
     private var newEvents = [Event]()
     private let eventStore = EventStore.shared.store
+    private var internetConnection: AnyCancellable?
     
     @State private var stateBools = StateBools.shared
     @State private var timeline = Timeline.shared
+    
 
     override init() {
         
@@ -50,6 +53,14 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
             
             self.updateEverything()
         }
+        
+        // This notification will update everything if the internet connection is lost and returns.
+        internetConnection = NetworkMonitor().objectWillChange.sink {_ in
+            if !self.stateBools.internetIsDown {
+                self.updateEverything()
+            }
+        }
+        
     } // End init
     
 
