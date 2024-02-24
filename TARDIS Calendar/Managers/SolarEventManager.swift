@@ -20,9 +20,7 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     var solarDays = [SolarDay]() {
         
         didSet {
-            
-            print("solarDays is now: ", solarDays)
-            
+                        
             // Keeping a backup in UserDefaults to use in case API is unavailable.
             saveSolarDaysBackup()
             
@@ -142,9 +140,7 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
                 
         // Recursive function to fetch days in order
         func fetchNext(day: Date, closure: @escaping () -> Void) {
-            
-            print("fetching solar day for: ", day.formatted())
-            
+        
             networkManager.fetchSolarDay(longitude: longitude, latitude: latitude, formattedDate: formatter.string(from: dayZero)) { solarDay in
                 if let solarDay = solarDay {
                     self.newSolarDays.append(solarDay)
