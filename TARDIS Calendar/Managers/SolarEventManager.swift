@@ -17,11 +17,20 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     // MARK: - Published Properties
     
-    var solarDays = [SolarDay]()
+    var solarDays = [SolarDay]() {
+        
+        didSet {
+                        
+            // Keeping a backup in UserDefaults to use in case API is unavailable.
+            saveSolarDaysBackup()
+            
+        }
+    }
     
     
     // MARK: - Private Properties
     
+    private var updateWhenCurrentDayChanges: AnyCancellable?
     private var stateBools = StateBools.shared
     private let locationManager = CLLocationManager()
     private let networkManager = NetworkManager()
@@ -59,18 +68,26 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         // SignificantLocationChange means 500 meters or more.
         locationManager.startMonitoringSignificantLocationChanges()
 
-        // This notification will update everything if the internet connection is lost and returns.
+        // This notification will update solarDays if the internet connection is lost and returns.
         internetConnection = NetworkMonitor().objectWillChange.sink {_ in
             print("internet connection has changed")
             if !self.stateBools.internetIsDown {
                 self.updateSolarDays()
             }
         }
+        
+        // This notification will update solarDays when the date changes.
+        let dayTracker = DayTracker()
+        updateWhenCurrentDayChanges = dayTracker.$today.sink { _ in
+            self.updateSolarDays()
+        }
     }
     
     // Necessary to keep the app from launching if location changes while app is inactive.
     deinit {
         locationManager.stopMonitoringSignificantLocationChanges()
+        updateWhenCurrentDayChanges?.cancel()
+        internetConnection?.cancel()
     }
     
     // MARK: - Methods for Updating

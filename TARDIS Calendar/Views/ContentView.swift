@@ -17,7 +17,7 @@ struct ContentView: View {
     @EnvironmentObject private var solarEventManager: SolarEventManager
     
     // State variables
-    @StateObject private var trailing = Trailing()
+    @StateObject private var timeManager = TimeManager()
     @State private var stateBools = StateBools.shared
     @State private var inactivityTimer: Timer?
     
@@ -101,7 +101,7 @@ struct ContentView: View {
                     }
                     // This call changes the trailing time in our timeline, if we haven't gone beyond the boundaries.
                     
-                    trailing.newTrailingTime(start: start, end: end)
+                    timeManager.newTrailingTime(start: start, end: end)
                     
                     // This indicates user interaction, so reset the inactivity timer.
                     stateBools.animateSpan = false
@@ -170,7 +170,7 @@ struct ContentView: View {
             } // End of main ZStack
             .statusBarHidden(true)
             .environmentObject(Dimensions(screen.size))
-            .environmentObject(Timeline(trailing.value))
+            .environmentObject(Timeline(timeManager.trailingTime))
             
             // Animating zoom's return to default by hand
             .onReceive(spanTimer) { time in
@@ -194,13 +194,13 @@ struct ContentView: View {
         // Represents one frame - changes trailingTime toward the default time.
         // Maybe I can get swift to animate this?
         
-        let timeline = Timeline(trailing.value)
+        let timeline = Timeline(timeManager.trailingTime)
         
         if abs(timeline.targetSpan - timeline.span) > 1 {
             let newSpan = timeline.span + 0.02 * (timeline.targetSpan - timeline.span)
             print(newSpan)
             let newTrailingTime = timeline.leadingTime + newSpan
-            trailing.value = newTrailingTime
+            timeManager.trailingTime = newTrailingTime
             
         } else {
             stateBools.animateSpan = false
