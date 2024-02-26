@@ -25,8 +25,8 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
     private let eventStore = EventStore.shared.store
     private var internetConnection: AnyCancellable?
     
-    @State private var stateBools = StateBools.shared
-    @State private var timeline = Timeline.shared
+    private var stateBools = StateBools.shared
+    var timeline = Timeline()
     
 
     override init() {
@@ -100,8 +100,8 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
         print("updateEvents has been triggered")
         
         // Set up date parameters
-        let start = timeline.minDay
-        let end = timeline.maxDay
+        let start = TimelineSettings.shared.minDay()
+        let end = TimelineSettings.shared.maxDay()
         
         // Search for events in selected calendars that are not banner type
         let calendarsToSearch = appleCalendars.filter({$0.isSelected && $0.type != "banner"}).map({$0.calendar})

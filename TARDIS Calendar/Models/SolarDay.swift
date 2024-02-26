@@ -28,7 +28,7 @@ struct SolarDay: Codable {
     let dusk: String
     let solar_noon: String
         
-    static let calendar = Timeline.shared.calendar
+    static let calendar = TimelineSettings.shared.calendar
     
     // Date formatter
     static var df: DateFormatter {

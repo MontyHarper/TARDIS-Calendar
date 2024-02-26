@@ -15,12 +15,12 @@ class ButtonMaker: ObservableObject {
     // Question: does this fix the reference loop?
     weak var eventManager: EventManager?
         
-    var refreshDate = Timeline.shared.maxDay
+    var refreshDate = TimelineSettings.shared.maxDay()
         
     func updateButtons() {
         
         buttons = []
-        refreshDate = Timeline.shared.maxDay
+        refreshDate = TimelineSettings.shared.maxDay()
         
         guard let eventManager = eventManager else {
             return

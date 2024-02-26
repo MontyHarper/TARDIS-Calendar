@@ -29,7 +29,7 @@ struct ScreenStops {
         let leadingTime = timeline.leadingTime
         let trailingDate = timeline.trailingDate
         let trailingTime = timeline.trailingTime
-        let calendar = timeline.calendar
+        let calendar = TimelineSettings.shared.calendar
         
         // Begin with the leadingDate (first date visible on screen)
         var day: Date = calendar.startOfDay(for:leadingDate)

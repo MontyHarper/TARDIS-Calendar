@@ -11,16 +11,18 @@ import Foundation
 import SwiftUI
 
 struct ContentView: View {
-        
+    
     // Access to view models
     @EnvironmentObject private var eventManager: EventManager
     @EnvironmentObject private var solarEventManager: SolarEventManager
     
     // State variables
-    @StateObject private var timeline = Timeline.shared
+    @StateObject private var trailing = Trailing()
     @State private var stateBools = StateBools.shared
     @State private var inactivityTimer: Timer?
-    @State private var currentDay = Timeline.shared.calendar.dateComponents([.day], from: Date())
+    
+    // Use to track date changes for triggering updates.
+    @State private var today = TimelineSettings.shared.calendar.dateComponents([.day], from: Date()).day
     
     // Constants that configure the UI. To mess with the look of the calendar, mess with these.
     let yOfLabelBar = 0.1 // y position of date label bar in unit space
@@ -30,11 +32,49 @@ struct ContentView: View {
     // Timers driving change in the UI
     // May want to refactor for better efficiency
     // Josh says use timeline view?
-    let updateTimer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
+    // let updateTimer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
     let spanTimer = Timer.publish(every: 0.04, on: .main, in: .common).autoconnect()
-    
+        
     // Used to track drag gesture for the one-finger zoom function.
     static private var dragStart = 0.0
+    
+    // MARK: - Update Timer
+    
+    
+//        mutating func oneSecondUpdate() {
+//
+//        // Advance trailingTime by one second
+//        trailingTime += 1.0
+//
+//        // Check if it's a new day; if so, update solarDays
+//        let lastActiveDay = UserDefaults.standard.value(forKey: UserDefaultKey.LastActiveDay.rawValue) as? Int ?? today
+//        if lastActiveDay != today {
+//            solarEventManager.updateSolarDays()
+//            UserDefaults.standard.set(today, forKey: UserDefaultKey.LastActiveDay.rawValue)
+//            today = TimelineSettings.shared.calendar.dateComponents([.day], from: Date()).day
+//        }
+//
+//        // Update marquee and/or navigation buttons if either has expired.
+//        if Date() > eventManager.bannerMaker.refreshDate {
+//            eventManager.bannerMaker.updateBanners()
+//        }
+//
+//        if Date() > eventManager.buttonMaker.refreshDate {
+//            eventManager.buttonMaker.updateButtons()
+//        }
+//
+//        // Bring the next upcoming event into focus as needed.
+//        let time1 = TimelineSettings.shared.calendar.date(byAdding: .second, value: 30 * 60, to: Date())!
+//        let time2 = TimelineSettings.shared.calendar.date(byAdding: .second, value: 30 * 60 + 1, to: Date())!
+//        let range = time1...time2
+//        if let _ = eventManager.events.first(where: { range.contains($0.startDate)}
+//        ) {
+//            eventManager.highlightNextEvent()
+//        }
+//    }
+    
+
+    
     
     var body: some View {
         
@@ -56,11 +96,12 @@ struct ContentView: View {
                     // Save the location of this drag for the next event.
                     ContentView.dragStart = gesture.location.x
                     // Drag gesture needs to occur on the future side of now, far enough from now that it doesn't cause the zoom to jump wildly
-                    guard end > timeline.nowLocation + 0.1 && start > timeline.nowLocation + 0.1 else {
+                    guard end > TimelineSettings.shared.nowLocation + 0.1 && start > TimelineSettings.shared.nowLocation + 0.1 else {
                         return
                     }
                     // This call changes the trailing time in our timeline, if we haven't gone beyond the boundaries.
-                    timeline.newTrailingTime(start: start, end: end)
+                    
+                    trailing.newTrailingTime(start: start, end: end)
                     
                     // This indicates user interaction, so reset the inactivity timer.
                     stateBools.animateSpan = false
@@ -87,7 +128,14 @@ struct ContentView: View {
                     .zIndex(-100)
                 // Zoom in and out by changing trailingTime
                     .gesture(oneFingerZoom)
-
+                
+                // headerView combines current date, marquee with scrolling messages, and time tick markers.
+                HeaderView()
+                    .position(x: screen.size.width * 0.5, y: screen.size.height * yOfLabelBar)
+                
+                // eventTimelineView combines a horizontal timeline with views for each event and a "nowView" that marks the current moment.
+                EventTimelineView()
+                    .gesture(oneFingerZoom)
                 
                 // Show progress view while background loads.
                 if stateBools.showProgressView {
@@ -95,11 +143,6 @@ struct ContentView: View {
                         .position(x: screen.size.width * 0.5, y: screen.size.height * 0.5)
                         .scaleEffect(3)
                 }
-                
-                // headerView combines current date, marquee with scrolling messages, and time tick markers.
-                HeaderView()
-                    .position(x: screen.size.width * 0.5, y: screen.size.height * yOfLabelBar)
-                
                 
                 // Hidden button in upper right hand corner allows caregivers to change preferences.
                 Color(.clear)
@@ -115,65 +158,19 @@ struct ContentView: View {
                     }
                     .sheet(isPresented: $stateBools.showSettings) {
                         SettingsView()
-                            .onDisappear {
-                                
-  //                              eventManager.updateEverything()
-                                
-                            }
                     }
-                
-                // eventTimelineView combines a horizontal timeline with views for each event and a "nowView" that marks the current moment.
-                EventTimelineView()
-                    .gesture(oneFingerZoom)
-                
                 
                 // Navigation buttons; each button represents a type of event and pulls the next event of that type onto the screen.
                 
                 ButtonBar()
                     .position(x: screen.size.width * 0.5, y: screen.size.height * 0.85)
                 
-                
                 AlertView()
-                
                 
             } // End of main ZStack
             .statusBarHidden(true)
             .environmentObject(Dimensions(screen.size))
-            .environmentObject(timeline)
-            
-            // Update timer fires once per second.
-            .onReceive(updateTimer) { time in
-                            
-                // Advance the timeline
-                timeline.updateNow()
-                print(timeline.now)
-                
-                // Check for new day; update calendar and solar events once per day.
-                let today = timeline.calendar.dateComponents([.day], from: Date())
-                if today != currentDay {
-                    print("called update calendars from new day in contentview")
-                    eventManager.updateEverything()
-                    solarEventManager.updateSolarDays()
-                    currentDay = today
-                }
-                
-                // Update marquee and/or next buttons if either has expired.
-//                if Date() > eventManager.bannerMaker.refreshDate {
-//                    eventManager.bannerMaker.updateBanners()
-//                }
-                
-                if Date() > eventManager.buttonMaker.refreshDate {
-                    eventManager.buttonMaker.updateButtons()
-                }
-                
-                // Bring an upcoming event into focus as needed.
-                let range = timeline.calendar.date(byAdding: .second, value: 30 * 60, to: Date())!...timeline.calendar.date(byAdding: .second, value: 30 * 60 + 1, to: Date())!
-                if let _ = eventManager.events.first(where: { range.contains($0.startDate)}
-                ) {
-                    eventManager.highlightNextEvent()
-                }
-                
-            }
+            .environmentObject(Timeline(trailing.value))
             
             // Animating zoom's return to default by hand
             .onReceive(spanTimer) { time in
@@ -184,11 +181,10 @@ struct ContentView: View {
             .onLongPressGesture(minimumDuration: 0.05, maximumDistance: 20.0) {
                 eventManager.closeAll()
             }
-
+            
         } // End of Geometry Reader
         .ignoresSafeArea()
-
-
+        
     } // End of ContentView
     
     
@@ -198,16 +194,19 @@ struct ContentView: View {
         // Represents one frame - changes trailingTime toward the default time.
         // Maybe I can get swift to animate this?
         
+        let timeline = Timeline(trailing.value)
+        
         if abs(timeline.targetSpan - timeline.span) > 1 {
             let newSpan = timeline.span + 0.02 * (timeline.targetSpan - timeline.span)
             print(newSpan)
             let newTrailingTime = timeline.leadingTime + newSpan
-            timeline.trailingTime = newTrailingTime
+            trailing.value = newTrailingTime
             
         } else {
             stateBools.animateSpan = false
         }
     }
+
 }
 
 

@@ -11,8 +11,7 @@ struct HeaderView: View {
     
     @EnvironmentObject var size: Dimensions
     @EnvironmentObject var eventManager: EventManager
-
-    @State private var timeline = Timeline.shared
+    @EnvironmentObject var timeline: Timeline
 
     var dateText: String {
         let formatter = DateFormatter()
@@ -20,7 +19,7 @@ struct HeaderView: View {
         return formatter.string(from: Date(timeIntervalSince1970: timeline.now))
     }
     var timeOfDayText: String {
-        let hour = timeline.calendar.component(.hour, from: Date(timeIntervalSince1970: timeline.now))
+        let hour = TimelineSettings.shared.calendar.component(.hour, from: Date(timeIntervalSince1970: timeline.now))
         switch hour {
         case 1...5:
             return "Time to Sleep"

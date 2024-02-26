@@ -15,7 +15,7 @@ struct EventView: View {
     let event: Event
     @EnvironmentObject var size: Dimensions
     @EnvironmentObject var eventManager: EventManager
-    @State private var timeline = Timeline.shared
+    @EnvironmentObject var timeline: Timeline
 
     // TODO: - Figure out how to animate transitions from regular to expanded format and back.
     @Binding var isExpanded: Bool
@@ -33,7 +33,7 @@ struct EventView: View {
     // This offset value keeps the event view centered over Now while the event is happening.
     var offsetAmount: Double {
         if event.isNow {
-            return screenWidth * (timeline.nowLocation - timeline.unitX(fromTime: event.startDate.timeIntervalSince1970))
+            return screenWidth * (TimelineSettings.shared.nowLocation - timeline.unitX(fromTime: event.startDate.timeIntervalSince1970))
         } else {
             return 0.0
         }
@@ -194,7 +194,7 @@ struct EventView: View {
         .alert("Are you finished with \(event.title)?", isPresented: $dismiss) {
             Button("YES") {
                 event.event.endDate = Date()
-                let range = Date()...timeline.calendar.date(byAdding: .minute, value: 30, to: Date())!
+                let range = Date()...TimelineSettings.shared.calendar.date(byAdding: .minute, value: 30, to: Date())!
                 
                 // If the next event is within half an hour, highlight it.
                 if let _ = eventManager.events.first(where: {range.contains($0.startDate)}) {
