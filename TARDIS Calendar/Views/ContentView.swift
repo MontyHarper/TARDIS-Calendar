@@ -43,25 +43,13 @@ struct ContentView: View {
     
 //        mutating func oneSecondUpdate() {
 //
-//        // Advance trailingTime by one second
-//        trailingTime += 1.0
-//
-//        // Check if it's a new day; if so, update solarDays
-//        let lastActiveDay = UserDefaults.standard.value(forKey: UserDefaultKey.LastActiveDay.rawValue) as? Int ?? today
-//        if lastActiveDay != today {
-//            solarEventManager.updateSolarDays()
-//            UserDefaults.standard.set(today, forKey: UserDefaultKey.LastActiveDay.rawValue)
-//            today = TimelineSettings.shared.calendar.dateComponents([.day], from: Date()).day
-//        }
+
 //
 //        // Update marquee and/or navigation buttons if either has expired.
 //        if Date() > eventManager.bannerMaker.refreshDate {
 //            eventManager.bannerMaker.updateBanners()
 //        }
 //
-//        if Date() > eventManager.buttonMaker.refreshDate {
-//            eventManager.buttonMaker.updateButtons()
-//        }
 //
 //        // Bring the next upcoming event into focus as needed.
 //        let time1 = TimelineSettings.shared.calendar.date(byAdding: .second, value: 30 * 60, to: Date())!

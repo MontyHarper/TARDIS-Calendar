@@ -16,11 +16,16 @@ class BannerMaker {
     var refreshDate = TimelineSettings.shared.maxDay()
     var marquee: MarqueeViewModel?
     let eventStore = EventStore.shared.store
+    var timer: Timer?
     
     weak var eventManager: EventManager?
         
     init() {
         updateBanners()
+    }
+    
+    deinit {
+        timer?.invalidate()
     }
     
     func updateBanners() {
@@ -69,6 +74,18 @@ class BannerMaker {
             print("new banner text: ", bannerText, "\nrefresh date: ", refreshDate.formatted())
             
             marquee = MarqueeViewModel(bannerText, fontSize: 24 )
+            
+            resetTimer(triggerDate: refreshDate)
+        }
+    }
+    
+    func resetTimer(triggerDate: Date) {
+        
+        timer?.invalidate()
+        
+        let seconds = triggerDate.timeIntervalSince1970 - Date().timeIntervalSince1970
+        timer = Timer.scheduledTimer(withTimeInterval: seconds, repeats: false) {_ in
+            self.updateBanners()
         }
     }
 }

@@ -16,7 +16,17 @@ class ButtonMaker: ObservableObject {
     weak var eventManager: EventManager?
         
     var refreshDate = TimelineSettings.shared.maxDay()
-        
+    
+    var timer: Timer?
+    
+    init() {
+        updateButtons()
+    }
+    
+    deinit {
+        timer?.invalidate()
+    }
+    
     func updateButtons() {
         
         buttons = []
@@ -53,9 +63,21 @@ class ButtonMaker: ObservableObject {
         button = ButtonModel(eventManager: eventManager, id: "all")
         buttons.append(button)
         
+        resetTimer(triggerDate: refreshDate)
+        
         print("Events in events: ", eventManager.events.count)
         print("Types: ", eventManager.events.map({$0.calendarTitle}))
         print("I made new buttons: ", buttons.map({$0.bottomText}))
+    }
+    
+    func resetTimer(triggerDate: Date) {
+        
+        timer?.invalidate()
+        
+        let seconds = triggerDate.timeIntervalSince1970 - Date().timeIntervalSince1970
+        timer = Timer.scheduledTimer(withTimeInterval: seconds, repeats: false) {_ in
+            self.updateButtons()
+        }
     }
     
     
