@@ -12,7 +12,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    // Access to view models
+    // Access to ViewModels
     @EnvironmentObject private var eventManager: EventManager
     @EnvironmentObject private var solarEventManager: SolarEventManager
     
@@ -21,21 +21,16 @@ struct ContentView: View {
     @State private var stateBools = StateBools.shared
     @State private var inactivityTimer: Timer?
     
-    // Use to track date changes for triggering updates.
-    @State private var today = TimelineSettings.shared.calendar.dateComponents([.day], from: Date()).day
-    
+    // TODO: - remove these or move them to a settings singleton
     // Constants that configure the UI. To mess with the look of the calendar, mess with these.
     let yOfLabelBar = 0.1 // y position of date label bar in unit space
-    let yOfTimeline = 0.5
-    let yOfInfoBox = 0.1
+    let yOfTimeline = 0.5 // unused?
+    let yOfInfoBox = 0.1 // unused?
     
-    // Timers driving change in the UI
-    // May want to refactor for better efficiency
-    // Josh says use timeline view?
-    // let updateTimer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
+    // This timer drives the animation when AutoZoom is engaged.
     let animationTimer = Timer.publish(every: 0.04, on: .main, in: .common).autoconnect()
         
-    // Used to track drag gesture for the one-finger zoom function.
+    // Used to track drag for the OneFingerZoom gesture.
     static private var dragStart = 0.0
 
     
@@ -43,7 +38,7 @@ struct ContentView: View {
         
         GeometryReader { screen in
             
-            // MARK: - Zoom Gesture
+            // MARK: - OneFingerZoom Gesture
             // Custom Zoom gesture attaches to the background and event views.
             // Needs to live here inside the geometry reader.
             let oneFingerZoom = DragGesture()
