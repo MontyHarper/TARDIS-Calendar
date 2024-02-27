@@ -157,7 +157,8 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
     
     // Called when user taps one of the navigation buttons.
     func buttonAction(type: String) {
-                
+        guard let timeManager = timeManager else {return}
+
         switch type {
             
         case "first":
@@ -166,15 +167,12 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
         case "all":
             closeAll()
             let targetEvent = events.last(where: {$0.startDate > Date()})
-//            timeline.setTargetSpan(date: targetEvent?.startDate)
-//            stateBools.animateSpan = true
+            timeManager.setTarget(targetEvent?.startDate)
             
         default:
-            if let targetEvent = events.first(where: {$0.type == type && $0.startDate > Date()}) {
-//                timeline.setTargetSpan(date: targetEvent.startDate)
-//                expandEvent(targetEvent)
-//                stateBools.animateSpan = true
-            }
+            let targetEvent = events.first(where: {$0.type == type && $0.startDate > Date()})
+            timeManager.setTarget(targetEvent?.startDate)
+            expandEvent(targetEvent)
         }
     }
     
@@ -183,9 +181,8 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
         isExpanded = isExpanded.map({_ in false})
     }
     
-    
     // leaves only the requested event expanded
-    func expandEvent(_ event: Event) {
+    func expandEvent(_ event: Event?) {
         closeAll()
         if let index = events.indices.first(where: {events[$0] == event}) {
             isExpanded[index] = true
@@ -198,7 +195,6 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
         if let targetEvent = events.first(where: {$0.startDate > Date()}) {
             timeManager.setTarget(targetEvent.startDate)
             expandEvent(targetEvent)
-  //          stateBools.animateSpan = true
         }
     }
     
