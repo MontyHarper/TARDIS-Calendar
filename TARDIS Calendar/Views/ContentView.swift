@@ -33,36 +33,11 @@ struct ContentView: View {
     // May want to refactor for better efficiency
     // Josh says use timeline view?
     // let updateTimer = Timer.publish(every: 1.0, on: .main, in: .common).autoconnect()
-    let spanTimer = Timer.publish(every: 0.04, on: .main, in: .common).autoconnect()
+    let animationTimer = Timer.publish(every: 0.04, on: .main, in: .common).autoconnect()
         
     // Used to track drag gesture for the one-finger zoom function.
     static private var dragStart = 0.0
-    
-    // MARK: - Update Timer
-    
-    
-//        mutating func oneSecondUpdate() {
-//
 
-//
-//        // Update marquee and/or navigation buttons if either has expired.
-//        if Date() > eventManager.bannerMaker.refreshDate {
-//            eventManager.bannerMaker.updateBanners()
-//        }
-//
-//
-//        // Bring the next upcoming event into focus as needed.
-//        let time1 = TimelineSettings.shared.calendar.date(byAdding: .second, value: 30 * 60, to: Date())!
-//        let time2 = TimelineSettings.shared.calendar.date(byAdding: .second, value: 30 * 60 + 1, to: Date())!
-//        let range = time1...time2
-//        if let _ = eventManager.events.first(where: { range.contains($0.startDate)}
-//        ) {
-//            eventManager.highlightNextEvent()
-//        }
-//    }
-    
-
-    
     
     var body: some View {
         
@@ -156,13 +131,16 @@ struct ContentView: View {
                 AlertView()
                 
             } // End of main ZStack
+            .onAppear {
+                eventManager.timeManager = timeManager
+            }
             .statusBarHidden(true)
             .environmentObject(Dimensions(screen.size))
             .environmentObject(Timeline(timeManager.trailingTime))
             
-            // Animating zoom's return to default by hand
-            .onReceive(spanTimer) { time in
-                if stateBools.animateSpan {changeSpan()}
+            // Animating auto-zoom
+            .onReceive(animationTimer) { time in
+                if stateBools.animateSpan {timeManager.newFrame()}
             }
             
             // Tapping outside an event view closes all expanded views
@@ -174,26 +152,6 @@ struct ContentView: View {
         .ignoresSafeArea()
         
     } // End of ContentView
-    
-    
-    // This function animates the calendar back to default zoom level.
-    func changeSpan() {
-        
-        // Represents one frame - changes trailingTime toward the default time.
-        // Maybe I can get swift to animate this?
-        
-        let timeline = Timeline(timeManager.trailingTime)
-        
-        if abs(timeline.targetSpan - timeline.span) > 1 {
-            let newSpan = timeline.span + 0.02 * (timeline.targetSpan - timeline.span)
-            print(newSpan)
-            let newTrailingTime = timeline.leadingTime + newSpan
-            timeManager.trailingTime = newTrailingTime
-            
-        } else {
-            stateBools.animateSpan = false
-        }
-    }
 
 }
 

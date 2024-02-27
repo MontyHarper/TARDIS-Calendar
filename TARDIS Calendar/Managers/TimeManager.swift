@@ -21,17 +21,24 @@ class TimeManager: ObservableObject {
         }
     }
     
-    var timer: Timer?
-    var timeUnit: TimeInterval = 1.0
+    // Setting targetTrailingTime to a new value triggers an animation to a screen with the target as the new trailingTime.
+    var targetTrailingTime = Date().timeIntervalSince1970 + TimelineSettings.shared.defaultSpan {
+        didSet {
+            StateBools.shared.animateSpan = true
+            print("new targetTrailingTime:" , targetTrailingTime)
+        }
+    }
+    var updateTimer: Timer?
+    var timeUnit: TimeInterval = 1.0 // How often to update in seconds
     
     init() {
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) {_ in
+        updateTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) {_ in
             self.makeUpdates()
         }
     }
     
     deinit {
-        timer?.invalidate()
+        updateTimer?.invalidate()
     }
     
     func makeUpdates() {
@@ -81,11 +88,63 @@ class TimeManager: ObservableObject {
     
     // Resets zoom to the default level.
     func resetTrailing() {
-        
+        trailingTime = defaultTrailing()
+    }
+    
+    func defaultTrailing() -> Double {
         let timeline = Timeline(trailingTime)
         let leadingTime = timeline.leadingTime
         let defaultSpan = TimelineSettings.shared.defaultSpan
-        trailingTime = leadingTime + defaultSpan
+        return leadingTime + defaultSpan
     }
     
+    // This method takes a date and sets the targetTrailingTime required to place that date onscreen opposite the Now icon.
+    // It then triggers an animation to that state by toggling the animation property.
+    func setTarget(_ date: Date?) {
+        
+        guard let date = date else {
+            targetTrailingTime = defaultTrailing()
+            return
+        }
+        
+        let timeline = Timeline(trailingTime)
+        let now = TimelineSettings.shared.nowLocation
+        let target = 1.0 - now
+        let dateUnit = timeline.unitX(fromTime: date.timeIntervalSince1970)
+        
+        // transform is calculated to take now to now, and target (old value) to date (new value); thus it will take 0 to the new leading edge, and 1 to new trailing.
+        let transform: (Double) -> Double = {x in
+            x * ((now - dateUnit) / (now - target)) + now * ((dateUnit - target) / (now - target))
+        }
+        
+        let targetLeadingUnit = transform(0.0)
+        let targetTrailingUnit = transform(1.0)
+        
+        // Convert to time space
+        let proposedLead = timeline.timeX(fromUnit: targetLeadingUnit)
+        let proposedTarget = timeline.timeX(fromUnit: targetTrailingUnit)
+        print("proposed target: ", proposedTarget)
+        
+        // Limit targetTrailingTime to lie between min and max
+        let proposedSpan = proposedTarget - proposedLead
+        if proposedSpan <= TimelineSettings.shared.minSpan {
+            targetTrailingTime = TimelineSettings.shared.minSpan * (1.0 - TimelineSettings.shared.nowLocation) + Date().timeIntervalSince1970
+        } else if proposedSpan >= timeline.maxSpan {
+            targetTrailingTime = timeline.maxSpan * (1.0 - TimelineSettings.shared.nowLocation) + Date().timeIntervalSince1970
+        } else {
+            targetTrailingTime = proposedTarget
+        }
+    }
+    
+    // This function advances the animation for auto-zoom.
+    // Note: I tried using SwiftUI animations; they don't work well for this.
+    func newFrame() {
+        if abs(targetTrailingTime - trailingTime) > 2.0 {
+            trailingTime = trailingTime + 0.05 * (targetTrailingTime - trailingTime)
+            print(trailingTime)
+            
+        } else {
+            StateBools.shared.animateSpan = false
+        }
+    }
 }

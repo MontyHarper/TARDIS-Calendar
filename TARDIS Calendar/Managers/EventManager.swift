@@ -19,6 +19,7 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
     @Published var isExpanded = [Bool]() // For each event, should the view be rendered as expanded? This is the source of truth for expansion of event views.
     @Published var bannerMaker = BannerMaker()
     @Published var buttonMaker = ButtonMaker()
+    
         
     // newEvents temporarily stores newly downloaded events whle processing.
     private var newEvents = [Event]()
@@ -26,8 +27,8 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
     private var internetConnection: AnyCancellable?
     
     private var stateBools = StateBools.shared
-    var timeline = Timeline()
     
+    var timeManager: TimeManager?
 
     override init() {
         
@@ -165,14 +166,14 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
         case "all":
             closeAll()
             let targetEvent = events.last(where: {$0.startDate > Date()})
-            timeline.setTargetSpan(date: targetEvent?.startDate)
-            stateBools.animateSpan = true
+//            timeline.setTargetSpan(date: targetEvent?.startDate)
+//            stateBools.animateSpan = true
             
         default:
             if let targetEvent = events.first(where: {$0.type == type && $0.startDate > Date()}) {
-                timeline.setTargetSpan(date: targetEvent.startDate)
-                expandEvent(targetEvent)
-                stateBools.animateSpan = true
+//                timeline.setTargetSpan(date: targetEvent.startDate)
+//                expandEvent(targetEvent)
+//                stateBools.animateSpan = true
             }
         }
     }
@@ -192,10 +193,12 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
     }
     
     func highlightNextEvent() {
+        guard let timeManager = timeManager else {return}
+        
         if let targetEvent = events.first(where: {$0.startDate > Date()}) {
-            timeline.setTargetSpan(date: targetEvent.startDate)
+            timeManager.setTarget(targetEvent.startDate)
             expandEvent(targetEvent)
-            stateBools.animateSpan = true
+  //          stateBools.animateSpan = true
         }
     }
     
