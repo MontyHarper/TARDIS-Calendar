@@ -28,6 +28,11 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
     
     private var stateBools = StateBools.shared
     
+    // Highlight upcoming events this much ahead of time.
+    // TODO: - make this a user preference
+    private let warningTime: Double = 30*60 // half an hour
+    var warningTimer: Timer?
+    
     var timeManager: TimeManager?
 
     override init() {
@@ -64,6 +69,9 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
         
     } // End init
     
+    deinit {
+        warningTimer?.invalidate()
+    }
 
     @objc func updateEverything() {
    
@@ -89,7 +97,7 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
                 
                 // Keep this inside updateEvents closure because buttons depend on events.
                 self.buttonMaker.updateButtons()
-                
+                self.setWarningTimer()
             }
             self.bannerMaker.updateBanners()
             
@@ -213,6 +221,23 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
         print("Calendars saved: ", myDictionary)
                
         updateEverything()
+    }
+    
+    
+    func setWarningTimer() {
+        warningTimer?.invalidate()
+        
+        guard let targetEvent = events.first(where: {$0.startDate.timeIntervalSince1970 > Date().timeIntervalSince1970 + warningTime}) else {return}
+            
+        let targetTime = targetEvent.startDate.timeIntervalSince1970
+        let secondsToWarning = (targetTime - Date().timeIntervalSince1970) - warningTime
+        
+        print("setting warning timer: ", secondsToWarning)
+        
+        warningTimer = Timer.scheduledTimer(withTimeInterval: secondsToWarning, repeats: false) {_ in
+            self.highlightNextEvent()
+            self.setWarningTimer()
+        }
     }
 }
 

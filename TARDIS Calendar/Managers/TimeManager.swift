@@ -123,7 +123,7 @@ class TimeManager: ObservableObject {
         // Convert to time space
         let proposedLead = timeline.timeX(fromUnit: targetLeadingUnit)
         let proposedTarget = timeline.timeX(fromUnit: targetTrailingUnit)
-        print("proposed target: ", proposedTarget)
+        print("setTarget() - proposed target: ", proposedTarget)
         
         // Limit targetTrailingTime to lie between min and max
         let proposedSpan = proposedTarget - proposedLead
@@ -141,7 +141,7 @@ class TimeManager: ObservableObject {
     func newFrame() {
         if abs(targetTrailingTime - trailingTime) > 2.0 {
             trailingTime = trailingTime + 0.05 * (targetTrailingTime - trailingTime)
-            print(trailingTime)
+            print("animating ", trailingTime)
             
         } else {
             StateBools.shared.animateSpan = false
