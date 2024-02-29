@@ -26,6 +26,9 @@ struct MarqueeView: View {
                         controller.togglePause()
                     }
             }
+            .task {
+                print("New MarqueeView: ", Date().timeIntervalSince1970)
+            }
     }
 }
 
@@ -61,6 +64,7 @@ class MarqueeViewModel {
             text += first
         }
         startTime = Date().timeIntervalSince1970
+        print("Made a new MarqueeViewModel: ", startTime)
     }
     
     // Given a time, return the text and offset that should be displayed at that moment.

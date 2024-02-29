@@ -46,6 +46,7 @@ class TimeManager: ObservableObject {
         // Advance trailing time - this effectively advances the timeline, triggering the UI to update.
         self.trailingTime += timeUnit
         
+        // TODO: - is this still relevant?
         // Check if it's a new day; if so, update today
         let lastActiveDay = UserDefaults.standard.value(forKey: UserDefaultKey.LastActiveDay.rawValue) as? Int ?? today
         if lastActiveDay != today {
@@ -139,8 +140,8 @@ class TimeManager: ObservableObject {
     // This function advances the animation for auto-zoom.
     // Note: I tried using SwiftUI animations; they don't work well for this.
     func newFrame() {
-        if abs(targetTrailingTime - trailingTime) > 2.0 {
-            trailingTime = trailingTime + 0.05 * (targetTrailingTime - trailingTime)
+        if abs(targetTrailingTime - trailingTime) > 5 {
+            trailingTime = trailingTime + 0.025 * (targetTrailingTime - trailingTime)
             print("animating ", trailingTime)
             
         } else {

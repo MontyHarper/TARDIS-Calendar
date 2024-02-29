@@ -11,15 +11,15 @@ struct HeaderView: View {
     
     @EnvironmentObject var size: Dimensions
     @EnvironmentObject var eventManager: EventManager
-    @EnvironmentObject var timeline: Timeline
-
+    var timeline: Timeline
+    
     var dateText: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, MMMM d, yyyy"
-        return formatter.string(from: Date(timeIntervalSince1970: timeline.now))
+        return formatter.string(from: Date())
     }
     var timeOfDayText: String {
-        let hour = TimelineSettings.shared.calendar.component(.hour, from: Date(timeIntervalSince1970: timeline.now))
+        let hour = TimelineSettings.shared.calendar.component(.hour, from: Date())
         switch hour {
         case 1...5:
             return "Time to Sleep"
@@ -97,7 +97,7 @@ struct HeaderView: View {
 
                 
                 // Row 3: TimeTicks
-                TimeTickBar()
+                TimeTickBar(timeline: timeline)
             }
             
             

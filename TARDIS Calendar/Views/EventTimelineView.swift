@@ -12,7 +12,7 @@ struct EventTimelineView: View {
     
     @EnvironmentObject var eventManager: EventManager
     @EnvironmentObject var size: Dimensions
-    @EnvironmentObject var timeline: Timeline
+    var timeline: Timeline
 
     let yOfTimeline = 0.5
     
@@ -32,7 +32,7 @@ struct EventTimelineView: View {
             // Circles representing events along the time line
             
             ForEach(eventManager.events.indices.sorted(by: {$0 > $1}), id: \.self) { index in
-                EventView(event: eventManager.events[index], isExpanded: $eventManager.isExpanded[index], shrinkFactor: shrinkFactor(), screenWidth: size.width)
+                EventView(event: eventManager.events[index], timeline: timeline, isExpanded: $eventManager.isExpanded[index], shrinkFactor: shrinkFactor(), screenWidth: size.width)
                     .position(x: timeline.unitX(fromTime: eventManager.events[index].startDate.timeIntervalSince1970) * size.width, y: yOfTimeline * size.height)
             }
 

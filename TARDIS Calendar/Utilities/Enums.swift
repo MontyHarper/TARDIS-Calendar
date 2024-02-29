@@ -113,4 +113,15 @@ enum UserDefaultKey: String {
 }
 
 
+// These are all global constants; there are no instances
+// rename file to constants; put this at top
+
+enum Constants {
+    
+    enum Timeline {
+        static let nowPosition = 0.2
+    }
+    
+}
+
 

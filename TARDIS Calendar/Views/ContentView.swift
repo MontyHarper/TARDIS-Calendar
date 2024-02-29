@@ -81,18 +81,18 @@ struct ContentView: View {
             ZStack {
                 
                 // Background shows time of day by color
-                BackgroundView(solarEventManager: solarEventManager)
+                BackgroundView(timeline: Timeline(timeManager.trailingTime), solarEventManager: solarEventManager)
                     .opacity(1.0)
                     .zIndex(-100)
                 // Zoom in and out by changing trailingTime
                     .gesture(oneFingerZoom)
                 
                 // headerView combines current date, marquee with scrolling messages, and time tick markers.
-                HeaderView()
+                HeaderView(timeline: Timeline(timeManager.trailingTime))
                     .position(x: screen.size.width * 0.5, y: screen.size.height * yOfLabelBar)
                 
                 // eventTimelineView combines a horizontal timeline with views for each event and a "nowView" that marks the current moment.
-                EventTimelineView()
+                EventTimelineView(timeline: Timeline(timeManager.trailingTime))
                     .gesture(oneFingerZoom)
                 
                 // Show progress view while background loads.
@@ -131,8 +131,7 @@ struct ContentView: View {
             }
             .statusBarHidden(true)
             .environmentObject(Dimensions(screen.size))
-            .environmentObject(Timeline(timeManager.trailingTime))
-            
+
             // Animating auto-zoom
             .onReceive(animationTimer) { time in
                 if stateBools.animateSpan {timeManager.newFrame()}

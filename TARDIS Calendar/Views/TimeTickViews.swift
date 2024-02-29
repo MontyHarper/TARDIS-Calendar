@@ -18,7 +18,6 @@ import SwiftUI
 struct TimeTickMarkerView: View, Identifiable {
     
     @EnvironmentObject var size: Dimensions
-    @EnvironmentObject var timeline: Timeline
 
     var id = UUID()
     var timeTick: TimeTick
@@ -48,7 +47,6 @@ struct TimeTickMarkerView: View, Identifiable {
 struct TimeTickLabelView: View, Identifiable {
     
     @EnvironmentObject var size: Dimensions
-    @EnvironmentObject var timeline: Timeline
 
     var id = UUID()
     var timeTick: TimeTick

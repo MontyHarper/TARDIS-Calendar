@@ -31,6 +31,7 @@ import SwiftUI
 struct TimelineSettings {
     
     // Setting this up as a singleton, to provide numbers for constructing timelines.
+    // TODO: - Make a constants enum, put all constants in as static let
     
     static var shared = TimelineSettings()
     
@@ -45,6 +46,7 @@ struct TimelineSettings {
     private init() {
     }
     
+    // TODO: - make these computed values
     // Start of day on the first future day that won't show on the calendar.
     func maxDay() -> Date {
         return calendar.startOfDay(for: calendar.date(byAdding: .day, value: maxFutureDays + 1, to: Date())!)
