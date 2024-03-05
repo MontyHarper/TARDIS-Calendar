@@ -18,6 +18,7 @@ struct ContentView: View {
     
     // State variables
     @StateObject private var timeManager = TimeManager()
+    @StateObject private var screenStops = ScreenStops()
     @State private var stateBools = StateBools.shared
     @State private var inactivityTimer: Timer?
     
@@ -77,11 +78,12 @@ struct ContentView: View {
             
             // MARK: - View Elements
             
+            
             // Main ZStack layers background behind all else
             ZStack {
                 
                 // Background shows time of day by color
-                BackgroundView(timeline: Timeline(timeManager.trailingTime), solarEventManager: solarEventManager)
+                BackgroundView(stops: screenStops.stops)
                     .opacity(1.0)
                     .zIndex(-100)
                 // Zoom in and out by changing trailingTime
@@ -126,6 +128,11 @@ struct ContentView: View {
                 AlertView()
                 
             } // End of main ZStack
+            .onChange(of: timeManager.trailingTime) { trailingTime in
+                Task {
+                    await screenStops.updateStops(for: solarEventManager.solarDays, timeline: Timeline(trailingTime))
+                }
+            }
             .onAppear {
                 eventManager.timeManager = timeManager
             }
