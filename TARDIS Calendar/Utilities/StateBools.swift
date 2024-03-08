@@ -68,6 +68,8 @@ class StateBools: ObservableObject {
     var showWelcome: Bool = false
     var solarDaysAvailable = false // When false, background returns a solid color.
     var solarDaysUpdateLocked = false
+    var solarDaysUpdateWaiting = false
+    var solarDaysUpdateWaitingAll = false
     @Published var useDefaultNowIcon: Bool
     
     

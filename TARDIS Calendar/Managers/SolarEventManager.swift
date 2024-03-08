@@ -15,18 +15,20 @@ import SwiftUI
 class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     
-    // MARK: - Published Properties
+    // MARK: - Published / Public Properties
+    
+    // This is the background gradient representing day and night.
+    @Published var screenStops: [Gradient.Stop] = [Gradient.Stop(color: Color.noon, location: 0.0)]
     
     var solarDays = [SolarDay]() {
-        
         didSet {
-                        
             // Keeping a backup in UserDefaults to use in case API is unavailable.
             saveSolarDaysBackup()
-            
         }
     }
     
+    var gradientStart: Double = Date().timeIntervalSince1970
+    var gradientSpan: Double = 1000.00
     
     // MARK: - Private Properties
     
@@ -34,7 +36,6 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     private var stateBools = StateBools.shared
     private let locationManager = CLLocationManager()
     private let networkManager = NetworkManager()
-    var timeline = Timeline()
     private var newSolarDays = [SolarDay]()
     private var internetConnection: AnyCancellable?
         
@@ -93,6 +94,16 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     // MARK: - Methods for Updating
     
     func updateSolarDays(all: Bool = false) {
+        
+        // This function may be triggered from multiple locations; locking it prevents data races. I'm sure there's a more elegant way to do this, but I don't know it yet!
+        guard !stateBools.solarDaysUpdateLocked else {
+            stateBools.solarDaysUpdateWaiting = true
+            // A single request for all should trigger the next update to update all.
+            if all {stateBools.solarDaysUpdateWaitingAll = true}
+            return
+        }
+        
+        stateBools.solarDaysUpdateLocked = true
                 
         print("updating solar days")
         
@@ -129,8 +140,22 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         
         // Trigger recursive functon and store the results
         fetchNext(day: dayZero) {
+            
+            // This closure executes once all the solarDays are updated
             UserDefaults.standard.set(Date(), forKey: UserDefaultKey.LastSolarDayDownloaded.rawValue)
+            
             self.solarDays = self.newSolarDays
+            
+            // Update the background gradient, which is based on SolarDays.
+            self.updateScreenStops() {
+                
+                // Don't unlock updateSolarDays until ScreenStops have also been updated.
+                self.stateBools.solarDaysUpdateLocked = false
+                if self.stateBools.solarDaysUpdateWaiting {
+                    self.updateSolarDays(all: self.stateBools.solarDaysUpdateWaitingAll)
+                }
+                return
+            }
         }
                 
         // Recursive function to fetch days in order
@@ -177,6 +202,7 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         // filter out expired dates
         newSolarDays = newSolarDays.filter({$0.dateDate >= minDay})
                 
+        // TODO: - each solar day still needs a date in order to calculate the gradient correctly
         // fill in days as needed
         while newSolarDays.count < solarDays.count {
             newSolarDays.append(fillInSolarDay)
@@ -224,4 +250,54 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         // TODO: - handle possible errors
         print("location manager failed with error: \(error.localizedDescription)")
     }
+    
+    
+    // Called each time solarDays gets updated; generates a gradient for the background view
+    func updateScreenStops(closure: () -> Void) {
+        
+        // If solarDays are empty, return the default of a single color.
+        guard !solarDays.isEmpty else {
+            print("Trying to generate screen stops but solarDays is empty: ", Date())
+            DispatchQueue.main.async {
+                self.screenStops = [Gradient.Stop(color: Color.noon, location: 0.0)]
+            }
+            closure()
+            return
+        }
+        
+        var newStops = [Gradient.Stop]()
+        
+        // Calculate distance between last event and first event in the gradient
+        let first = solarDays[0].firstLightTime
+        let last = solarDays[solarDays.count - 1].lastLightTime
+        let span = last - first
+        
+        for day in solarDays {
+            
+            print("Stops for: ", day.dateDate.formatted())
+            
+            let solarEvents = day.colorsAndTimes
+            
+            for i in 0 ..< solarEvents.count {
+                
+                let event = solarEvents[i]
+                let color = event.0
+                let location = (event.1 - first) / span // Location of stop in unit space
+                
+                newStops.append(.init(color: color, location: location))
+                print("add stop: ", newStops[newStops.count - 1])
+                
+            } // end of events loop
+                        
+        } // End of days loop
+        
+        DispatchQueue.main.async {
+            self.screenStops = newStops
+            self.gradientStart = first
+            self.gradientSpan = span
+        }
+        
+        closure()
+        
+    } // End of updateScreenStops
 }

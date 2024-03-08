@@ -53,6 +53,8 @@ class Dimensions: ObservableObject {
     var timelineThickness: Double {
         height * 0.008
     }
-    
+    var buttonWidth: Double {
+        tinyEvent * 1.2
+    }
     
 }

@@ -51,8 +51,6 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
         // The update is in a trailing closure to prevent the eventManager from updating before permission is given
         EventStore.shared.requestPermission() {
             
-            print("Do we have permission before updating everything? ", EventStore.shared.permissionIsGiven)
-            
             // This notification will update the calendars and events lists any time an event or calendar is changed in the user's Apple Calendar App.
             // Set up notifications AFTER permission is requested to avoid two updates triggered at once.
             NotificationCenter.default.addObserver(self, selector: #selector(self.updateEverything), name: .EKEventStoreChanged, object: self.eventStore)
@@ -75,6 +73,8 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
 
     @objc func updateEverything() {
    
+        print("Updating Everything in EventManager")
+        
         guard EventStore.shared.permissionIsGiven else {
             return
         }
@@ -106,7 +106,7 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
     
     func updateEvents(closure: @escaping ()->Void) {
         
-        print("updateEvents has been triggered")
+        print("Updating Events")
         
         // Set up date parameters
         let start = TimelineSettings.shared.minDay()
@@ -217,9 +217,7 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
         UserDefaults.standard.set(myDictionary, forKey: UserDefaultKey.Calendars.rawValue)
         
         userCalendars = myDictionary
-        
-        print("Calendars saved: ", myDictionary)
-               
+                       
         updateEverything()
     }
     
@@ -231,9 +229,7 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
             
         let targetTime = targetEvent.startDate.timeIntervalSince1970
         let secondsToWarning = (targetTime - Date().timeIntervalSince1970) - warningTime
-        
-        print("setting warning timer: ", secondsToWarning)
-        
+                
         warningTimer = Timer.scheduledTimer(withTimeInterval: secondsToWarning, repeats: false) {_ in
             self.highlightNextEvent()
             self.setWarningTimer()

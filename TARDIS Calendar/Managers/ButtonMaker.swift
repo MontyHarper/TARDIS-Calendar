@@ -29,6 +29,8 @@ class ButtonMaker: ObservableObject {
     
     func updateButtons() {
         
+        print("Updating buttons")
+        
         buttons = []
         refreshDate = TimelineSettings.shared.maxDay()
         
@@ -64,10 +66,6 @@ class ButtonMaker: ObservableObject {
         buttons.append(button)
         
         resetTimer(triggerDate: refreshDate)
-        
-        print("Events in events: ", eventManager.events.count)
-        print("Types: ", eventManager.events.map({$0.calendarTitle}))
-        print("I made new buttons: ", buttons.map({$0.bottomText}))
     }
     
     func resetTimer(triggerDate: Date) {

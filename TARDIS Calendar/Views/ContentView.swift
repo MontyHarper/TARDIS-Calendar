@@ -30,10 +30,10 @@ struct ContentView: View {
     
     // This timer drives the animation when AutoZoom is engaged.
     let animationTimer = Timer.publish(every: 0.04, on: .main, in: .common).autoconnect()
-        
+    
     // Used to track drag for the OneFingerZoom gesture.
     static private var dragStart = 0.0
-
+    
     
     var body: some View {
         
@@ -82,12 +82,14 @@ struct ContentView: View {
             // Main ZStack layers background behind all else
             ZStack {
                 
+                
                 // Background shows time of day by color
-                BackgroundView(stops: screenStops.stops)
+                BackgroundView(timeline: Timeline(timeManager.trailingTime))
                     .opacity(1.0)
                     .zIndex(-100)
                 // Zoom in and out by changing trailingTime
                     .gesture(oneFingerZoom)
+                
                 
                 // headerView combines current date, marquee with scrolling messages, and time tick markers.
                 HeaderView(timeline: Timeline(timeManager.trailingTime))
@@ -123,22 +125,20 @@ struct ContentView: View {
                 // Navigation buttons; each button represents a type of event and pulls the next event of that type onto the screen.
                 
                 ButtonBar()
-                    .position(x: screen.size.width * 0.5, y: screen.size.height * 0.85)
+                    .position(x: screen.size.width, y: screen.size.height * 0.85)
+                    .offset(x: -Double(eventManager.buttonMaker.buttons.count) * Dimensions(screen.size).buttonWidth * 0.5 - 20)
                 
                 AlertView()
                 
+                
             } // End of main ZStack
-            .onChange(of: timeManager.trailingTime) { trailingTime in
-                Task {
-                    await screenStops.updateStops(for: solarEventManager.solarDays, timeline: Timeline(trailingTime))
-                }
-            }
+
             .onAppear {
                 eventManager.timeManager = timeManager
             }
             .statusBarHidden(true)
             .environmentObject(Dimensions(screen.size))
-
+            
             // Animating auto-zoom
             .onReceive(animationTimer) { time in
                 if stateBools.animateSpan {timeManager.newFrame()}
@@ -153,7 +153,7 @@ struct ContentView: View {
         .ignoresSafeArea()
         
     } // End of ContentView
-
+    
 }
 
 

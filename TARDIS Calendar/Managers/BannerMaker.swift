@@ -30,6 +30,8 @@ class BannerMaker {
     
     func updateBanners() {
         
+        print("Updating Banners")
+        
         bannerText = ""
         var newRefreshDate = TimelineSettings.shared.maxDay()
         
@@ -70,8 +72,6 @@ class BannerMaker {
             } // End of loop
             
             refreshDate = newRefreshDate
-            
-            print("new banner text: ", bannerText, "\nrefresh date: ", refreshDate.formatted())
             
             marquee = MarqueeViewModel(bannerText, fontSize: 24 )
             
