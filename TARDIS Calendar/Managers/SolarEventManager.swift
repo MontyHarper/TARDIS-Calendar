@@ -27,8 +27,9 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         }
     }
     
-    var gradientStart: Double = Date().timeIntervalSince1970
-    var gradientSpan: Double = 1000.00
+    // Starting with an approximation of the size of the gradient.
+    var gradientStart: Double = Date().timeIntervalSince1970 - 24 * 60 * 60
+    var gradientSpan: Double = 24 * 60 * 60 * 7
     
     // MARK: - Private Properties
     
@@ -293,8 +294,10 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         
         DispatchQueue.main.async {
             self.screenStops = newStops
+            // Make gradient size available for BackgroundView calculations.
             self.gradientStart = first
             self.gradientSpan = span
+            self.stateBools.showProgressView = false
         }
         
         closure()

@@ -102,7 +102,6 @@ struct ContentView: View {
                 // Show progress view while background loads.
                 if stateBools.showProgressView {
                     ProgressView()
-                        .position(x: screen.size.width * 0.5, y: screen.size.height * 0.5)
                         .scaleEffect(3)
                 }
                 

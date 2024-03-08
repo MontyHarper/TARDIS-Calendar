@@ -56,7 +56,7 @@ class StateBools: ObservableObject {
     var authorizedForLocationAccess: Bool {
         UserDefaults.standard.bool(forKey: UserDefaultKey.AuthorizedForLocationAccess.rawValue)
     }
-    var showProgressView = false // Used to indicate the background is loading.
+    var showProgressView = true // Used to indicate the background is loading.
     var showMissingSolarDaysWarning: Bool { // If enough days are missing that the calendar will look wrong, show a warning.
         missingSolarDays >= 4
     }

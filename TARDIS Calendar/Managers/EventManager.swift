@@ -13,9 +13,14 @@ import Foundation
 import SwiftUI
 import UIKit
 
-class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
+class EventManager: CalendarManager { // CalendarManager is an ObservableObject
     
-    @Published var events = [Event]() // Upcoming events for the maximum number of days displayed.
+    // Upcoming events for the maximum number of days displayed.
+    @Published var events = [Event]() {
+        didSet {
+            print("events were updated: \(events.count)")
+        }
+    }
     @Published var isExpanded = [Bool]() // For each event, should the view be rendered as expanded? This is the source of truth for expansion of event views.
     @Published var bannerMaker = BannerMaker()
     @Published var buttonMaker = ButtonMaker()
@@ -45,7 +50,7 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
         
         // Will ask the user for permission to access Calendar
         // Also instantiates a singleton EventStore for the whole app
-        // This only happens once; the system only responds to it only once anyway
+        // This only happens once; the system only responds to it once anyway
         // If the response is no, the app will function, showing an empty calendar
         // The actual response is not needed here
         // The update is in a trailing closure to prevent the eventManager from updating before permission is given
@@ -70,6 +75,9 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
     deinit {
         warningTimer?.invalidate()
     }
+    
+    
+    // MARK: - Update Functions
 
     @objc func updateEverything() {
    
