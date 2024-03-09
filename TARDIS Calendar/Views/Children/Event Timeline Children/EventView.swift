@@ -15,7 +15,7 @@ struct EventView: View {
     let event: Event
     @EnvironmentObject var size: Dimensions
     @EnvironmentObject var eventManager: EventManager
-    var timeline: Timeline
+    @EnvironmentObject var timeline: Timeline
 
     // TODO: - Figure out how to animate transitions from regular to expanded format and back.
     @Binding var isExpanded: Bool

@@ -115,23 +115,8 @@
 			isa = PBXGroup;
 			children = (
 				F1D15B432A5FA758006F6A4E /* ContentView.swift */,
-				F122A2C22ADA4AD1002E82AE /* BackgroundView.swift */,
-				F119C6662A7B59A200B183F5 /* EventView.swift */,
-				F1DED9402B3B164D0023BF22 /* EventTimelineView.swift */,
-				F18D04F62B06B35100E5C91E /* ArrowView.swift */,
-				F122A2C62ADA4B10002E82AE /* NowView.swift */,
-				F18D04F82B06BA7400E5C91E /* CurrentDateView.swift */,
-				F18D04FA2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift */,
-				F18D04FC2B0824F500E5C91E /* LayoutValueKeys.swift */,
-				F1EDCEF02B9C079800BB77F9 /* HiddenSettingsButton.swift */,
-				F18D05022B0AA6B500E5C91E /* SettingsView.swift */,
-				F10C32A22B16EA9000CCF83B /* AlertView.swift */,
-				F166ACBA2B2750F800AE27E3 /* MarqueeView.swift */,
-				F14A8A422B32A9D90049217C /* HeaderView.swift */,
-				F1DED93C2B3624450023BF22 /* TimeTickBar.swift */,
-				F122A2C82ADA4B20002E82AE /* TimeTickViews.swift */,
-				F1DED93E2B3756660023BF22 /* ButtonBar.swift */,
 				F1EDCEEE2B9BC56100BB77F9 /* OneFingerZoom.swift */,
+				F1EDCEF22B9C1ADB00BB77F9 /* Children */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -212,6 +197,53 @@
 				F1D15B482A5FA75B006F6A4E /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		F1EDCEF22B9C1ADB00BB77F9 /* Children */ = {
+			isa = PBXGroup;
+			children = (
+				F122A2C22ADA4AD1002E82AE /* BackgroundView.swift */,
+				F14A8A422B32A9D90049217C /* HeaderView.swift */,
+				F1EDCEF32B9C1B4F00BB77F9 /* Header Children */,
+				F1DED9402B3B164D0023BF22 /* EventTimelineView.swift */,
+				F1EDCEF52B9C1BD000BB77F9 /* Event Timeline Children */,
+				F1DED93E2B3756660023BF22 /* ButtonBar.swift */,
+				F1EDCEF02B9C079800BB77F9 /* HiddenSettingsButton.swift */,
+				F1EDCEF42B9C1BB200BB77F9 /* Settings Children */,
+				F10C32A22B16EA9000CCF83B /* AlertView.swift */,
+			);
+			path = Children;
+			sourceTree = "<group>";
+		};
+		F1EDCEF32B9C1B4F00BB77F9 /* Header Children */ = {
+			isa = PBXGroup;
+			children = (
+				F166ACBA2B2750F800AE27E3 /* MarqueeView.swift */,
+				F1DED93C2B3624450023BF22 /* TimeTickBar.swift */,
+				F122A2C82ADA4B20002E82AE /* TimeTickViews.swift */,
+				F18D04FA2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift */,
+				F18D04FC2B0824F500E5C91E /* LayoutValueKeys.swift */,
+			);
+			path = "Header Children";
+			sourceTree = "<group>";
+		};
+		F1EDCEF42B9C1BB200BB77F9 /* Settings Children */ = {
+			isa = PBXGroup;
+			children = (
+				F18D05022B0AA6B500E5C91E /* SettingsView.swift */,
+			);
+			path = "Settings Children";
+			sourceTree = "<group>";
+		};
+		F1EDCEF52B9C1BD000BB77F9 /* Event Timeline Children */ = {
+			isa = PBXGroup;
+			children = (
+				F119C6662A7B59A200B183F5 /* EventView.swift */,
+				F18D04F62B06B35100E5C91E /* ArrowView.swift */,
+				F122A2C62ADA4B10002E82AE /* NowView.swift */,
+				F18D04F82B06BA7400E5C91E /* CurrentDateView.swift */,
+			);
+			path = "Event Timeline Children";
 			sourceTree = "<group>";
 		};
 		F1F9E4992B111DBF00DA4026 /* Utilities */ = {

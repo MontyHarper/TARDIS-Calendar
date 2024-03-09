@@ -14,7 +14,7 @@ struct MarqueeView: View {
     
     var body: some View {
                     
-            TimelineView(.animation) {context in
+        TimelineView(.animation) {context in
                 Text(controller.frame(context.date).text)
                     .padding()
                     .lineLimit(1)

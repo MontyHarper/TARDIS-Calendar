@@ -13,7 +13,7 @@ struct BackgroundView: View {
     
     @EnvironmentObject var dimensions: Dimensions
     @EnvironmentObject var solarEventManager: SolarEventManager
-    var timeline: Timeline
+    @EnvironmentObject var timeline: Timeline
     
     var sNow: Double { // now in screen unit space
         TimelineSettings.shared.nowLocation

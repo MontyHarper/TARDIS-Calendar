@@ -11,7 +11,7 @@ struct HeaderView: View {
     
     @EnvironmentObject var size: Dimensions
     @EnvironmentObject var eventManager: EventManager
-    var timeline: Timeline
+    @EnvironmentObject var timeline: Timeline
     
     var dateText: String {
         let formatter = DateFormatter()

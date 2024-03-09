@@ -44,17 +44,17 @@ struct ContentView: View {
                 // MARK: - Visual Elements
                 
                 // Background shows time of day by color
-                BackgroundView(timeline: Timeline(timeManager.trailingTime))
+                BackgroundView()
                     .opacity(1.0)
                     .zIndex(-100)
                     .oneFingerZoom(width: screen.size.width, timeManager: timeManager)
 
                 // headerView combines current date, marquee with scrolling messages, and time tick markers.
-                HeaderView(timeline: Timeline(timeManager.trailingTime))
+                HeaderView()
                     .position(x: screen.size.width * 0.5, y: screen.size.height * yOfLabelBar)
                 
                 // eventTimelineView combines a horizontal timeline with views for each event and a "nowView" that marks the current moment.
-                EventTimelineView(timeline: Timeline(timeManager.trailingTime))
+                EventTimelineView()
                     .oneFingerZoom(width: screen.size.width, timeManager: timeManager)
                 
                 // Navigation buttons; each button represents a type of event and pulls the next event of that type onto the screen.
@@ -86,6 +86,7 @@ struct ContentView: View {
             }
             .statusBarHidden(true)
             .environmentObject(Dimensions(screen.size))
+            .environmentObject(Timeline(timeManager.trailingTime))
             
             // Animating auto-zoom
             .onReceive(animationTimer) { time in

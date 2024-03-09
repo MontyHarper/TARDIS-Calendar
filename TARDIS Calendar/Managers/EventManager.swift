@@ -182,8 +182,8 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
             
         case "all":
             closeAll()
-            let targetEvent = events.last(where: {$0.startDate > Date()})
-            timeManager.setTarget(targetEvent?.startDate)
+            let targetDate: Date? = events.last(where: {$0.startDate > Date()})?.startDate
+            timeManager.setTarget(targetDate ?? TimelineSettings.shared.maxDay())
             
         default:
             let targetEvent = events.first(where: {$0.type == type && $0.startDate > Date()})

@@ -29,10 +29,11 @@ class TimeManager: ObservableObject {
         }
     }
     var updateTimer: Timer?
-    var timeUnit: TimeInterval = 1.0 // How often to update in seconds
+    
+    var timeUnit: TimeInterval = 10.0 // How often to update in seconds
     
     init() {
-        updateTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) {_ in
+        updateTimer = Timer.scheduledTimer(withTimeInterval: timeUnit, repeats: true) {_ in
             self.makeUpdates()
         }
     }
