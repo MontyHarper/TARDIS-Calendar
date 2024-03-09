@@ -99,8 +99,7 @@ class TimeManager: ObservableObject {
         return leadingTime + defaultSpan
     }
     
-    // This method takes a date and sets the targetTrailingTime required to place that date onscreen opposite the Now icon.
-    // It then triggers an animation to that state by toggling the animation property.
+    // This method takes a date and sets the targetTrailingTime required to place that date onscreen opposite the Now icon. Changing the targetTrailingTime will trigger an animation to change the trailing time represented on screen.
     func setTarget(_ date: Date?) {
         
         guard let date = date else {

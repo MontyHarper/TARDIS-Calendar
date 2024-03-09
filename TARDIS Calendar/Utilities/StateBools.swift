@@ -20,7 +20,7 @@ class StateBools: ObservableObject {
     static var shared = StateBools()
     var networkMonitor = NetworkMonitor()
     
-    var animateSpan = false // When true, calendar view is auto-zooming back to default zoom.
+    var animateSpan = false // When true, calendar view is auto-zooming.
     
     // Flag internet as down only if it's been down awhile. This way the user is not plagued with messages about trivial interruptions to the network. Change minSeconds to adjust the amount of time the connection needs to be lost before a notification pops up.
     var internetIsDown: Bool { // Displays a warning message on screen.
