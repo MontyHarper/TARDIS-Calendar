@@ -25,7 +25,7 @@ struct TimeTick {
         var array: [TimeTick] = []
         
         // Set up initial values
-        let calendar = timeline.calendar
+        let calendar = TimelineSettings.shared.calendar
         let leadingDate = timeline.leadingDate
         let trailingDate = timeline.trailingDate
         let now = Date(timeIntervalSince1970: timeline.now)
@@ -36,11 +36,11 @@ struct TimeTick {
         // Show hours or days with the labels, depending on the number of hours on screen.
         switch onScreenHours {
             
-        case 0...Int(40/(1 - timeline.nowLocation)):
+        case 0...Int(40/(1 - TimelineSettings.shared.nowLocation)):
             // labels will show hours
             
             // First tick is "Now"
-            array.append(TimeTick(date: now, xLocation: timeline.nowLocation, label: "NOW"))
+            array.append(TimeTick(date: now, xLocation: TimelineSettings.shared.nowLocation, label: "NOW"))
             
             // Second tick at half an hour
             let halfAnHour = calendar.date(byAdding: .minute, value: 30, to: now)!

@@ -14,7 +14,7 @@ struct MarqueeView: View {
     
     var body: some View {
                     
-            TimelineView(.animation) {context in
+        TimelineView(.animation) {context in
                 Text(controller.frame(context.date).text)
                     .padding()
                     .lineLimit(1)
@@ -25,6 +25,9 @@ struct MarqueeView: View {
                     .onLongPressGesture(minimumDuration: 0.05, maximumDistance: 20.0) {
                         controller.togglePause()
                     }
+            }
+            .task {
+                print("New MarqueeView: ", Date().timeIntervalSince1970)
             }
     }
 }
@@ -61,6 +64,7 @@ class MarqueeViewModel {
             text += first
         }
         startTime = Date().timeIntervalSince1970
+        print("Made a new MarqueeViewModel: ", startTime)
     }
     
     // Given a time, return the text and offset that should be displayed at that moment.

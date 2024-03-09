@@ -12,9 +12,8 @@ struct EventTimelineView: View {
     
     @EnvironmentObject var eventManager: EventManager
     @EnvironmentObject var size: Dimensions
-
-    @State private var timeline = Timeline.shared
-
+    @EnvironmentObject var timeline: Timeline
+    
     let yOfTimeline = 0.5
     
     var body: some View {
@@ -26,23 +25,28 @@ struct EventTimelineView: View {
                 .frame(width: size.width, height: size.timelineThickness)
                 .position(x: 0.5 * size.width, y: yOfTimeline * size.height)
                 .zIndex(-90)
+                .onAppear {
+                    print("Timeline born.")
+                }
             ArrowView(size: 0.0)
                 .position(x: size.width, y: yOfTimeline * size.height)
             
             
             // Circles representing events along the time line
-            
-            ForEach(eventManager.events.indices.sorted(by: {$0 > $1}), id: \.self) { index in
+            ForEach(eventManager.events.indices, id: \.self) { index in
                 EventView(event: eventManager.events[index], isExpanded: $eventManager.isExpanded[index], shrinkFactor: shrinkFactor(), screenWidth: size.width)
                     .position(x: timeline.unitX(fromTime: eventManager.events[index].startDate.timeIntervalSince1970) * size.width, y: yOfTimeline * size.height)
             }
-
+            
             
             // Circle representing current time.
             NowView()
-                .position(x: timeline.nowLocation * size.width, y: yOfTimeline * size.height)
+                .position(x: TimelineSettings.shared.nowLocation * size.width, y: yOfTimeline * size.height)
                 .onTapGesture {
                     eventManager.highlightNextEvent()
+                }
+                .onAppear {
+                    print("NowView born.")
                 }
         }
     }

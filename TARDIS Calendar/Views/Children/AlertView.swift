@@ -22,7 +22,7 @@ struct AlertView: View {
                 
         ZStack {
             
-            // Alert for lost network connection.
+            // Shows a warning message which can then be tapped for more information.
             if stateBools.showWarning {
                 
                 Text(showText().0)
@@ -50,19 +50,19 @@ struct AlertView: View {
         
         if stateBools.noPermissionForCalendar {
             let warning = "This Calendar Is Empty"
-            let alert = "To display events, please give permission to access your Apple Calendar App.\n\nFind TARDIS Calendar in your Settings App and change the permissions."
+            let alert = "To display events, please allow this app to access your Apple Calendar.\n\nFind TARDIS Calendar in your Settings App and change the permissions."
             return (warning: warning, alert: alert)
         }
         
         if stateBools.noCalendarsAvailable {
             let warning = "This Calendar Is Empty"
-            let alert = "To display events, please set up one or more calendars to display in your Apple Calendars App."
+            let alert = "To display events, please make sure your Apple Calendars App is installed and up to date."
             return (warning: warning, alert: alert)
         }
         
         if stateBools.noCalendarsSelected {
             let warning = "This Calendar Is Empty."
-            let alert = "To display events, please select one or more calendars from your Apple Calendars App.\n\nTripple tap the upper right hand corner to open Settings and select calendars."
+            let alert = "To display events, please tripple-tap the upper right hand corner to open Settings, go to \"Choose Calendars,\" and turn on the calendars you want to display. Make sure to also select a type for each calendar."
             return (warning: warning, alert: alert)
         }
         
@@ -74,19 +74,18 @@ struct AlertView: View {
         
         if !stateBools.authorizedForLocationAccess {
             let warning = "Day and Night Are Not Showing Correctly."
-            let alert = "Sunrise and sunsets are depicted with colors in the background. To show them at correct times, permission is needed to access your general location.\n\nPlease find TARDIS Calendar in your Settings App and change the permissions."
+            let alert = "Permission is needed to access your general location. This will allow sunrise and sunset times to display correctly in the background.\n\nPlease find TARDIS Calendar in your Settings App and change the permissions."
             return (warning: warning, alert: alert)
         }
         
-        
         if stateBools.showMissingSolarDaysWarning {
             let warning = "Day and Night Are Not Showing Correctly."
-            let alert = "It has been \(stateBools.missingSolarDays) days since you've been able to access sunrise and sunset information. Times depicted in the background are no longer accurate. Sorry, but we don't know why this is happening."
+            let alert = "It has been \(stateBools.missingSolarDays) days since you've been able to access sunrise and sunset information. Times depicted in the background are no longer accurate.\n\nYour internet connection seems to be good, and your permissions are set correctly, so there's nothing you can do but hope it goes away.\n\nPlease report this to monty@montyharper.com."
             return (warning: warning, alert: alert)
         }
         
         // Default Warning. This should never be needed.
-        return (warning: "Something is wrong.", alert: "Some error is causing this message. It isn't your fault! Let Monty know.")
+        return (warning: "", alert: "")
     }
     
 }

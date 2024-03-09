@@ -102,14 +102,26 @@ enum UserDefaultKey: String {
     case Calendars
     case DateInternetWentDown
     case InternetWasDown
+    case LastSolarDayDownloaded
+    case LastActiveDay
     case Latitude
     case Longitude
-    case MissingSolarDays
     case NewUser
     case NowIcon
     case SolarDaysBackup
     case UseDefaultNowIcon
 }
 
+
+// These are all global constants; there are no instances
+// rename file to constants; put this at top
+
+enum Constants {
+    
+    enum Timeline {
+        static let nowPosition = 0.2
+    }
+    
+}
 
 

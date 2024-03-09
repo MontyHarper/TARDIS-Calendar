@@ -21,7 +21,7 @@ struct Event: Identifiable, Comparable {
     var event: EKEvent
     var type: String
             
-    let timelineCalendar = Timeline.shared.calendar
+    let timelineCalendar = TimelineSettings.shared.calendar
     
     init(event: EKEvent, type: String) {
         self.event = event

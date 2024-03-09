@@ -58,31 +58,22 @@ struct ButtonBar: View {
     
     var body: some View {
         
-        HStack {
-            
-            Spacer()
-            
-            ZStack {
-                Color(.clear)
-                    .frame(width: size.tinyEvent * Double(eventManager.buttonMaker.buttons.count) * 1.20, height: size.tinyEvent * 1.4)
-                    .background(.ultraThinMaterial)
-                    .clipShape(RoundedRectangle(cornerRadius: 15))
-                
-                HStack {
-                    
-                    ForEach(eventManager.buttonMaker.buttons) {button in
-                        ButtonView(size: size, button: button)
-                    }
-                    .offset(y: -0.1 * size.tinyEvent)
-                }
-                
-            }
-            .padding(EdgeInsets(top: 2, leading: 2, bottom: 5, trailing: 2))
-            
-            // spacer to keep button bar from abutting trailing edge
+        ZStack {
             Color(.clear)
-                .frame(width: size.width * 0.05, height: 20.0)
+                .frame(width: size.buttonWidth * Double(eventManager.buttonMaker.buttons.count), height: size.tinyEvent * 1.4)
+                .background(.ultraThinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 15))
+            
+            HStack {
+                
+                ForEach(eventManager.buttonMaker.buttons) {button in
+                    ButtonView(size: size, button: button)
+                }
+                .offset(y: -0.1 * size.tinyEvent)
+            }
         }
+        .padding(EdgeInsets(top: 2, leading: 2, bottom: 5, trailing: 2))
+        
     }
 }
 

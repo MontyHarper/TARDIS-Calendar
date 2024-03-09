@@ -18,8 +18,6 @@ import SwiftUI
 struct TimeTickMarkerView: View, Identifiable {
     
     @EnvironmentObject var size: Dimensions
-    
-    @State private var timeline = Timeline.shared
 
     var id = UUID()
     var timeTick: TimeTick
@@ -38,7 +36,7 @@ struct TimeTickMarkerView: View, Identifiable {
                         .opacity(1.0)
                         .offset(y: size.lineHeight * 0.85))
         }
-        .font(.system(size: size.fontSizeMedium, weight: xLocation == timeline.nowLocation ? .black : .none))
+        .font(.system(size: size.fontSizeMedium, weight: xLocation == TimelineSettings.shared.nowLocation ? .black : .none))
 
     //    .background(.white)
     }
@@ -49,8 +47,6 @@ struct TimeTickMarkerView: View, Identifiable {
 struct TimeTickLabelView: View, Identifiable {
     
     @EnvironmentObject var size: Dimensions
-    
-    @State private var timeline = Timeline.shared
 
     var id = UUID()
     var timeTick: TimeTick
@@ -60,9 +56,11 @@ struct TimeTickLabelView: View, Identifiable {
     
     var body: some View {
         
+        let nowLocation = TimelineSettings.shared.nowLocation
+        
         VStack {
             Text(timeTick.label)
-                .opacity(xLocation == timeline.nowLocation ? 1.0 : 0.5)
+                .opacity(xLocation == nowLocation ? 1.0 : 0.5)
                 .foregroundColor(.blue)
                 .background(
                     Text("▼")
@@ -70,7 +68,7 @@ struct TimeTickLabelView: View, Identifiable {
                         .foregroundColor(.blue)
                         .offset(y: size.lineHeight * 0.85))
         }
-        .font(.system(size: xLocation == timeline.nowLocation ? size.fontSizeMedium : size.fontSizeSmall, weight: xLocation == timeline.nowLocation ? .black : .bold))
+        .font(.system(size: xLocation == nowLocation ? size.fontSizeMedium : size.fontSizeSmall, weight: xLocation == nowLocation ? .black : .bold))
     }
     
 }

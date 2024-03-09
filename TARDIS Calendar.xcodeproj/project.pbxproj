@@ -19,6 +19,8 @@
 		F13BC5222B7C7C87008C491E /* SolarEventManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13BC5212B7C7C87008C491E /* SolarEventManager.swift */; };
 		F13BC5242B7DAA20008C491E /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13BC5232B7DAA20008C491E /* NetworkManager.swift */; };
 		F13BC5262B81B973008C491E /* ScreenStops.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13BC5252B81B973008C491E /* ScreenStops.swift */; };
+		F13BC5422B8D3738008C491E /* TimeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13BC5412B8D3738008C491E /* TimeManager.swift */; };
+		F13BC5442B8D3A3A008C491E /* DayTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13BC5432B8D3A3A008C491E /* DayTracker.swift */; };
 		F14A8A432B32A9D90049217C /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14A8A422B32A9D90049217C /* HeaderView.swift */; };
 		F14A8A472B331A390049217C /* Dimensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F14A8A462B331A390049217C /* Dimensions.swift */; };
 		F166ACBB2B2750F800AE27E3 /* MarqueeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F166ACBA2B2750F800AE27E3 /* MarqueeView.swift */; };
@@ -42,12 +44,12 @@
 		F1D15B442A5FA758006F6A4E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D15B432A5FA758006F6A4E /* ContentView.swift */; };
 		F1D15B462A5FA75B006F6A4E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F1D15B452A5FA75B006F6A4E /* Assets.xcassets */; };
 		F1D15B492A5FA75B006F6A4E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F1D15B482A5FA75B006F6A4E /* Preview Assets.xcassets */; };
-		F1D9AD3A2B13966E0076832F /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1D9AD392B13966E0076832F /* DataController.swift */; };
 		F1DED93D2B3624450023BF22 /* TimeTickBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DED93C2B3624450023BF22 /* TimeTickBar.swift */; };
 		F1DED93F2B3756660023BF22 /* ButtonBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DED93E2B3756660023BF22 /* ButtonBar.swift */; };
 		F1DED9412B3B164D0023BF22 /* EventTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DED9402B3B164D0023BF22 /* EventTimelineView.swift */; };
+		F1EDCEEF2B9BC56100BB77F9 /* OneFingerZoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EDCEEE2B9BC56100BB77F9 /* OneFingerZoom.swift */; };
+		F1EDCEF12B9C079800BB77F9 /* HiddenSettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EDCEF02B9C079800BB77F9 /* HiddenSettingsButton.swift */; };
 		F1F9E49B2B11220C00DA4026 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1F9E49A2B11220C00DA4026 /* Enums.swift */; };
-		F1F9E49E2B12AF2A00DA4026 /* StoredSolarDays.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = F1F9E49C2B12AF2A00DA4026 /* StoredSolarDays.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,6 +66,8 @@
 		F13BC5212B7C7C87008C491E /* SolarEventManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolarEventManager.swift; sourceTree = "<group>"; };
 		F13BC5232B7DAA20008C491E /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		F13BC5252B81B973008C491E /* ScreenStops.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenStops.swift; sourceTree = "<group>"; };
+		F13BC5412B8D3738008C491E /* TimeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeManager.swift; sourceTree = "<group>"; };
+		F13BC5432B8D3A3A008C491E /* DayTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayTracker.swift; sourceTree = "<group>"; };
 		F14A8A422B32A9D90049217C /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		F14A8A462B331A390049217C /* Dimensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dimensions.swift; sourceTree = "<group>"; };
 		F166ACBA2B2750F800AE27E3 /* MarqueeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarqueeView.swift; sourceTree = "<group>"; };
@@ -88,12 +92,12 @@
 		F1D15B432A5FA758006F6A4E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F1D15B452A5FA75B006F6A4E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F1D15B482A5FA75B006F6A4E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		F1D9AD392B13966E0076832F /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		F1DED93C2B3624450023BF22 /* TimeTickBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTickBar.swift; sourceTree = "<group>"; };
 		F1DED93E2B3756660023BF22 /* ButtonBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonBar.swift; sourceTree = "<group>"; };
 		F1DED9402B3B164D0023BF22 /* EventTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTimelineView.swift; sourceTree = "<group>"; };
+		F1EDCEEE2B9BC56100BB77F9 /* OneFingerZoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneFingerZoom.swift; sourceTree = "<group>"; };
+		F1EDCEF02B9C079800BB77F9 /* HiddenSettingsButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenSettingsButton.swift; sourceTree = "<group>"; };
 		F1F9E49A2B11220C00DA4026 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
-		F1F9E49D2B12AF2A00DA4026 /* SolarDay.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = SolarDay.xcdatamodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,21 +115,8 @@
 			isa = PBXGroup;
 			children = (
 				F1D15B432A5FA758006F6A4E /* ContentView.swift */,
-				F122A2C22ADA4AD1002E82AE /* BackgroundView.swift */,
-				F119C6662A7B59A200B183F5 /* EventView.swift */,
-				F1DED9402B3B164D0023BF22 /* EventTimelineView.swift */,
-				F18D04F62B06B35100E5C91E /* ArrowView.swift */,
-				F122A2C62ADA4B10002E82AE /* NowView.swift */,
-				F18D04F82B06BA7400E5C91E /* CurrentDateView.swift */,
-				F18D04FA2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift */,
-				F18D04FC2B0824F500E5C91E /* LayoutValueKeys.swift */,
-				F18D05022B0AA6B500E5C91E /* SettingsView.swift */,
-				F10C32A22B16EA9000CCF83B /* AlertView.swift */,
-				F166ACBA2B2750F800AE27E3 /* MarqueeView.swift */,
-				F14A8A422B32A9D90049217C /* HeaderView.swift */,
-				F1DED93C2B3624450023BF22 /* TimeTickBar.swift */,
-				F122A2C82ADA4B20002E82AE /* TimeTickViews.swift */,
-				F1DED93E2B3756660023BF22 /* ButtonBar.swift */,
+				F1EDCEEE2B9BC56100BB77F9 /* OneFingerZoom.swift */,
+				F1EDCEF22B9C1ADB00BB77F9 /* Children */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -140,7 +131,9 @@
 				F19447AD2B61C23000BDC03B /* BannerMaker.swift */,
 				F13BC5252B81B973008C491E /* ScreenStops.swift */,
 				F122A30D2AE02A54002E82AE /* Timeline.swift */,
+				F13BC5412B8D3738008C491E /* TimeManager.swift */,
 				F13BC5212B7C7C87008C491E /* SolarEventManager.swift */,
+				F13BC5432B8D3A3A008C491E /* DayTracker.swift */,
 				F13BC5232B7DAA20008C491E /* NetworkManager.swift */,
 			);
 			path = Managers;
@@ -150,8 +143,6 @@
 			isa = PBXGroup;
 			children = (
 				F19149262AD2649000A31D5A /* SolarDay.swift */,
-				F1F9E49C2B12AF2A00DA4026 /* StoredSolarDays.xcdatamodeld */,
-				F1D9AD392B13966E0076832F /* DataController.swift */,
 				F19447A52B60CBE400BDC03B /* AppleCalendar.swift */,
 			);
 			path = Models;
@@ -206,6 +197,53 @@
 				F1D15B482A5FA75B006F6A4E /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		F1EDCEF22B9C1ADB00BB77F9 /* Children */ = {
+			isa = PBXGroup;
+			children = (
+				F122A2C22ADA4AD1002E82AE /* BackgroundView.swift */,
+				F14A8A422B32A9D90049217C /* HeaderView.swift */,
+				F1EDCEF32B9C1B4F00BB77F9 /* Header Children */,
+				F1DED9402B3B164D0023BF22 /* EventTimelineView.swift */,
+				F1EDCEF52B9C1BD000BB77F9 /* Event Timeline Children */,
+				F1DED93E2B3756660023BF22 /* ButtonBar.swift */,
+				F1EDCEF02B9C079800BB77F9 /* HiddenSettingsButton.swift */,
+				F1EDCEF42B9C1BB200BB77F9 /* Settings Children */,
+				F10C32A22B16EA9000CCF83B /* AlertView.swift */,
+			);
+			path = Children;
+			sourceTree = "<group>";
+		};
+		F1EDCEF32B9C1B4F00BB77F9 /* Header Children */ = {
+			isa = PBXGroup;
+			children = (
+				F166ACBA2B2750F800AE27E3 /* MarqueeView.swift */,
+				F1DED93C2B3624450023BF22 /* TimeTickBar.swift */,
+				F122A2C82ADA4B20002E82AE /* TimeTickViews.swift */,
+				F18D04FA2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift */,
+				F18D04FC2B0824F500E5C91E /* LayoutValueKeys.swift */,
+			);
+			path = "Header Children";
+			sourceTree = "<group>";
+		};
+		F1EDCEF42B9C1BB200BB77F9 /* Settings Children */ = {
+			isa = PBXGroup;
+			children = (
+				F18D05022B0AA6B500E5C91E /* SettingsView.swift */,
+			);
+			path = "Settings Children";
+			sourceTree = "<group>";
+		};
+		F1EDCEF52B9C1BD000BB77F9 /* Event Timeline Children */ = {
+			isa = PBXGroup;
+			children = (
+				F119C6662A7B59A200B183F5 /* EventView.swift */,
+				F18D04F62B06B35100E5C91E /* ArrowView.swift */,
+				F122A2C62ADA4B10002E82AE /* NowView.swift */,
+				F18D04F82B06BA7400E5C91E /* CurrentDateView.swift */,
+			);
+			path = "Event Timeline Children";
 			sourceTree = "<group>";
 		};
 		F1F9E4992B111DBF00DA4026 /* Utilities */ = {
@@ -296,6 +334,7 @@
 				F18D04F72B06B35100E5C91E /* ArrowView.swift in Sources */,
 				F13BC5242B7DAA20008C491E /* NetworkManager.swift in Sources */,
 				F18D05012B0A99B600E5C91E /* StateBools.swift in Sources */,
+				F1EDCEF12B9C079800BB77F9 /* HiddenSettingsButton.swift in Sources */,
 				F122A2C72ADA4B10002E82AE /* NowView.swift in Sources */,
 				F18D05032B0AA6B500E5C91E /* SettingsView.swift in Sources */,
 				F19447AA2B61B80E00BDC03B /* ButtonModel.swift in Sources */,
@@ -310,18 +349,19 @@
 				F1B5FE182A735D2200CBBCE6 /* Extensions.swift in Sources */,
 				F1F9E49B2B11220C00DA4026 /* Enums.swift in Sources */,
 				F13BC5222B7C7C87008C491E /* SolarEventManager.swift in Sources */,
-				F1D9AD3A2B13966E0076832F /* DataController.swift in Sources */,
 				F122A2C32ADA4AD1002E82AE /* BackgroundView.swift in Sources */,
+				F1EDCEEF2B9BC56100BB77F9 /* OneFingerZoom.swift in Sources */,
+				F13BC5422B8D3738008C491E /* TimeManager.swift in Sources */,
 				F19447A82B60CD7900BDC03B /* EventStore.swift in Sources */,
 				F1102AFA2A6DDCA6007534C1 /* TimeTicks.swift in Sources */,
 				F166ACBB2B2750F800AE27E3 /* MarqueeView.swift in Sources */,
 				F13BC5262B81B973008C491E /* ScreenStops.swift in Sources */,
+				F13BC5442B8D3A3A008C491E /* DayTracker.swift in Sources */,
 				F19149272AD2649000A31D5A /* SolarDay.swift in Sources */,
 				F122A2C92ADA4B20002E82AE /* TimeTickViews.swift in Sources */,
 				F19447A62B60CBE400BDC03B /* AppleCalendar.swift in Sources */,
 				F1D15B442A5FA758006F6A4E /* ContentView.swift in Sources */,
 				F19447AC2B61BE6200BDC03B /* ButtonMaker.swift in Sources */,
-				F1F9E49E2B12AF2A00DA4026 /* StoredSolarDays.xcdatamodeld in Sources */,
 				F18D04FD2B0824F500E5C91E /* LayoutValueKeys.swift in Sources */,
 				F18D04FB2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift in Sources */,
 				F1D15B422A5FA758006F6A4E /* TARDIS_CalendarApp.swift in Sources */,
@@ -543,19 +583,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		F1F9E49C2B12AF2A00DA4026 /* StoredSolarDays.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				F1F9E49D2B12AF2A00DA4026 /* SolarDay.xcdatamodel */,
-			);
-			currentVersion = F1F9E49D2B12AF2A00DA4026 /* SolarDay.xcdatamodel */;
-			path = StoredSolarDays.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = F1D15B362A5FA758006F6A4E /* Project object */;
 }

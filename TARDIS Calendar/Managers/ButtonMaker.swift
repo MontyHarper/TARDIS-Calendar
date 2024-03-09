@@ -15,12 +15,24 @@ class ButtonMaker: ObservableObject {
     // Question: does this fix the reference loop?
     weak var eventManager: EventManager?
         
-    var refreshDate = Timeline.shared.maxDay
-        
+    var refreshDate = TimelineSettings.shared.maxDay()
+    
+    var timer: Timer?
+    
+    init() {
+        updateButtons()
+    }
+    
+    deinit {
+        timer?.invalidate()
+    }
+    
     func updateButtons() {
         
+        print("Updating buttons")
+        
         buttons = []
-        refreshDate = Timeline.shared.maxDay
+        refreshDate = TimelineSettings.shared.maxDay()
         
         guard let eventManager = eventManager else {
             return
@@ -53,9 +65,17 @@ class ButtonMaker: ObservableObject {
         button = ButtonModel(eventManager: eventManager, id: "all")
         buttons.append(button)
         
-        print("Events in events: ", eventManager.events.count)
-        print("Types: ", eventManager.events.map({$0.calendarTitle}))
-        print("I made new buttons: ", buttons.map({$0.bottomText}))
+        resetTimer(triggerDate: refreshDate)
+    }
+    
+    func resetTimer(triggerDate: Date) {
+        
+        timer?.invalidate()
+        
+        let seconds = triggerDate.timeIntervalSince1970 - Date().timeIntervalSince1970
+        timer = Timer.scheduledTimer(withTimeInterval: seconds, repeats: false) {_ in
+            self.updateButtons()
+        }
     }
     
     

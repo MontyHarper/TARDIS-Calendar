@@ -28,8 +28,6 @@ class NetworkManager {
             
             let decoder = JSONDecoder()
             do {
-                print("Solar day data: ", String(decoding: data, as: UTF8.self)
-)
                 let results = try decoder.decode(T.self, from: data)
                 completion(results)
             } catch {
@@ -63,7 +61,6 @@ extension NetworkManager {
         let urlForRequest = URL(string: (solarDayUrlBase + "json?lat=" + String(latitude) + "&lng=" + String(longitude) + "&date=" + formattedDate))!
         
         fetchData(by: urlForRequest) { (results: Results?) in
-            print("I've got results for the solar day: ", results as Any)
             completion(results?.results)
         }
     }

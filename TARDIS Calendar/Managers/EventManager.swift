@@ -13,21 +13,32 @@ import Foundation
 import SwiftUI
 import UIKit
 
-class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
+class EventManager: CalendarManager { // CalendarManager is an ObservableObject
     
-    @Published var events = [Event]() // Upcoming events for the maximum number of days displayed.
+    // Upcoming events for the maximum number of days displayed.
+    @Published var events = [Event]() {
+        didSet {
+            print("events were updated: \(events.count)")
+        }
+    }
     @Published var isExpanded = [Bool]() // For each event, should the view be rendered as expanded? This is the source of truth for expansion of event views.
     @Published var bannerMaker = BannerMaker()
     @Published var buttonMaker = ButtonMaker()
+    
         
     // newEvents temporarily stores newly downloaded events whle processing.
     private var newEvents = [Event]()
     private let eventStore = EventStore.shared.store
     private var internetConnection: AnyCancellable?
     
-    @State private var stateBools = StateBools.shared
-    @State private var timeline = Timeline.shared
+    private var stateBools = StateBools.shared
     
+    // Highlight upcoming events this much ahead of time.
+    // TODO: - make this a user preference
+    private let warningTime: Double = 30*60 // half an hour
+    var warningTimer: Timer?
+    
+    var timeManager: TimeManager?
 
     override init() {
         
@@ -39,13 +50,11 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
         
         // Will ask the user for permission to access Calendar
         // Also instantiates a singleton EventStore for the whole app
-        // This only happens once; the system only responds to it only once anyway
+        // This only happens once; the system only responds to it once anyway
         // If the response is no, the app will function, showing an empty calendar
         // The actual response is not needed here
         // The update is in a trailing closure to prevent the eventManager from updating before permission is given
         EventStore.shared.requestPermission() {
-            
-            print("Do we have permission before updating everything? ", EventStore.shared.permissionIsGiven)
             
             // This notification will update the calendars and events lists any time an event or calendar is changed in the user's Apple Calendar App.
             // Set up notifications AFTER permission is requested to avoid two updates triggered at once.
@@ -63,9 +72,17 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
         
     } // End init
     
+    deinit {
+        warningTimer?.invalidate()
+    }
+    
+    
+    // MARK: - Update Functions
 
     @objc func updateEverything() {
    
+        print("Updating Everything in EventManager")
+        
         guard EventStore.shared.permissionIsGiven else {
             return
         }
@@ -88,7 +105,7 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
                 
                 // Keep this inside updateEvents closure because buttons depend on events.
                 self.buttonMaker.updateButtons()
-                
+                self.setWarningTimer()
             }
             self.bannerMaker.updateBanners()
             
@@ -97,11 +114,11 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
     
     func updateEvents(closure: @escaping ()->Void) {
         
-        print("updateEvents has been triggered")
+        print("Updating Events")
         
         // Set up date parameters
-        let start = timeline.minDay
-        let end = timeline.maxDay
+        let start = TimelineSettings.shared.minDay()
+        let end = TimelineSettings.shared.maxDay()
         
         // Search for events in selected calendars that are not banner type
         let calendarsToSearch = appleCalendars.filter({$0.isSelected && $0.type != "banner"}).map({$0.calendar})
@@ -156,7 +173,8 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
     
     // Called when user taps one of the navigation buttons.
     func buttonAction(type: String) {
-                
+        guard let timeManager = timeManager else {return}
+
         switch type {
             
         case "first":
@@ -164,16 +182,13 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
             
         case "all":
             closeAll()
-            let targetEvent = events.last(where: {$0.startDate > Date()})
-            timeline.setTargetSpan(date: targetEvent?.startDate)
-            stateBools.animateSpan = true
+            let targetDate: Date? = events.last(where: {$0.startDate > Date()})?.startDate
+            timeManager.setTarget(targetDate ?? TimelineSettings.shared.maxDay())
             
         default:
-            if let targetEvent = events.first(where: {$0.type == type && $0.startDate > Date()}) {
-                timeline.setTargetSpan(date: targetEvent.startDate)
-                expandEvent(targetEvent)
-                stateBools.animateSpan = true
-            }
+            let targetEvent = events.first(where: {$0.type == type && $0.startDate > Date()})
+            timeManager.setTarget(targetEvent?.startDate)
+            expandEvent(targetEvent)
         }
     }
     
@@ -182,9 +197,8 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
         isExpanded = isExpanded.map({_ in false})
     }
     
-    
     // leaves only the requested event expanded
-    func expandEvent(_ event: Event) {
+    func expandEvent(_ event: Event?) {
         closeAll()
         if let index = events.indices.first(where: {events[$0] == event}) {
             isExpanded[index] = true
@@ -192,10 +206,11 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
     }
     
     func highlightNextEvent() {
+        guard let timeManager = timeManager else {return}
+        
         if let targetEvent = events.first(where: {$0.startDate > Date()}) {
-            timeline.setTargetSpan(date: targetEvent.startDate)
+            timeManager.setTarget(targetEvent.startDate)
             expandEvent(targetEvent)
-            stateBools.animateSpan = true
         }
     }
     
@@ -210,10 +225,23 @@ class EventManager: CalendarManager { // CalendarManager is an ObservalbeObject
         UserDefaults.standard.set(myDictionary, forKey: UserDefaultKey.Calendars.rawValue)
         
         userCalendars = myDictionary
-        
-        print("Calendars saved: ", myDictionary)
-               
+                       
         updateEverything()
+    }
+    
+    
+    func setWarningTimer() {
+        warningTimer?.invalidate()
+        
+        guard let targetEvent = events.first(where: {$0.startDate.timeIntervalSince1970 > Date().timeIntervalSince1970 + warningTime}) else {return}
+            
+        let targetTime = targetEvent.startDate.timeIntervalSince1970
+        let secondsToWarning = (targetTime - Date().timeIntervalSince1970) - warningTime
+                
+        warningTimer = Timer.scheduledTimer(withTimeInterval: secondsToWarning, repeats: false) {_ in
+            self.highlightNextEvent()
+            self.setWarningTimer()
+        }
     }
 }
 

@@ -13,37 +13,35 @@ class BannerMaker {
     
     var banners = [EKEvent]()
     var bannerText = ""
-    var refreshDate = Timeline.shared.maxDay {
-        didSet {
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + (refreshDate.timeIntervalSince1970 - Date().timeIntervalSince1970)) {
-                self.updateBanners()
-            }
-        }
-    }
-    
+    var refreshDate = TimelineSettings.shared.maxDay()
     var marquee: MarqueeViewModel?
     let eventStore = EventStore.shared.store
+    var timer: Timer?
     
     weak var eventManager: EventManager?
-    
-    private var timeline = Timeline.shared
-    
+        
     init() {
         updateBanners()
     }
     
+    deinit {
+        timer?.invalidate()
+    }
+    
     func updateBanners() {
         
+        print("Updating Banners")
+        
         bannerText = ""
-        var newRefreshDate = timeline.maxDay
+        var newRefreshDate = TimelineSettings.shared.maxDay()
         
         guard let eventManager = eventManager else {
             return
         }
         
         // Set up date parameters
-        let start = timeline.minDay
-        let end = timeline.maxDay
+        let start = TimelineSettings.shared.minDay()
+        let end = TimelineSettings.shared.maxDay()
         
         // Search for events in selected calendars that are banner type
         let calendarsToSearch = eventManager.appleCalendars.filter({$0.isSelected && $0.type == CalendarType.banner.rawValue}).map({$0.calendar})
@@ -75,9 +73,19 @@ class BannerMaker {
             
             refreshDate = newRefreshDate
             
-            print("new banner text: ", bannerText, "\nrefresh date: ", refreshDate.formatted())
-            
             marquee = MarqueeViewModel(bannerText, fontSize: 24 )
+            
+            resetTimer(triggerDate: refreshDate)
+        }
+    }
+    
+    func resetTimer(triggerDate: Date) {
+        
+        timer?.invalidate()
+        
+        let seconds = triggerDate.timeIntervalSince1970 - Date().timeIntervalSince1970
+        timer = Timer.scheduledTimer(withTimeInterval: seconds, repeats: false) {_ in
+            self.updateBanners()
         }
     }
 }

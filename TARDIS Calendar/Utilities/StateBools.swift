@@ -20,7 +20,7 @@ class StateBools: ObservableObject {
     static var shared = StateBools()
     var networkMonitor = NetworkMonitor()
     
-    var animateSpan = false // When true, calendar view is auto-zooming back to default zoom.
+    var animateSpan = false // When true, calendar view is auto-zooming.
     
     // Flag internet as down only if it's been down awhile. This way the user is not plagued with messages about trivial interruptions to the network. Change minSeconds to adjust the amount of time the connection needs to be lost before a notification pops up.
     var internetIsDown: Bool { // Displays a warning message on screen.
@@ -33,9 +33,12 @@ class StateBools: ObservableObject {
     }
     
     var marqueeNotShowing = true
-    var missingSolarDays = 0 { // Keeps count of how many times SolarDays cannot be downloaded;
-        didSet {
-            UserDefaults.standard.set(missingSolarDays, forKey: UserDefaultKey.MissingSolarDays.rawValue)
+    var missingSolarDays: Int {
+        if let lastDate = UserDefaults.standard.object(forKey: UserDefaultKey.LastSolarDayDownloaded.rawValue) as? Date {
+            let diff = TimelineSettings.shared.calendar.dateComponents([.day], from: lastDate, to: Date())
+            return diff.day ?? 0
+        } else {
+            return 0
         }
     }
     var newUser: Bool
@@ -53,29 +56,31 @@ class StateBools: ObservableObject {
     var authorizedForLocationAccess: Bool {
         UserDefaults.standard.bool(forKey: UserDefaultKey.AuthorizedForLocationAccess.rawValue)
     }
-    var showProgressView = false // Used to indicate the background is loading.
+    var showProgressView = true // Used to indicate the background is loading.
     var showMissingSolarDaysWarning: Bool { // If enough days are missing that the calendar will look wrong, show a warning.
         missingSolarDays >= 4
     }
     var showSettings: Bool // Opens the settings page where user can select calendars to show.
-    @Published var showSettingsAlert = false // Warns that a calendar must be selected.
     var showWarning: Bool { // Use to activate the AlertView, which will then show whichever warning is appropriate, with an attached alert for more information.
         noPermissionForCalendar || noCalendarsAvailable || noCalendarsSelected || internetIsDown || !authorizedForLocationAccess || showMissingSolarDaysWarning
     }
     var showWelcome: Bool = false
     var solarDaysAvailable = false // When false, background returns a solid color.
     var solarDaysUpdateLocked = false
+    var solarDaysUpdateWaiting = false
+    var solarDaysUpdateWaitingAll = false
     @Published var useDefaultNowIcon: Bool
     
     
     private init() {
-        missingSolarDays = UserDefaults.standard.integer(forKey: UserDefaultKey.MissingSolarDays.rawValue)
+
         if UserDefaults.standard.bool(forKey: UserDefaultKey.NewUser.rawValue) {
             newUser = false
             showSettings = false
         } else {
             UserDefaults.standard.set(true, forKey: UserDefaultKey.NewUser.rawValue)
             newUser = true
+            // Shows the settings view for a new user.
             showSettings = true
         }
         if UserDefaults.standard.bool(forKey: UserDefaultKey.UseDefaultNowIcon.rawValue) {

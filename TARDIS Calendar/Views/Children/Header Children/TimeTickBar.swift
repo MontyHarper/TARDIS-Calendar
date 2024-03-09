@@ -10,8 +10,7 @@ import SwiftUI
 struct TimeTickBar: View {
     
     @EnvironmentObject var size: Dimensions
-    
-    @State private var timeline = Timeline.shared
+    var timeline: Timeline
 
     
     var body: some View {
