@@ -25,7 +25,7 @@ struct TARDIS_CalendarApp: App {
         .onChange(of: scenePhase) {phase in
             switch phase {
             case .background:
-                print("reset the zoom here, not sure how any more.")
+                eventManager.highlightNextEvent()
             case .active:
                 print("app is active")
                 eventManager.updateEverything()

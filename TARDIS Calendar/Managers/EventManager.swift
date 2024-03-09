@@ -30,12 +30,9 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
     private var newEvents = [Event]()
     private let eventStore = EventStore.shared.store
     private var internetConnection: AnyCancellable?
-    
+    private var updateWhenCurrentDayChanges: AnyCancellable?
     private var stateBools = StateBools.shared
     
-    // Highlight upcoming events this much ahead of time.
-    // TODO: - make this a user preference
-    private let warningTime: Double = 30*60 // half an hour
     var warningTimer: Timer?
     
     var timeManager: TimeManager?
@@ -68,6 +65,12 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
             if !self.stateBools.internetIsDown {
                 self.updateEverything()
             }
+        }
+        
+        // This notification will update everything when the date changes.
+        let dayTracker = DayTracker()
+        updateWhenCurrentDayChanges = dayTracker.$today.sink { _ in
+            self.updateEverything()
         }
         
     } // End init
@@ -211,8 +214,12 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
         if let targetEvent = events.first(where: {$0.startDate > Date()}) {
             timeManager.setTarget(targetEvent.startDate)
             expandEvent(targetEvent)
+        } else {
+            timeManager.resetZoom()
         }
     }
+    
+    // MARK: - Utilities
     
     // Call to persist user-selected calendar list to UserDefaults.
     func saveUserCalendars() {
@@ -232,6 +239,10 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
     
     func setWarningTimer() {
         warningTimer?.invalidate()
+        
+        // Highlight upcoming events this much ahead of time.
+        // TODO: - make this a user preference
+        let warningTime: Double = 30*60 // half an hour
         
         guard let targetEvent = events.first(where: {$0.startDate.timeIntervalSince1970 > Date().timeIntervalSince1970 + warningTime}) else {return}
             

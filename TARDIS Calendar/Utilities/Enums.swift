@@ -103,7 +103,6 @@ enum UserDefaultKey: String {
     case DateInternetWentDown
     case InternetWasDown
     case LastSolarDayDownloaded
-    case LastActiveDay
     case Latitude
     case Longitude
     case NewUser

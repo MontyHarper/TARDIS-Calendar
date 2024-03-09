@@ -4,10 +4,16 @@
 //
 //  Created by Monty Harper on 2/26/24.
 //
+//  TimeManager updates the trailingTime, which is the time represented by the right-hand edge of the screen.
+//  timeUnit determines how often the screen is refreshed and can be adjusted externally to match the smallest unit of time that makes a visual difference.
+//  Setting the targetTrailingTime triggers TimeManager to gradually change the trailingTime to match the target, which creates an animation on screen from the current trailing time to the target time.
+//
 
 import Foundation
 
 class TimeManager: ObservableObject {
+    
+    // MARK: - Key Properties
     
     @Published var trailingTime: Double = Date().timeIntervalSince1970 + TimelineSettings.shared.defaultSpan {
         didSet {
@@ -15,22 +21,20 @@ class TimeManager: ObservableObject {
         }
     }
     
-    @Published var today: Int = TimelineSettings.shared.calendar.dateComponents([.day], from: Date()).day! {
-        didSet {
-            print("day number: ", today)
-        }
-    }
-    
     // Setting targetTrailingTime to a new value triggers an animation to a screen with the target as the new trailingTime.
-    var targetTrailingTime = Date().timeIntervalSince1970 + TimelineSettings.shared.defaultSpan {
+    public var targetTrailingTime = Date().timeIntervalSince1970 + TimelineSettings.shared.defaultSpan {
         didSet {
             StateBools.shared.animateSpan = true
             print("new targetTrailingTime:" , targetTrailingTime)
         }
     }
-    var updateTimer: Timer?
     
-    var timeUnit: TimeInterval = 10.0 // How often to update in seconds
+    private var updateTimer: Timer?
+    
+    // Setting timeUnit to a different value will change the rate at which the screen updates.
+    public var timeUnit: TimeInterval = 10.0 // How often to update in seconds
+    
+    // MARK: - Init & Deinit
     
     init() {
         updateTimer = Timer.scheduledTimer(withTimeInterval: timeUnit, repeats: true) {_ in
@@ -42,22 +46,17 @@ class TimeManager: ObservableObject {
         updateTimer?.invalidate()
     }
     
-    func makeUpdates() {
-        
-        // Advance trailing time - this effectively advances the timeline, triggering the UI to update.
+    // MARK: - Update Function
+    
+    private func makeUpdates() {
+        // Advance trailing time - this advances the timeline, triggering the UI to update.
         self.trailingTime += timeUnit
-        
-        // TODO: - is this still relevant?
-        // Check if it's a new day; if so, update today
-        let lastActiveDay = UserDefaults.standard.value(forKey: UserDefaultKey.LastActiveDay.rawValue) as? Int ?? today
-        if lastActiveDay != today {
- //           solarEventManager.updateSolarDays()
-            UserDefaults.standard.set(today, forKey: UserDefaultKey.LastActiveDay.rawValue)
-            today = TimelineSettings.shared.calendar.dateComponents([.day], from: Date()).day!
-        }
     }
     
-    // This calculates a new trailing time based on moving the given start location on screen to the given end location.
+    // MARK: - Public Functions
+    
+    // This changes the trailingTime based on moving the given start location on screen to the given end location.
+    // The one-finger-zoom gesture uses this function to zoom in and out along the calendar's timeline.
     func newTrailingTime(start: Double, end: Double) {
         
         let timeline = Timeline(trailingTime)
@@ -88,23 +87,24 @@ class TimeManager: ObservableObject {
         }
     }
     
-    // Resets zoom to the default level.
-    func resetTrailing() {
-        trailingTime = defaultTrailing()
-    }
-    
-    func defaultTrailing() -> Double {
+    // Instantly resets zoom to the default level.
+    func resetZoom() {
         let timeline = Timeline(trailingTime)
         let leadingTime = timeline.leadingTime
         let defaultSpan = TimelineSettings.shared.defaultSpan
-        return leadingTime + defaultSpan
+        let defaultTrailing = leadingTime + defaultSpan
+        trailingTime = defaultTrailing
     }
+        
+    // MARK: - Animation Functions
     
-    // This method takes a date and sets the targetTrailingTime required to place that date onscreen opposite the Now icon. Changing the targetTrailingTime will trigger an animation to change the trailing time represented on screen.
+    // This method takes a date and sets the targetTrailingTime required to place that date onscreen opposite the Now icon,
+    // which triggers an animation to the new zoom level.
+    // This method is used by the navigation buttons to move around in the calendar timeline.
     func setTarget(_ date: Date?) {
         
         guard let date = date else {
-            targetTrailingTime = defaultTrailing()
+            resetZoom()
             return
         }
         
@@ -137,14 +137,22 @@ class TimeManager: ObservableObject {
         }
     }
     
-    // This function advances the animation for auto-zoom.
-    // Note: I tried using SwiftUI animations; they don't work well for this.
+    // This function advances the zoom animation by a single frame.
+    // This is called from a timer in the ContentView.
+    // The timer is triggered when stateBools.animateSpan = true
+    // Note: I tried using SwiftUI animations; they do not work well for this.
     func newFrame() {
-        if abs(targetTrailingTime - trailingTime) > 5 {
-            trailingTime = trailingTime + 0.025 * (targetTrailingTime - trailingTime)
+        
+        let closeEnough = 5.0 // Get this close to the target before stopping.
+        let animationRate = 0.025 // bigger is faster
+        
+        if abs(targetTrailingTime - trailingTime) > closeEnough {
+            
+            trailingTime = trailingTime + animationRate * (targetTrailingTime - trailingTime)
             print("animating ", trailingTime)
             
         } else {
+            // Stop animating
             StateBools.shared.animateSpan = false
         }
     }

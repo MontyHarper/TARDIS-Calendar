@@ -109,11 +109,7 @@ For anyone interested in the code itself, this is my first significant app. I wr
 ### On my to-do list:
 - Refactor the content view using a TimeLine view?
 - Improve timeline efficiency by dropping the refresh rate of the content view according to inactivity and/or smallest increment visible on screen.
-- Don’t recalculate the solar event information every second; that should help smooth out the scroll
-- Enum for user default keys
 - Put zIndex values into an enum so they can be referenced contextually.
 - timeline, eventManager, and size have evolved to become environment objects attached to the content view; make sure they are used consistently as such in all subviews. 
 - Test longitude and latitude changes
-- If internet is down; updateSolarDays should be called when connection resumes
-- It’s possible I’ve overthought my background gradient. Can I create one big gradient, shared via the @StateObject wrapper, then have the view display only the needed portion at any given moment, rather than re-generate a whole new gradient once per second?  
-- Use async and await rather than completions?
+- Use async and await rather than closures?

@@ -83,7 +83,10 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         updateWhenCurrentDayChanges = dayTracker.$today.sink { _ in
             self.updateSolarDays()
         }
-    }
+        
+        // Initial update of solar days is not needed here; an update is called when the app becomes active.
+        
+    } // End of init
     
     // Necessary to keep the app from launching if location changes while app is inactive.
     deinit {
@@ -150,7 +153,7 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
             // Update the background gradient, which is based on SolarDays.
             self.updateScreenStops() {
                 
-                // Don't unlock updateSolarDays until ScreenStops have also been updated.
+                // Unlock updateSolarDays after ScreenStops have also been updated.
                 self.stateBools.solarDaysUpdateLocked = false
                 if self.stateBools.solarDaysUpdateWaiting {
                     self.updateSolarDays(all: self.stateBools.solarDaysUpdateWaitingAll)
