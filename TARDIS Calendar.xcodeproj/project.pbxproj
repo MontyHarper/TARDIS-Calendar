@@ -48,6 +48,7 @@
 		F1DED93F2B3756660023BF22 /* ButtonBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DED93E2B3756660023BF22 /* ButtonBar.swift */; };
 		F1DED9412B3B164D0023BF22 /* EventTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DED9402B3B164D0023BF22 /* EventTimelineView.swift */; };
 		F1EDCEEF2B9BC56100BB77F9 /* OneFingerZoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EDCEEE2B9BC56100BB77F9 /* OneFingerZoom.swift */; };
+		F1EDCEF12B9C079800BB77F9 /* HiddenSettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EDCEF02B9C079800BB77F9 /* HiddenSettingsButton.swift */; };
 		F1F9E49B2B11220C00DA4026 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1F9E49A2B11220C00DA4026 /* Enums.swift */; };
 /* End PBXBuildFile section */
 
@@ -95,6 +96,7 @@
 		F1DED93E2B3756660023BF22 /* ButtonBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonBar.swift; sourceTree = "<group>"; };
 		F1DED9402B3B164D0023BF22 /* EventTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTimelineView.swift; sourceTree = "<group>"; };
 		F1EDCEEE2B9BC56100BB77F9 /* OneFingerZoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneFingerZoom.swift; sourceTree = "<group>"; };
+		F1EDCEF02B9C079800BB77F9 /* HiddenSettingsButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenSettingsButton.swift; sourceTree = "<group>"; };
 		F1F9E49A2B11220C00DA4026 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -121,6 +123,7 @@
 				F18D04F82B06BA7400E5C91E /* CurrentDateView.swift */,
 				F18D04FA2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift */,
 				F18D04FC2B0824F500E5C91E /* LayoutValueKeys.swift */,
+				F1EDCEF02B9C079800BB77F9 /* HiddenSettingsButton.swift */,
 				F18D05022B0AA6B500E5C91E /* SettingsView.swift */,
 				F10C32A22B16EA9000CCF83B /* AlertView.swift */,
 				F166ACBA2B2750F800AE27E3 /* MarqueeView.swift */,
@@ -299,6 +302,7 @@
 				F18D04F72B06B35100E5C91E /* ArrowView.swift in Sources */,
 				F13BC5242B7DAA20008C491E /* NetworkManager.swift in Sources */,
 				F18D05012B0A99B600E5C91E /* StateBools.swift in Sources */,
+				F1EDCEF12B9C079800BB77F9 /* HiddenSettingsButton.swift in Sources */,
 				F122A2C72ADA4B10002E82AE /* NowView.swift in Sources */,
 				F18D05032B0AA6B500E5C91E /* SettingsView.swift in Sources */,
 				F19447AA2B61B80E00BDC03B /* ButtonModel.swift in Sources */,

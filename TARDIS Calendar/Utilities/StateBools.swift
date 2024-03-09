@@ -61,7 +61,6 @@ class StateBools: ObservableObject {
         missingSolarDays >= 4
     }
     var showSettings: Bool // Opens the settings page where user can select calendars to show.
-    @Published var showSettingsAlert = false // Warns that a calendar must be selected.
     var showWarning: Bool { // Use to activate the AlertView, which will then show whichever warning is appropriate, with an attached alert for more information.
         noPermissionForCalendar || noCalendarsAvailable || noCalendarsSelected || internetIsDown || !authorizedForLocationAccess || showMissingSolarDaysWarning
     }
@@ -81,6 +80,7 @@ class StateBools: ObservableObject {
         } else {
             UserDefaults.standard.set(true, forKey: UserDefaultKey.NewUser.rawValue)
             newUser = true
+            // Shows the settings view for a new user.
             showSettings = true
         }
         if UserDefaults.standard.bool(forKey: UserDefaultKey.UseDefaultNowIcon.rawValue) {

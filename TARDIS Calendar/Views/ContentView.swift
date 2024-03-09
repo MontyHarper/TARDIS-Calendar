@@ -39,58 +39,16 @@ struct ContentView: View {
         
         GeometryReader { screen in
             
-//            // MARK: - OneFingerZoom Gesture
-//            // Custom Zoom gesture attaches to the background and event views.
-//            // Needs to live here inside the geometry reader.
-//            let oneFingerZoom = DragGesture()
-//                .onChanged { gesture in
-//                    // If this is a new drag starting, save the location.
-//                    if ContentView.dragStart == 0.0 {
-//                        ContentView.dragStart = gesture.startLocation.x
-//                    }
-//                    let width = screen.size.width
-//                    // Divide by width to convert to unit space.
-//                    let start = ContentView.dragStart / width
-//                    let end = gesture.location.x / width
-//                    // Save the location of this drag for the next event.
-//                    ContentView.dragStart = gesture.location.x
-//                    // Drag gesture needs to occur on the future side of now, far enough from now that it doesn't cause the zoom to jump wildly
-//                    guard end > TimelineSettings.shared.nowLocation + 0.1 && start > TimelineSettings.shared.nowLocation + 0.1 else {
-//                        return
-//                    }
-//                    // This call changes the trailing time in our timeline, if we haven't gone beyond the boundaries.
-//
-//                    timeManager.newTrailingTime(start: start, end: end)
-//
-//                    // This indicates user interaction, so reset the inactivity timer.
-//                    stateBools.animateSpan = false
-//                    inactivityTimer?.invalidate()
-//
-//                } .onEnded { _ in
-//                    // When the drag ends, reset the starting value to zero to indicate no drag is happening at the moment.
-//                    ContentView.dragStart = 0.0
-//                    // And reset the inactivity timer, since this indicates the end of user interaction.
-//                    // When this timer goes off, the screen animates back to default zoom position.
-//                    inactivityTimer = Timer.scheduledTimer(withTimeInterval: 60, repeats: false, block: {_ in
-//                        stateBools.animateSpan = false // Turning this off for now to see how we like the app without this feature.
-//                    })
-//                }
-            
-            // MARK: - View Elements
-            
-            
-            // Main ZStack layers background behind all else
             ZStack {
                 
+                // MARK: - Visual Elements
                 
                 // Background shows time of day by color
                 BackgroundView(timeline: Timeline(timeManager.trailingTime))
                     .opacity(1.0)
                     .zIndex(-100)
-                // Zoom in and out by changing trailingTime
                     .oneFingerZoom(width: screen.size.width, timeManager: timeManager)
 
-                
                 // headerView combines current date, marquee with scrolling messages, and time tick markers.
                 HeaderView(timeline: Timeline(timeManager.trailingTime))
                     .position(x: screen.size.width * 0.5, y: screen.size.height * yOfLabelBar)
@@ -99,34 +57,25 @@ struct ContentView: View {
                 EventTimelineView(timeline: Timeline(timeManager.trailingTime))
                     .oneFingerZoom(width: screen.size.width, timeManager: timeManager)
                 
+                // Navigation buttons; each button represents a type of event and pulls the next event of that type onto the screen.
+                ButtonBar()
+                    .position(x: screen.size.width, y: screen.size.height * 0.85)
+                    .offset(x: -Double(eventManager.buttonMaker.buttons.count) * Dimensions(screen.size).buttonWidth * 0.5 - 20)
+            
+                
+                // MARK: - Functional Elements
+                
                 // Show progress view while background loads.
                 if stateBools.showProgressView {
                     ProgressView()
                         .scaleEffect(3)
                 }
                 
-                // Hidden button in upper right hand corner allows caregivers to change preferences.
-                Color(.clear)
-                    .frame(width: 80, height: 80)
-                    .contentShape(Rectangle())
-                    .position(x: screen.size.width - 40, y: 40)
-                    .onTapGesture(count: 3, perform: {
-                        stateBools.showSettingsAlert = true
-                    })
-                    .alert("Do you want to change the settings?", isPresented: $stateBools.showSettingsAlert) {
-                        Button("No - Touch Here to Go Back", role: .cancel, action: {})
-                        Button("Yes", action: {stateBools.showSettings = true})
-                    }
-                    .sheet(isPresented: $stateBools.showSettings) {
-                        SettingsView()
-                    }
+                // Hidden button in upper right-hand corner allows caregivers to change preferences.
+                HiddenSettingsButton()
+                    .position(x: screen.size.width, y: 0.0)
                 
-                // Navigation buttons; each button represents a type of event and pulls the next event of that type onto the screen.
-                
-                ButtonBar()
-                    .position(x: screen.size.width, y: screen.size.height * 0.85)
-                    .offset(x: -Double(eventManager.buttonMaker.buttons.count) * Dimensions(screen.size).buttonWidth * 0.5 - 20)
-                
+                // Shows alert messages at the bottom of the screen for internet failure, empty calendar, etc. Alerts can be tapped for more information.
                 AlertView()
                 
                 
