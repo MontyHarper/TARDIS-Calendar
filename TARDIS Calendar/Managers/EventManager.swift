@@ -120,8 +120,8 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
         print("Updating Events")
         
         // Set up date parameters
-        let start = TimelineSettings.shared.minDay()
-        let end = TimelineSettings.shared.maxDay()
+        let start = Timeline.minDay
+        let end = Timeline.maxDay
         
         // Search for events in selected calendars that are not banner type
         let calendarsToSearch = appleCalendars.filter({$0.isSelected && $0.type != "banner"}).map({$0.calendar})
@@ -186,7 +186,7 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
         case "all":
             closeAll()
             let targetDate: Date? = events.last(where: {$0.startDate > Date()})?.startDate
-            timeManager.setTarget(targetDate ?? TimelineSettings.shared.maxDay())
+            timeManager.setTarget(targetDate ?? Timeline.maxDay)
             
         default:
             let targetEvent = events.first(where: {$0.type == type && $0.startDate > Date()})

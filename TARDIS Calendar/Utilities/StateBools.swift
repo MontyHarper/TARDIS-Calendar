@@ -35,7 +35,7 @@ class StateBools: ObservableObject {
     var marqueeNotShowing = true
     var missingSolarDays: Int {
         if let lastDate = UserDefaults.standard.object(forKey: UserDefaultKey.LastSolarDayDownloaded.rawValue) as? Date {
-            let diff = TimelineSettings.shared.calendar.dateComponents([.day], from: lastDate, to: Date())
+            let diff = Timeline.calendar.dateComponents([.day], from: lastDate, to: Date())
             return diff.day ?? 0
         } else {
             return 0

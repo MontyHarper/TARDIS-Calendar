@@ -85,8 +85,8 @@ struct ContentView: View {
                 eventManager.timeManager = timeManager
             }
             .statusBarHidden(true)
-            .environmentObject(Dimensions(screen.size))
-            .environmentObject(Timeline(timeManager.trailingTime))
+            .insertDimensionsIntoEnvironment(screen.size)
+            .insertTimelineIntoEnvironment(timeManager.trailingTime)
             
             // Animating auto-zoom
             .onReceive(animationTimer) { time in

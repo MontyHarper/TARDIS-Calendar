@@ -11,12 +11,12 @@ import SwiftUI
 
 struct BackgroundView: View {
     
-    @EnvironmentObject var dimensions: Dimensions
+    @Environment(\.dimensions) private var dimensions
+    @Environment(\.timeline) private var timeline
     @EnvironmentObject var solarEventManager: SolarEventManager
-    @EnvironmentObject var timeline: Timeline
     
     var sNow: Double { // now in screen unit space
-        TimelineSettings.shared.nowLocation
+        Timeline.nowLocation
     }
     var gStart: Double { // leading gradient time
         solarEventManager.gradientStart
@@ -49,7 +49,7 @@ struct BackgroundView: View {
         
         LinearGradient(gradient: Gradient(stops: solarEventManager.screenStops), startPoint: .leading, endPoint: .trailing)
             .ignoresSafeArea()
-            .frame(width: width * dimensions.size.width)
-            .offset(x: offset * dimensions.size.width)
+            .frame(width: width * dimensions.width)
+            .offset(x: offset * dimensions.width)
     }
 }

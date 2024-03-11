@@ -15,14 +15,14 @@ class TimeManager: ObservableObject {
     
     // MARK: - Key Properties
     
-    @Published var trailingTime: Double = Date().timeIntervalSince1970 + TimelineSettings.shared.defaultSpan {
+    @Published var trailingTime: Double = Date().timeIntervalSince1970 + Timeline.defaultSpan {
         didSet {
             print(trailingTime)
         }
     }
     
     // Setting targetTrailingTime to a new value triggers an animation to a screen with the target as the new trailingTime.
-    public var targetTrailingTime = Date().timeIntervalSince1970 + TimelineSettings.shared.defaultSpan {
+    public var targetTrailingTime = Date().timeIntervalSince1970 + Timeline.defaultSpan {
         didSet {
             StateBools.shared.animateSpan = true
             print("new targetTrailingTime:" , targetTrailingTime)
@@ -32,7 +32,7 @@ class TimeManager: ObservableObject {
     private var updateTimer: Timer?
     
     // Setting timeUnit to a different value will change the rate at which the screen updates.
-    public var timeUnit: TimeInterval = 10.0 // How often to update in seconds
+    public var timeUnit: TimeInterval = 1.0 // How often to update in seconds
     
     // MARK: - Init & Deinit
     
@@ -60,14 +60,14 @@ class TimeManager: ObservableObject {
     func newTrailingTime(start: Double, end: Double) {
         
         let timeline = Timeline(trailingTime)
-        let settings = TimelineSettings.shared
+        let nowLocation = Timeline.nowLocation
         let leadingTime = timeline.leadingTime
         let maxSpan = timeline.maxSpan
-        let minSpan = settings.minSpan
+        let minSpan = Timeline.minSpan
         
         // Calculating a linear transformation that moves the start point to the end point while keeping now in the same location. The calculation is in unit space, and the resulting trailing time is converted and stored in time space.
         
-        let m = (settings.nowLocation - start) / (settings.nowLocation - end) // slope
+        let m = (nowLocation - start) / (nowLocation - end) // slope
         
         let b = start - m * end // y-int
                 
@@ -91,7 +91,7 @@ class TimeManager: ObservableObject {
     func resetZoom() {
         let timeline = Timeline(trailingTime)
         let leadingTime = timeline.leadingTime
-        let defaultSpan = TimelineSettings.shared.defaultSpan
+        let defaultSpan = Timeline.defaultSpan
         let defaultTrailing = leadingTime + defaultSpan
         trailingTime = defaultTrailing
     }
@@ -109,7 +109,7 @@ class TimeManager: ObservableObject {
         }
         
         let timeline = Timeline(trailingTime)
-        let now = TimelineSettings.shared.nowLocation
+        let now = Timeline.nowLocation
         let target = 1.0 - now
         let dateUnit = timeline.unitX(fromTime: date.timeIntervalSince1970)
         
@@ -128,10 +128,10 @@ class TimeManager: ObservableObject {
         
         // Limit targetTrailingTime to lie between min and max
         let proposedSpan = proposedTarget - proposedLead
-        if proposedSpan <= TimelineSettings.shared.minSpan {
-            targetTrailingTime = TimelineSettings.shared.minSpan * (1.0 - TimelineSettings.shared.nowLocation) + Date().timeIntervalSince1970
+        if proposedSpan <= Timeline.minSpan {
+            targetTrailingTime = Timeline.minSpan * (1.0 - Timeline.nowLocation) + Date().timeIntervalSince1970
         } else if proposedSpan >= timeline.maxSpan {
-            targetTrailingTime = timeline.maxSpan * (1.0 - TimelineSettings.shared.nowLocation) + Date().timeIntervalSince1970
+            targetTrailingTime = timeline.maxSpan * (1.0 - Timeline.nowLocation) + Date().timeIntervalSince1970
         } else {
             targetTrailingTime = proposedTarget
         }

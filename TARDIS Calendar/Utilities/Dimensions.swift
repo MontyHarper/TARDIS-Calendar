@@ -9,8 +9,10 @@ import Foundation
 import SwiftUI
 
 
-class Dimensions: ObservableObject {
+struct Dimensions: EnvironmentKey {
         
+    static var defaultValue: Self = Dimensions(.zero)
+    
     var size: CGSize
     
     init(_ size: CGSize) {
@@ -56,5 +58,17 @@ class Dimensions: ObservableObject {
     var buttonWidth: Double {
         tinyEvent * 1.2
     }
-    
+}
+
+extension EnvironmentValues {
+    var dimensions: Dimensions {
+        get { self[Dimensions.self] }
+        set { self[Dimensions.self] = newValue }
+    }
+}
+
+extension View {
+    func insertDimensionsIntoEnvironment(_ size: CGSize) -> some View {
+        environment(\.dimensions, Dimensions(size))
+    }
 }

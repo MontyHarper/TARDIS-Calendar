@@ -14,7 +14,7 @@ import SwiftUI
 // MARK: Button View
 struct ButtonView: View {
     
-    var size: Dimensions
+    @Environment(\.dimensions) private var dimensions
     var button: ButtonModel
     @EnvironmentObject var eventManager: EventManager
 
@@ -25,18 +25,18 @@ struct ButtonView: View {
         ZStack {
             Circle()
                 .foregroundColor(.yellow)
-                .frame(width: size.tinyEvent, height: size.smallEvent)
+                .frame(width: dimensions.tinyEvent, height: dimensions.smallEvent)
             button.image
                 .resizable()
                 .foregroundColor(button.color)
-                .frame(width: size.tinyEvent * 0.95, height: size.tinyEvent * 0.95, alignment: .center)
+                .frame(width: dimensions.tinyEvent * 0.95, height: dimensions.tinyEvent * 0.95, alignment: .center)
                 
         } // End of ZStack
         .rotation3DEffect(.degrees(rotateAmount), axis: (x: 0.5, y: 0.5, z: 0))
         .overlay {
             Text(button.bottomText)
-                .font(.system(size: size.fontSizeSmall, weight: .bold))
-                .offset(y: 0.65 * size.tinyEvent)
+                .font(.system(size: dimensions.fontSizeSmall, weight: .bold))
+                .offset(y: 0.65 * dimensions.tinyEvent)
                 .lineLimit(1)
         }
         .foregroundColor(.blue)
@@ -53,23 +53,23 @@ struct ButtonView: View {
 // MARK: Button Bar
 struct ButtonBar: View {
     
-    @EnvironmentObject var size: Dimensions
+    @Environment(\.dimensions) private var dimensions
     @EnvironmentObject var eventManager: EventManager
     
     var body: some View {
         
         ZStack {
             Color(.clear)
-                .frame(width: size.buttonWidth * Double(eventManager.buttonMaker.buttons.count), height: size.tinyEvent * 1.4)
+                .frame(width: dimensions.buttonWidth * Double(eventManager.buttonMaker.buttons.count), height: dimensions.tinyEvent * 1.4)
                 .background(.ultraThinMaterial)
                 .clipShape(RoundedRectangle(cornerRadius: 15))
             
             HStack {
                 
                 ForEach(eventManager.buttonMaker.buttons) {button in
-                    ButtonView(size: size, button: button)
+                    ButtonView(button: button)
                 }
-                .offset(y: -0.1 * size.tinyEvent)
+                .offset(y: -0.1 * dimensions.tinyEvent)
             }
         }
         .padding(EdgeInsets(top: 2, leading: 2, bottom: 5, trailing: 2))

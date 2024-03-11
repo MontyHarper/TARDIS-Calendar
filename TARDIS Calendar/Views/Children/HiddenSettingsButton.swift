@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HiddenSettingsButton: View {
     
-    @EnvironmentObject var dimensions: Dimensions
+    @Environment(\.dimensions) private var dimensions
     @State var stateBools = StateBools.shared
     @State var showSettingsAlert = false
     

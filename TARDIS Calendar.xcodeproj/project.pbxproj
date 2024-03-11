@@ -130,7 +130,6 @@
 				F19447AB2B61BE6200BDC03B /* ButtonMaker.swift */,
 				F19447AD2B61C23000BDC03B /* BannerMaker.swift */,
 				F13BC5252B81B973008C491E /* ScreenStops.swift */,
-				F122A30D2AE02A54002E82AE /* Timeline.swift */,
 				F13BC5412B8D3738008C491E /* TimeManager.swift */,
 				F13BC5212B7C7C87008C491E /* SolarEventManager.swift */,
 				F13BC5432B8D3A3A008C491E /* DayTracker.swift */,
@@ -251,6 +250,7 @@
 			children = (
 				F1B5FE172A735D2200CBBCE6 /* Extensions.swift */,
 				F14A8A462B331A390049217C /* Dimensions.swift */,
+				F122A30D2AE02A54002E82AE /* Timeline.swift */,
 				F1F9E49A2B11220C00DA4026 /* Enums.swift */,
 				F18D05002B0A99B600E5C91E /* StateBools.swift */,
 				F10C32A42B17601200CCF83B /* NetworkMonitor.swift */,

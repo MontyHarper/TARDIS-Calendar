@@ -13,7 +13,7 @@ struct OneFingerZoom: ViewModifier {
     var timeManager: TimeManager
     
     // minLoc limits the gesture to the future side of now, far enough from now that it doesn't cause the zoom to jump wildly.
-    let minLoc = TimelineSettings.shared.nowLocation + 0.1
+    let minLoc = Timeline.nowLocation + 0.1
     
     @State private var dragStart: Double = 0.0
     

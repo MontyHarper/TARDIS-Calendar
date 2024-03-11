@@ -11,14 +11,14 @@ import Foundation
 
 class DayTracker: ObservableObject {
     
-    @Published var today: Int = TimelineSettings.shared.calendar.dateComponents([.day], from: Date()).day! {
+    @Published var today: Int = Timeline.calendar.dateComponents([.day], from: Date()).day! {
         didSet {
             print("day number: ", today)
         }
     }
     
     private var timer: Timer?
-    let calendar = TimelineSettings.shared.calendar
+    let calendar = Timeline.calendar
     
     init() {
         setNewTimer()
@@ -39,7 +39,7 @@ class DayTracker: ObservableObject {
     }
     
     func updateToday() {
-        today = TimelineSettings.shared.calendar.dateComponents([.day], from: Date()).day!
+        today = Timeline.calendar.dateComponents([.day], from: Date()).day!
         setNewTimer()
     }
 }

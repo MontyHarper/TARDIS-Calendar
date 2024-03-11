@@ -13,9 +13,9 @@ import SwiftUI
 struct EventView: View {
     
     let event: Event
-    @EnvironmentObject var size: Dimensions
+    @Environment(\.dimensions) private var dimensions
     @EnvironmentObject var eventManager: EventManager
-    @EnvironmentObject var timeline: Timeline
+    @Environment(\.timeline) private var timeline
 
     // TODO: - Figure out how to animate transitions from regular to expanded format and back.
     @Binding var isExpanded: Bool
@@ -33,7 +33,7 @@ struct EventView: View {
     // This offset value keeps the event view centered over Now while the event is happening.
     var offsetAmount: Double {
         if event.isNow {
-            return screenWidth * (TimelineSettings.shared.nowLocation - timeline.unitX(fromTime: event.startDate.timeIntervalSince1970))
+            return screenWidth * (Timeline.nowLocation - timeline.unitX(fromTime: event.startDate.timeIntervalSince1970))
         } else {
             return 0.0
         }
@@ -72,11 +72,11 @@ struct EventView: View {
         ZStack {
             Circle()
                 .foregroundColor(.yellow)
-                .frame(width: size.smallEvent * shrink, height: size.smallEvent * shrink)
+                .frame(width: dimensions.smallEvent * shrink, height: dimensions.smallEvent * shrink)
             icon
                 .resizable()
                 .foregroundColor(color)
-                .frame(width: size.smallEvent * 0.95 * shrink, height: size.smallEvent * 0.95 * shrink)
+                .frame(width: dimensions.smallEvent * 0.95 * shrink, height: dimensions.smallEvent * 0.95 * shrink)
         } // End of ZStack
         .onLongPressGesture(minimumDuration: 0.05, maximumDistance: 20.0) {
             eventManager.expandEvent(event)
@@ -90,45 +90,45 @@ struct EventView: View {
         ZStack {
             
             Color(.clear) // Background
-                .frame(width: size.largeEvent, height: size.largeEvent)
+                .frame(width: dimensions.largeEvent, height: dimensions.largeEvent)
                 .background(.ultraThinMaterial, in: Circle())
             
             VStack { // Content
                 
                 // Title
                 Text(event.title)
-                    .font(.system(size: size.fontSizeLarge, weight: .bold))
+                    .font(.system(size: dimensions.fontSizeLarge, weight: .bold))
                     .multilineTextAlignment(.center)
                 
                 // Notes
                 if let notes = event.event.notes {
                     Text(notes)
                         .multilineTextAlignment(.center)
-                        .font(.system(size: size.fontSizeSmall))
+                        .font(.system(size: dimensions.fontSizeSmall))
                 }
                 
                 // Time
                 Text(event.happensWhen)
-                    .font(.system(size: size.fontSizeMedium))
+                    .font(.system(size: dimensions.fontSizeMedium))
                 
                 // Icon
                 ZStack {
                     Circle()
                         .foregroundColor(.yellow)
-                        .frame(width: size.tinyEvent, height: size.tinyEvent)
+                        .frame(width: dimensions.tinyEvent, height: dimensions.tinyEvent)
                     icon
                         .resizable()
                         .foregroundColor(color)
-                        .frame(width: size.tinyEvent * 0.95, height: size.tinyEvent * 0.95)
+                        .frame(width: dimensions.tinyEvent * 0.95, height: dimensions.tinyEvent * 0.95)
                 }
                 
                 // Relative Time
                 Text(event.relativeTimeDescription(event.startDate))
-                    .font(.system(size: size.fontSizeMedium))
+                    .font(.system(size: dimensions.fontSizeMedium))
                     .multilineTextAlignment(.center)
                 
             } // End of content
-            .frame(width: size.largeEvent * 0.7, height: size.largeEvent * 0.8)
+            .frame(width: dimensions.largeEvent * 0.7, height: dimensions.largeEvent * 0.8)
             
         } // End of ZStack
         .onLongPressGesture(minimumDuration: 0.2, maximumDistance: 20.0) {
@@ -144,47 +144,47 @@ struct EventView: View {
         ZStack {
                         
             Color(.clear) // Background
-                .frame(width: size.largeEvent, height: size.largeEvent)
+                .frame(width: dimensions.largeEvent, height: dimensions.largeEvent)
                 .background(.ultraThinMaterial, in: Circle())
             
             VStack { // Content
                 
                 // Title
                 Text(event.title)
-                    .font(.system(size: size.fontSizeLarge, weight: .bold))
+                    .font(.system(size: dimensions.fontSizeLarge, weight: .bold))
                     .multilineTextAlignment(.center)
                 
                 // Notes
                 if let notes = event.event.notes {
                     Text(notes)
                         .multilineTextAlignment(.center)
-                        .font(.system(size: size.fontSizeSmall))
+                        .font(.system(size: dimensions.fontSizeSmall))
                 }
                 
                 Text("HAPPENING NOW")
-                    .font(.system(size: size.fontSizeSmall, weight: .bold))
+                    .font(.system(size: dimensions.fontSizeSmall, weight: .bold))
                 
                 // Icon
                 ZStack {
                     Circle()
                         .foregroundColor(.yellow)
-                        .frame(width: size.tinyEvent, height: size.tinyEvent)
+                        .frame(width: dimensions.tinyEvent, height: dimensions.tinyEvent)
                     icon
                         .resizable()
                         .foregroundColor(color)
-                        .frame(width: size.tinyEvent * 0.95, height: size.tinyEvent * 0.95)
+                        .frame(width: dimensions.tinyEvent * 0.95, height: dimensions.tinyEvent * 0.95)
                 }
                 
                 // Relative Time
                 Text(event.relativeTimeDescription(event.endDate))
-                    .font(.system(size: size.fontSizeMedium))
+                    .font(.system(size: dimensions.fontSizeMedium))
                     .multilineTextAlignment(.center)
                 Text("TAP TO DISMISS")
-                    .font(.system(size: size.fontSizeSmall * 0.75, weight: .bold))
+                    .font(.system(size: dimensions.fontSizeSmall * 0.75, weight: .bold))
                     .foregroundColor(.blue)
                 
             } // End of content
-            .frame(width: size.largeEvent * 0.7, height: size.largeEvent * 0.8)
+            .frame(width: dimensions.largeEvent * 0.7, height: dimensions.largeEvent * 0.8)
             
             
         } // End of ZStack
@@ -194,7 +194,7 @@ struct EventView: View {
         .alert("Are you finished with \(event.title)?", isPresented: $dismiss) {
             Button("YES") {
                 event.event.endDate = Date()
-                let range = Date()...TimelineSettings.shared.calendar.date(byAdding: .minute, value: 30, to: Date())!
+                let range = Date()...Timeline.calendar.date(byAdding: .minute, value: 30, to: Date())!
                 
                 // If the next event is within half an hour, highlight it.
                 if let _ = eventManager.events.first(where: {range.contains($0.startDate)}) {
@@ -212,6 +212,8 @@ struct EventView: View {
     // Here is the actual EventView, composed of its various parts.
     var body: some View {
         
+        let _ = Self._printChanges()
+        
         // If the event has passed, present an empty view
         if event.endDate < Date() {
             
@@ -221,7 +223,7 @@ struct EventView: View {
         } else if event.isNow {
             
             
-            ArrowView (size: size.largeEvent)
+            ArrowView (size: dimensions.largeEvent)
                 .zIndex(0)
             eventIsNowView
                 .offset(x:offsetAmount, y:0.0) // Keep the view at Now
@@ -231,7 +233,7 @@ struct EventView: View {
             // If the event is expanded, present expandedView
         } else if isExpanded {
             
-                ArrowView (size: size.largeEvent)
+                ArrowView (size: dimensions.largeEvent)
                     .zIndex(0)
                 expandedView
                     .zIndex(Double(event.priority + 10))
@@ -240,7 +242,7 @@ struct EventView: View {
             // Present default view
         } else {
             
-            ArrowView (size: size.smallEvent * shrink)
+            ArrowView (size: dimensions.smallEvent * shrink)
                 .zIndex(0)
             iconView
                 .zIndex(Double(event.priority))

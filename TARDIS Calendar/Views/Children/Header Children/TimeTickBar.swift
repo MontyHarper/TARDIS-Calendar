@@ -9,8 +9,8 @@ import SwiftUI
 
 struct TimeTickBar: View {
     
-    @EnvironmentObject var size: Dimensions
-    var timeline: Timeline
+    @Environment(\.dimensions) private var dimensions
+    @Environment(\.timeline) private var timeline
 
     
     var body: some View {
@@ -18,9 +18,9 @@ struct TimeTickBar: View {
         // TimeTick Markers
         
         Color(.clear)
-            .frame(width: size.width, height: size.lineHeight)
+            .frame(width: dimensions.width, height: dimensions.lineHeight)
             .background(.ultraThinMaterial)
-            .frame(width: size.width, height: size.lineHeight * 1.5)
+            .frame(width: dimensions.width, height: dimensions.lineHeight * 1.5)
 
         // These put the white marks for unlabeled time intervals - trying to see how we do without them.
         
@@ -42,7 +42,7 @@ struct TimeTickBar: View {
                             .xPosition(tick.xLocation)
                     }
             }
-            .frame(width: size.width, height: size.lineHeight)
+            .frame(width: dimensions.width, height: dimensions.lineHeight)
 
         }
         

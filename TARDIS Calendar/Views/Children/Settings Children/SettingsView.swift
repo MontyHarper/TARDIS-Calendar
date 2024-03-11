@@ -16,7 +16,7 @@ import EventKit
 struct SettingsView: View {
     
     @EnvironmentObject var eventManager: EventManager
-    @EnvironmentObject var size: Dimensions
+    @Environment(\.dimensions) private var dimensions
     @State private var stateBools = StateBools.shared
     @State private var showWelcome = false
     @State private var iconPhoto: PhotosPickerItem?
@@ -123,13 +123,13 @@ struct SettingsView: View {
                 .fontWeight(.black)
             ZStack {
                 Circle()
-                    .frame(width: size.mediumEvent, height: size.mediumEvent).foregroundColor(.blue)
+                    .frame(width: dimensions.mediumEvent, height: dimensions.mediumEvent).foregroundColor(.blue)
                     .zIndex(9)
-                    .shadow(color: .white, radius: size.mediumEvent * 0.1)
+                    .shadow(color: .white, radius: dimensions.mediumEvent * 0.1)
                 NowView.nowIcon
                     .resizable()
                     .aspectRatio(contentMode:.fit)
-                    .frame(width:size.mediumEvent * 0.9, height: size.mediumEvent * 0.9, alignment:.center)
+                    .frame(width:dimensions.mediumEvent * 0.9, height: dimensions.mediumEvent * 0.9, alignment:.center)
                     .clipShape(Circle())
                     .zIndex(10)
             }
@@ -149,7 +149,7 @@ struct SettingsView: View {
             Spacer()
                         
         } // End of VStack
-        .frame(maxWidth: size.mediumEvent)
+        .frame(maxWidth: dimensions.mediumEvent)
         
     } // End of photoSelectionView
     

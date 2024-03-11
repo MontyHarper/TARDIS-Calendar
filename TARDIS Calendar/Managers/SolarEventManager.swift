@@ -114,8 +114,8 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         newSolarDays = solarDays
         
         // Required date range.
-        let minDay = TimelineSettings.shared.minDay()
-        let maxDay = TimelineSettings.shared.maxDay()
+        let minDay = Timeline.minDay
+        let maxDay = Timeline.maxDay
         
         // Remove any SolarDays that are no longer valid.
         if all {
@@ -128,7 +128,7 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         // Note this depends on many factors including how many days the app may have been inactive before re-awakened.
         var dayZero: Date {
             if let finalDay = newSolarDays.last?.dateDate {
-                if let nextDay = TimelineSettings.shared.calendar.date(byAdding: .day, value: 1, to: finalDay) {
+                if let nextDay = Timeline.calendar.date(byAdding: .day, value: 1, to: finalDay) {
                     return nextDay
                 } else { // There is no tomorrow; replace all days in a fit of hopeless optimism.
                     return minDay
@@ -169,7 +169,7 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
                 if let solarDay = solarDay {
                     self.newSolarDays.append(solarDay)
                     if day < maxDay {
-                        let nextDay = TimelineSettings.shared.calendar.date(byAdding: .day, value: 1, to: day)!
+                        let nextDay = Timeline.calendar.date(byAdding: .day, value: 1, to: day)!
                         fetchNext(day: nextDay, closure: closure)
                     } else {
                         closure()

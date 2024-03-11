@@ -11,9 +11,9 @@ import SwiftUI
 struct EventTimelineView: View {
     
     @EnvironmentObject var eventManager: EventManager
-    @EnvironmentObject var size: Dimensions
-    @EnvironmentObject var timeline: Timeline
-    
+    @Environment(\.dimensions) private var dimensions
+    @Environment(\.timeline) private var timeline
+
     let yOfTimeline = 0.5
     
     var body: some View {
@@ -22,26 +22,26 @@ struct EventTimelineView: View {
             // Background is a horizontal arrow across the screen
             Color(.black)
                 .shadow(color: .white, radius: 3)
-                .frame(width: size.width, height: size.timelineThickness)
-                .position(x: 0.5 * size.width, y: yOfTimeline * size.height)
+                .frame(width: dimensions.width, height: dimensions.timelineThickness)
+                .position(x: 0.5 * dimensions.width, y: yOfTimeline * dimensions.height)
                 .zIndex(-90)
                 .onAppear {
                     print("Timeline born.")
                 }
             ArrowView(size: 0.0)
-                .position(x: size.width, y: yOfTimeline * size.height)
+                .position(x: dimensions.width, y: yOfTimeline * dimensions.height)
             
             
             // Circles representing events along the time line
             ForEach(eventManager.events.indices, id: \.self) { index in
-                EventView(event: eventManager.events[index], isExpanded: $eventManager.isExpanded[index], shrinkFactor: shrinkFactor(), screenWidth: size.width)
-                    .position(x: timeline.unitX(fromTime: eventManager.events[index].startDate.timeIntervalSince1970) * size.width, y: yOfTimeline * size.height)
+                EventView(event: eventManager.events[index], isExpanded: $eventManager.isExpanded[index], shrinkFactor: shrinkFactor(), screenWidth: dimensions.width)
+                    .position(x: timeline.unitX(fromTime: eventManager.events[index].startDate.timeIntervalSince1970) * dimensions.width, y: yOfTimeline * dimensions.height)
             }
             
             
             // Circle representing current time.
             NowView()
-                .position(x: TimelineSettings.shared.nowLocation * size.width, y: yOfTimeline * size.height)
+                .position(x: Timeline.nowLocation * dimensions.width, y: yOfTimeline * dimensions.height)
                 .onTapGesture {
                     eventManager.highlightNextEvent()
                 }

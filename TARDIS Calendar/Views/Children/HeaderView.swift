@@ -9,9 +9,9 @@ import SwiftUI
 
 struct HeaderView: View {
     
-    @EnvironmentObject var size: Dimensions
+    @Environment(\.dimensions) private var dimensions
+    @Environment(\.timeline) private var timeline
     @EnvironmentObject var eventManager: EventManager
-    @EnvironmentObject var timeline: Timeline
     
     var dateText: String {
         let formatter = DateFormatter()
@@ -19,7 +19,7 @@ struct HeaderView: View {
         return formatter.string(from: Date())
     }
     var timeOfDayText: String {
-        let hour = TimelineSettings.shared.calendar.component(.hour, from: Date())
+        let hour = Timeline.calendar.component(.hour, from: Date())
         switch hour {
         case 1...5:
             return "Time to Sleep"
@@ -34,7 +34,7 @@ struct HeaderView: View {
         }
     }
     var dateFont: UIFont {
-        UIFont.systemFont(ofSize: size.fontSizeMedium, weight: .black)
+        UIFont.systemFont(ofSize: dimensions.fontSizeMedium, weight: .black)
     }
     var marqueeFont: UIFont? {
         eventManager.bannerMaker.marquee?.marqueeFont
@@ -46,7 +46,7 @@ struct HeaderView: View {
         marqueeText?.size(withAttributes: [.font: marqueeFont as Any]).width
     }
     var marqueeWidth: Double {
-        min(size.width * 0.85, (marqueeTextWidth ?? size.width * 0.85) * 1.1)
+        min(dimensions.width * 0.85, (marqueeTextWidth ?? dimensions.width * 0.85) * 1.1)
     }
     private var showMarquee: Bool {
         if let marqueeTextWidth = marqueeTextWidth {
@@ -62,21 +62,21 @@ struct HeaderView: View {
             
             // Background
             Color(.clear)
-                .frame(width: size.width, height: size.lineHeight * 5)
+                .frame(width: dimensions.width, height: dimensions.lineHeight * 5)
                 .background(.regularMaterial)
             Color(.blue)
-                .frame(width: size.width, height: size.lineHeight * 5)
+                .frame(width: dimensions.width, height: dimensions.lineHeight * 5)
                 .opacity(0.3)
             
-            VStack (spacing: 0.2 * size.lineHeight) {
+            VStack (spacing: 0.2 * dimensions.lineHeight) {
                 
                 // Row 1: Time of day and today's date.
                 Text(" \(timeOfDayText)! Today is \(dateText). ")
                     .fontWeight(.black)
-                    .font(.system(size: size.fontSizeMedium, weight: .bold))
+                    .font(.system(size: dimensions.fontSizeMedium, weight: .bold))
                     .foregroundColor(.blue)
                     .clipShape(RoundedRectangle(cornerSize: CGSize(width: 10, height: 5)))
-                    .frame(height: size.fontSizeMedium * 1.5, alignment: .bottom)
+                    .frame(height: dimensions.fontSizeMedium * 1.5, alignment: .bottom)
                 
                 // Row 2: marquee text
                 ZStack {
@@ -92,17 +92,17 @@ struct HeaderView: View {
                             EmptyView()
                         }
                 }
-                .frame(width: marqueeWidth, height: size.lineHeight, alignment: .center)
-                .background(Color(hue: 0.0, saturation: 0.0, brightness: 1.0, opacity: 0.5))                .clipShape(RoundedRectangle(cornerRadius: 20))
+                .frame(width: marqueeWidth, height: dimensions.lineHeight, alignment: .center)
+                .background(Color(hue: 0.0, saturation: 0.0, brightness: 1.0, opacity: 0.5))
+                .clipShape(RoundedRectangle(cornerRadius: 20))
 
                 
                 // Row 3: TimeTicks
-                TimeTickBar(timeline: timeline)
+                TimeTickBar()
             }
             
             
         } // End of ZStack
-        .environmentObject(size)
     }
 }
 

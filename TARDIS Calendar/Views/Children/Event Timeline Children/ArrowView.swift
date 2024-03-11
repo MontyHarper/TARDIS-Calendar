@@ -13,8 +13,8 @@ import SwiftUI
 
 struct ArrowView: View {
     
-    // Note: I've used "size" differently from in other views. Here size is the diameter of the circle that forms the basis of the view. I've used "dimensions" for the dimentions object (instead of size).
-    @EnvironmentObject var dimensions: Dimensions
+    @Environment(\.dimensions) private var dimensions
+    
     var size: Double
     let arrowOffset = -7.75
     let arrow = UIImage(systemName: "arrow.right")

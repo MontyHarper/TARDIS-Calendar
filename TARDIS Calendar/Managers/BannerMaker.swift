@@ -13,7 +13,7 @@ class BannerMaker {
     
     var banners = [EKEvent]()
     var bannerText = ""
-    var refreshDate = TimelineSettings.shared.maxDay()
+    var refreshDate = Timeline.maxDay
     var marquee: MarqueeViewModel?
     let eventStore = EventStore.shared.store
     var timer: Timer?
@@ -33,15 +33,15 @@ class BannerMaker {
         print("Updating Banners")
         
         bannerText = ""
-        var newRefreshDate = TimelineSettings.shared.maxDay()
+        var newRefreshDate = Timeline.maxDay
         
         guard let eventManager = eventManager else {
             return
         }
         
         // Set up date parameters
-        let start = TimelineSettings.shared.minDay()
-        let end = TimelineSettings.shared.maxDay()
+        let start = Timeline.minDay
+        let end = Timeline.maxDay
         
         // Search for events in selected calendars that are banner type
         let calendarsToSearch = eventManager.appleCalendars.filter({$0.isSelected && $0.type == CalendarType.banner.rawValue}).map({$0.calendar})
