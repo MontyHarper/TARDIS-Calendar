@@ -13,16 +13,12 @@ import SwiftUI
 struct EventView: View {
     
     let event: Event
-    @Environment(\.dimensions) private var dimensions
-    @EnvironmentObject var eventManager: EventManager
-    @Environment(\.timeline) private var timeline
-
-    // TODO: - Figure out how to animate transitions from regular to expanded format and back.
-    @Binding var isExpanded: Bool
-    @State var dismiss = false
-    
     let shrinkFactor: Double
-    let screenWidth: Double
+    
+    @Environment(\.dimensions) private var dimensions
+    @Environment(\.timeline) private var timeline
+    @EnvironmentObject var eventManager: EventManager
+    @State var dismiss = false
     
     // Each veiw has an arrow on the timeline; this places it correctly. Do not adjust.
     let arrowOffset: Double = -7.75
@@ -33,7 +29,7 @@ struct EventView: View {
     // This offset value keeps the event view centered over Now while the event is happening.
     var offsetAmount: Double {
         if event.isNow {
-            return screenWidth * (Timeline.nowLocation - timeline.unitX(fromTime: event.startDate.timeIntervalSince1970))
+            return dimensions.width * (Timeline.nowLocation - timeline.unitX(fromTime: event.startDate.timeIntervalSince1970))
         } else {
             return 0.0
         }
@@ -132,8 +128,8 @@ struct EventView: View {
             
         } // End of ZStack
         .onLongPressGesture(minimumDuration: 0.2, maximumDistance: 20.0) {
-                isExpanded = false
-        }
+            eventManager.closeEvent(event)
+            }
         
     } // End of expanded view
     
@@ -212,7 +208,7 @@ struct EventView: View {
     // Here is the actual EventView, composed of its various parts.
     var body: some View {
         
-        let _ = Self._printChanges()
+//        let _ = Self._printChanges()
         
         // If the event has passed, present an empty view
         if event.endDate < Date() {
@@ -231,7 +227,7 @@ struct EventView: View {
             
             
             // If the event is expanded, present expandedView
-        } else if isExpanded {
+        } else if eventManager.isExpanded.contains(event.id) {
             
                 ArrowView (size: dimensions.largeEvent)
                     .zIndex(0)

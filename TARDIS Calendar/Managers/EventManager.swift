@@ -21,7 +21,7 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
             print("events were updated: \(events.count)")
         }
     }
-    @Published var isExpanded = [Bool]() // For each event, should the view be rendered as expanded? This is the source of truth for expansion of event views.
+    @Published var isExpanded = Set([UUID]()) // Events in this set are rendered as expanded in EventView.
     @Published var bannerMaker = BannerMaker()
     @Published var buttonMaker = ButtonMaker()
     
@@ -132,7 +132,7 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
             // TODO: change to receive on main in the view
             DispatchQueue.main.async {
                 self.events = [Event]()
-                self.isExpanded = [Bool]()
+                self.isExpanded = Set([UUID]())
                 closure()
             }
             
@@ -141,8 +141,13 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
             // Set up search predicate
             let findEKEvents = eventStore.predicateForEvents(withStart: start, end: end, calendars: calendarsToSearch)
             
-            // Save which dates are shown in expanded view.
-            let expandedDates = Set(isExpanded.indices.filter({isExpanded[$0]}).map({events[$0].startDate}))
+            // Save which dates are shown in expanded view (UUIDs will not persist).
+            var expandedDates = Set([Date]())
+            for id in isExpanded {
+                if let event = events.first(where: {id == $0.id}) {
+                    expandedDates.insert(event.startDate)
+                }
+            }
             
             // Store the search results, converting EKEvents to Events.
             newEvents = eventStore.events(matching: findEKEvents).map({ekevent in
@@ -163,7 +168,7 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
                 self.events = self.newEvents
                 
                 // Restore dates that are expanded.
-                self.isExpanded = self.events.indices.map({expandedDates.contains(self.events[$0].startDate)})
+                self.isExpanded = Set(self.events.filter({expandedDates.contains($0.startDate)}).map({$0.id}))
                 
                 closure()
             }
@@ -191,21 +196,24 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
         default:
             let targetEvent = events.first(where: {$0.type == type && $0.startDate > Date()})
             timeManager.setTarget(targetEvent?.startDate)
-            expandEvent(targetEvent)
+            highlightEvent(targetEvent)
         }
     }
     
     // Called when user taps the background; closes any expanded views.
     func closeAll() {
-        isExpanded = isExpanded.map({_ in false})
+        isExpanded = Set([UUID]()) // reset to an empty set
+        print("Closed all events.")
     }
     
-    // leaves only the requested event expanded
-    func expandEvent(_ event: Event?) {
-        closeAll()
-        if let index = events.indices.first(where: {events[$0] == event}) {
-            isExpanded[index] = true
-        }
+    func closeEvent(_ event: Event) {
+        isExpanded.remove(event.id)
+        print("Closed: ", event.id, "Expanded: ", isExpanded)
+    }
+    
+    func expandEvent(_ event: Event) {
+        isExpanded.insert(event.id)
+        print("Expanded: ", isExpanded)
     }
     
     func highlightNextEvent() {
@@ -216,6 +224,14 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
             expandEvent(targetEvent)
         } else {
             timeManager.resetZoom()
+        }
+    }
+    
+    // leaves only the requested event expanded
+    func highlightEvent(_ event: Event?) {
+        if let event = event {
+            closeAll()
+            isExpanded.insert(event.id)
         }
     }
     

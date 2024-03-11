@@ -33,9 +33,9 @@ struct EventTimelineView: View {
             
             
             // Circles representing events along the time line
-            ForEach(eventManager.events.indices, id: \.self) { index in
-                EventView(event: eventManager.events[index], isExpanded: $eventManager.isExpanded[index], shrinkFactor: shrinkFactor(), screenWidth: dimensions.width)
-                    .position(x: timeline.unitX(fromTime: eventManager.events[index].startDate.timeIntervalSince1970) * dimensions.width, y: yOfTimeline * dimensions.height)
+            ForEach(eventManager.events) { event in
+                EventView(event: event, shrinkFactor: shrinkFactor())
+                    .position(x: timeline.unitX(fromTime: event.startDate.timeIntervalSince1970) * dimensions.width, y: yOfTimeline * dimensions.height)
             }
             
             
@@ -52,6 +52,8 @@ struct EventTimelineView: View {
     }
     
     // This function provides a factor by which to re-size low priority event views, shrinking them as the calendar zooms out. This allows high priority events to stand out from the crowd.
+    
+    // TODO: - should this be contained in EventView?
     func shrinkFactor() -> Double {
         
         let x = timeline.span
