@@ -48,6 +48,10 @@ struct ContentView: View {
                     .opacity(1.0)
                     .zIndex(-100)
                     .oneFingerZoom(width: screen.size.width, timeManager: timeManager)
+                // Tapping on the background closes all expanded views
+                    .onLongPressGesture(minimumDuration: 0.05, maximumDistance: 20.0) {
+                        eventManager.closeAll()
+                    }
 
                 // headerView combines current date, marquee with scrolling messages, and time tick markers.
                 HeaderView()
@@ -91,11 +95,6 @@ struct ContentView: View {
             // Animating auto-zoom
             .onReceive(animationTimer) { time in
                 if stateBools.animateSpan {timeManager.newFrame()}
-            }
-            
-            // Tapping outside an event view closes all expanded views
-            .onLongPressGesture(minimumDuration: 0.05, maximumDistance: 20.0) {
-                eventManager.closeAll()
             }
             
         } // End of Geometry Reader

@@ -49,6 +49,9 @@
 		F1DED9412B3B164D0023BF22 /* EventTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1DED9402B3B164D0023BF22 /* EventTimelineView.swift */; };
 		F1EDCEEF2B9BC56100BB77F9 /* OneFingerZoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EDCEEE2B9BC56100BB77F9 /* OneFingerZoom.swift */; };
 		F1EDCEF12B9C079800BB77F9 /* HiddenSettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EDCEF02B9C079800BB77F9 /* HiddenSettingsButton.swift */; };
+		F1EDCEF82B9FBDA100BB77F9 /* IconEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EDCEF72B9FBDA100BB77F9 /* IconEventView.swift */; };
+		F1EDCEFA2B9FBDBC00BB77F9 /* EventIsNowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EDCEF92B9FBDBC00BB77F9 /* EventIsNowView.swift */; };
+		F1EDCEFC2B9FBDD500BB77F9 /* ExpandedEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EDCEFB2B9FBDD500BB77F9 /* ExpandedEventView.swift */; };
 		F1F9E49B2B11220C00DA4026 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1F9E49A2B11220C00DA4026 /* Enums.swift */; };
 /* End PBXBuildFile section */
 
@@ -97,6 +100,9 @@
 		F1DED9402B3B164D0023BF22 /* EventTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTimelineView.swift; sourceTree = "<group>"; };
 		F1EDCEEE2B9BC56100BB77F9 /* OneFingerZoom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneFingerZoom.swift; sourceTree = "<group>"; };
 		F1EDCEF02B9C079800BB77F9 /* HiddenSettingsButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HiddenSettingsButton.swift; sourceTree = "<group>"; };
+		F1EDCEF72B9FBDA100BB77F9 /* IconEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconEventView.swift; sourceTree = "<group>"; };
+		F1EDCEF92B9FBDBC00BB77F9 /* EventIsNowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventIsNowView.swift; sourceTree = "<group>"; };
+		F1EDCEFB2B9FBDD500BB77F9 /* ExpandedEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandedEventView.swift; sourceTree = "<group>"; };
 		F1F9E49A2B11220C00DA4026 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -238,11 +244,22 @@
 			isa = PBXGroup;
 			children = (
 				F119C6662A7B59A200B183F5 /* EventView.swift */,
+				F1EDCEF62B9FBD6400BB77F9 /* EventViewChildren */,
 				F18D04F62B06B35100E5C91E /* ArrowView.swift */,
 				F122A2C62ADA4B10002E82AE /* NowView.swift */,
 				F18D04F82B06BA7400E5C91E /* CurrentDateView.swift */,
 			);
 			path = "Event Timeline Children";
+			sourceTree = "<group>";
+		};
+		F1EDCEF62B9FBD6400BB77F9 /* EventViewChildren */ = {
+			isa = PBXGroup;
+			children = (
+				F1EDCEF72B9FBDA100BB77F9 /* IconEventView.swift */,
+				F1EDCEF92B9FBDBC00BB77F9 /* EventIsNowView.swift */,
+				F1EDCEFB2B9FBDD500BB77F9 /* ExpandedEventView.swift */,
+			);
+			path = EventViewChildren;
 			sourceTree = "<group>";
 		};
 		F1F9E4992B111DBF00DA4026 /* Utilities */ = {
@@ -337,6 +354,7 @@
 				F1EDCEF12B9C079800BB77F9 /* HiddenSettingsButton.swift in Sources */,
 				F122A2C72ADA4B10002E82AE /* NowView.swift in Sources */,
 				F18D05032B0AA6B500E5C91E /* SettingsView.swift in Sources */,
+				F1EDCEF82B9FBDA100BB77F9 /* IconEventView.swift in Sources */,
 				F19447AA2B61B80E00BDC03B /* ButtonModel.swift in Sources */,
 				F1DED93D2B3624450023BF22 /* TimeTickBar.swift in Sources */,
 				F19447A22B5CC23700BDC03B /* Event.swift in Sources */,
@@ -350,6 +368,7 @@
 				F1F9E49B2B11220C00DA4026 /* Enums.swift in Sources */,
 				F13BC5222B7C7C87008C491E /* SolarEventManager.swift in Sources */,
 				F122A2C32ADA4AD1002E82AE /* BackgroundView.swift in Sources */,
+				F1EDCEFA2B9FBDBC00BB77F9 /* EventIsNowView.swift in Sources */,
 				F1EDCEEF2B9BC56100BB77F9 /* OneFingerZoom.swift in Sources */,
 				F13BC5422B8D3738008C491E /* TimeManager.swift in Sources */,
 				F19447A82B60CD7900BDC03B /* EventStore.swift in Sources */,
@@ -369,6 +388,7 @@
 				F14A8A472B331A390049217C /* Dimensions.swift in Sources */,
 				F14A8A432B32A9D90049217C /* HeaderView.swift in Sources */,
 				F19447AE2B61C23000BDC03B /* BannerMaker.swift in Sources */,
+				F1EDCEFC2B9FBDD500BB77F9 /* ExpandedEventView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

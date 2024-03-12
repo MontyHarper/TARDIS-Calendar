@@ -19,9 +19,9 @@ import SwiftUI
 struct Event: Identifiable, Comparable {
     
     var event: EKEvent
-    var type: String
+    var type: CalendarType
                 
-    init(event: EKEvent, type: String) {
+    init(event: EKEvent, type: CalendarType) {
         self.event = event
         self.type = type
     }
@@ -47,9 +47,17 @@ struct Event: Identifiable, Comparable {
         let cg = event.calendar.cgColor ?? CGColor(red: 0.0, green: 0.0, blue: 1.0, alpha: 1.0)
         return Color(cgColor: cg)
     }
-    var priority: Int {
-        CalendarType(rawValue:type)?.priority() ?? .zero
+    
+    // Each calendar type has an associated icon in the CalendarType enum.
+    // Use the "daily" icon as a default in case something goes wrong.
+    var calendarIcon: Image {
+        type.icon()
     }
+    
+    var priority: Int {
+        type.priority()
+    }
+    
     var happensWhen: String {
         let eventDay = Timeline.calendar.component(.day, from: startDate)
         let today = Timeline.calendar.component(.day, from: Date())

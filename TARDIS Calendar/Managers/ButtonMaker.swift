@@ -50,12 +50,12 @@ class ButtonMaker: ObservableObject {
                 print("no button for type: ", type)
                 
             default:
-                if eventManager.events.first(where: {$0.type == type.rawValue && $0.startDate > Date()}) != nil {
+                if eventManager.events.first(where: {$0.type == type && $0.startDate > Date()}) != nil {
                     let button = ButtonModel(eventManager: eventManager, id: type.rawValue)
                     buttons.append(button)
                 }
                 
-                if let lastEvent = eventManager.events.last(where: {$0.type == type.rawValue && $0.startDate > Date()}) {
+                if let lastEvent = eventManager.events.last(where: {$0.type == type && $0.startDate > Date()}) {
                     refreshDate = (lastEvent.startDate < refreshDate) ? lastEvent.startDate : refreshDate
                 }
             }

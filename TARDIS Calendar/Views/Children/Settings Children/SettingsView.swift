@@ -38,7 +38,7 @@ struct SettingsView: View {
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
                     Button("Done") {
-                        eventManager.saveUserCalendars()
+                        eventManager.updateEverything()
                         dismiss()
                     }
                     .buttonStyle(.borderedProminent)

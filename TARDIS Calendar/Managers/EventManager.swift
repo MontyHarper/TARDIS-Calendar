@@ -151,7 +151,9 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
             
             // Store the search results, converting EKEvents to Events.
             newEvents = eventStore.events(matching: findEKEvents).map({ekevent in
-                Event(event: ekevent, type: userCalendars[ekevent.calendar.title] ?? "none")
+                let title = userCalendars[ekevent.calendar.title] ?? "none"
+                let type = CalendarType(rawValue: title) ?? CalendarType.none
+                return Event(event: ekevent, type: type)
             })
             
             // Filter the results to remove lower priority events scheduled at the same time as higher priority events...
@@ -194,7 +196,7 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
             timeManager.setTarget(targetDate ?? Timeline.maxDay)
             
         default:
-            let targetEvent = events.first(where: {$0.type == type && $0.startDate > Date()})
+            let targetEvent = events.first(where: {$0.type.rawValue == type && $0.startDate > Date()})
             timeManager.setTarget(targetEvent?.startDate)
             highlightEvent(targetEvent)
         }
@@ -203,17 +205,14 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
     // Called when user taps the background; closes any expanded views.
     func closeAll() {
         isExpanded = Set([UUID]()) // reset to an empty set
-        print("Closed all events.")
     }
     
     func closeEvent(_ event: Event) {
         isExpanded.remove(event.id)
-        print("Closed: ", event.id, "Expanded: ", isExpanded)
     }
     
     func expandEvent(_ event: Event) {
         isExpanded.insert(event.id)
-        print("Expanded: ", isExpanded)
     }
     
     func highlightNextEvent() {
@@ -236,22 +235,6 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
     }
     
     // MARK: - Utilities
-    
-    // Call to persist user-selected calendar list to UserDefaults.
-    func saveUserCalendars() {
-        var myDictionary: [String: String] = [:]
-        for calendar in appleCalendars {
-            if calendar.isSelected {
-                myDictionary[calendar.title] = calendar.type
-            }
-        }
-        UserDefaults.standard.set(myDictionary, forKey: UserDefaultKey.Calendars.rawValue)
-        
-        userCalendars = myDictionary
-                       
-        updateEverything()
-    }
-    
     
     func setWarningTimer() {
         warningTimer?.invalidate()

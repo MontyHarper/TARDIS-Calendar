@@ -36,7 +36,7 @@ struct ButtonModel: Identifiable {
             
         default:
             image = CalendarType(rawValue: id)?.icon() ?? Image(systemName: "questionmark.circle.fill")
-            let targetEvent = eventManager.events.first(where: {$0.type == id && $0.startDate > Date()})
+            let targetEvent = eventManager.events.first(where: {$0.type.rawValue == id && $0.startDate > Date()})
             color = targetEvent?.calendarColor ?? .blue
             bottomText = id
             

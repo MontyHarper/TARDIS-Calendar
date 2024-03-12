@@ -13,11 +13,18 @@ import SwiftUI
 
 class CalendarManager: ObservableObject {
     
-    @Published var userCalendars: [String: String] // List of calendars to connect to and their types; Persisted in UserDefaults
-    @Published var appleCalendars = [AppleCalendar]() // List of all calendars in the Apple Calendar App
+    // List of calendars to connect to and their types; Persisted in UserDefaults
+    @Published var userCalendars: [String: String] = UserDefaults.standard.dictionary(forKey: UserDefaultKey.Calendars.rawValue) as? [String : String] ?? ["" : ""] {
+        
+        didSet {
+            UserDefaults.standard.set(userCalendars, forKey: UserDefaultKey.Calendars.rawValue)
+        }
+    }
+    
+    // List of all calendars in the Apple Calendar App
+    @Published var appleCalendars = [AppleCalendar]()
     
     init() {
-        userCalendars = UserDefaults.standard.dictionary(forKey: UserDefaultKey.Calendars.rawValue) as? [String : String] ?? ["" : ""]
         updateCalendars(completion: {error in})
     }
     
@@ -40,9 +47,7 @@ class CalendarManager: ObservableObject {
         let titles = userCalendars.keys
         
         // Construct an AppleCalendar for each calendar in the user's Apple Calendar App. We are attatching isSelected and type to each EKCalendar. This will allow for easy editing of the user's calendars dictionary.
-        
         var newCalendars = [AppleCalendar]()
-
         for calendar in getCalendars {
             let isSelected = titles.contains(calendar.title)
             var type = "none"
@@ -53,10 +58,19 @@ class CalendarManager: ObservableObject {
             newCalendars.append(newCalendar)
         }
         
+        // Reconstruct userCalendars; this is needed in case new calendars have been selected or previously selected calendars have been deleted or renamed.
+        var newUserCalendars: [String: String] = [:]
+        for calendar in newCalendars {
+            if calendar.isSelected {
+                newUserCalendars[calendar.title] = calendar.type
+            }
+        }
+        
         // Update on the main thread
         
         DispatchQueue.main.async {
             self.appleCalendars = newCalendars
+            self.userCalendars = newUserCalendars
             completion(nil)
         }
 
