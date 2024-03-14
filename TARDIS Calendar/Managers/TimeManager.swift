@@ -24,7 +24,7 @@ class TimeManager: ObservableObject {
     // Setting targetTrailingTime to a new value triggers an animation to a screen with the target as the new trailingTime.
     public var targetTrailingTime = Date().timeIntervalSince1970 + Timeline.defaultSpan {
         didSet {
-            StateBools.shared.animateSpan = true
+            spanIsAnimating = true
             print("new targetTrailingTime:" , targetTrailingTime)
         }
     }
@@ -33,6 +33,8 @@ class TimeManager: ObservableObject {
     
     // Setting timeUnit to a different value will change the rate at which the screen updates.
     public var timeUnit: TimeInterval = 1.0 // How often to update in seconds
+    
+    public var spanIsAnimating = false
     
     // MARK: - Init & Deinit
     
@@ -139,7 +141,7 @@ class TimeManager: ObservableObject {
     
     // This function advances the zoom animation by a single frame.
     // This is called from a timer in the ContentView.
-    // The timer is triggered when stateBools.animateSpan = true
+    // The timer is triggered when spanIsAnimating = true
     // Note: I tried using SwiftUI animations; they do not work well for this.
     func newFrame() {
         
@@ -153,7 +155,7 @@ class TimeManager: ObservableObject {
             
         } else {
             // Stop animating
-            StateBools.shared.animateSpan = false
+            spanIsAnimating = false
         }
     }
 }

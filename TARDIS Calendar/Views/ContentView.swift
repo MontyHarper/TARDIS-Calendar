@@ -19,7 +19,6 @@ struct ContentView: View {
     // State variables
     @StateObject private var timeManager = TimeManager()
     @StateObject private var screenStops = ScreenStops()
-    @State private var stateBools = StateBools.shared
     @State private var inactivityTimer: Timer?
     @State private var settingsIsVisible: Bool = UserDefaults.standard.value(forKey: UserDefaultKey.AppHasBeenLaunchedBefore.rawValue) == nil
     
@@ -70,12 +69,6 @@ struct ContentView: View {
                 
                 // MARK: - Functional Elements
                 
-                // Show progress view while background loads.
-                if stateBools.showProgressView {
-                    ProgressView()
-                        .scaleEffect(3)
-                }
-                
                 // Hidden button in upper right-hand corner allows caregivers to change preferences.
                 HiddenSettingsButton()
                     .position(x: screen.size.width, y: 0.0)
@@ -98,7 +91,7 @@ struct ContentView: View {
             
             // Animating auto-zoom
             .onReceive(animationTimer) { time in
-                if stateBools.animateSpan {timeManager.newFrame()}
+                if timeManager.spanIsAnimating {timeManager.newFrame()}
             }
             
         } // End of Geometry Reader

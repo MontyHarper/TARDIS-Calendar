@@ -22,9 +22,7 @@ class StateBools: ObservableObject {
      
     static var shared = StateBools()
     var networkMonitor = NetworkMonitor()
-    
-    var animateSpan = false // When true, calendar view is auto-zooming.
-    
+        
     // Flag internet as down only if it's been down awhile. This way the user is not plagued with messages about trivial interruptions to the network. Change minSeconds to adjust the amount of time the connection needs to be lost before a notification pops up.
     var internetIsDown: Bool { // Displays a warning message on screen.
         let minSeconds: Double = 2*60*60 // two hours
@@ -58,7 +56,6 @@ class StateBools: ObservableObject {
     var authorizedForLocationAccess: Bool {
         UserDefaults.standard.bool(forKey: UserDefaultKey.AuthorizedForLocationAccess.rawValue)
     }
-    var showProgressView = true // Used to indicate the background is loading.
     var showMissingSolarDaysWarning: Bool { // If enough days are missing that the calendar will look wrong, show a warning.
         missingSolarDays >= 4
     }

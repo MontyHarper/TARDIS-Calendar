@@ -28,7 +28,7 @@ struct OneFingerZoom: ViewModifier {
                 // If this is a new drag starting, save the location.
                 if dragStart == 0.0 {
                     dragStart = gesture.startLocation.x
-                    StateBools.shared.animateSpan = false
+                    timeManager.spanIsAnimating = false
                 }
                 
                 print("Drag Start: \(dragStart), Drag End: \(gesture.location.x)")

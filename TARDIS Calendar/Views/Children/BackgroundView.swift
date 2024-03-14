@@ -51,5 +51,11 @@ struct BackgroundView: View {
             .ignoresSafeArea()
             .frame(width: width * dimensions.width)
             .offset(x: offset * dimensions.width)
+            .overlay {
+                if solarEventManager.progressViewIsShowing {
+                    ProgressView()
+                        .scaleEffect(3)
+                }
+            }
     }
 }

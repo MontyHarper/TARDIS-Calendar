@@ -12,18 +12,20 @@ import SwiftUI
 struct AlertView: View {
     
     // TODO: - I believe this kind of alert is deprecated, and this View could be updated to take advantage of the newer version of .alert which includes a title, details, and a built-in dismiss button. https://developer.apple.com/documentation/swiftui/view/alert(_:ispresented:presenting:actions:message:)-8584l
+    
     @State private var showAlert = false
-    @State private var stateBools = StateBools.shared
+    
+    var stateBools = AlertViewModel()
     @Environment(\.dimensions) private var dimensions
     var formatter = RelativeDateTimeFormatter()
-    let dateWentDown = UserDefaults.standard.object(forKey: UserDefaultKey.DateInternetWentDown.rawValue) as? Date ?? Date()
+    
     
     var body: some View {
                 
         ZStack {
             
             // Shows a warning message which can then be tapped for more information.
-            if stateBools.showWarning {
+            if stateBools.someWarningIsShowing {
                 
                 Text(showText().0)
                     .foregroundColor(.red)
@@ -68,17 +70,17 @@ struct AlertView: View {
         
         if stateBools.internetIsDown {
             let warning = "Check Internet Connection."
-            let alert = "Your internet connection has been down since: \n\n\(formatter.localizedString(for: dateWentDown, relativeTo: Date()))\n\nYour calendar may be missing recent information. \n\nPlease let a helper know."
+            let alert = "Your internet connection has been down since: \n\n\(formatter.localizedString(for: stateBools.dateInternetWentDown, relativeTo: Date()))\n\nYour calendar may be missing recent information. \n\nPlease let a helper know."
             return (warning: warning, alert: alert)
         }
         
-        if !stateBools.authorizedForLocationAccess {
+        if stateBools.notAuthorizedForLocationAccess {
             let warning = "Day and Night Are Not Showing Correctly."
             let alert = "Permission is needed to access your general location. This will allow sunrise and sunset times to display correctly in the background.\n\nPlease find TARDIS Calendar in your Settings App and change the permissions."
             return (warning: warning, alert: alert)
         }
         
-        if stateBools.showMissingSolarDaysWarning {
+        if stateBools.missingSolarDaysAlertIsShowing {
             let warning = "Day and Night Are Not Showing Correctly."
             let alert = "It has been \(stateBools.missingSolarDays) days since you've been able to access sunrise and sunset information. Times depicted in the background are no longer accurate.\n\nYour internet connection seems to be good, and your permissions are set correctly, so there's nothing you can do but hope it goes away.\n\nPlease report this to monty@montyharper.com."
             return (warning: warning, alert: alert)

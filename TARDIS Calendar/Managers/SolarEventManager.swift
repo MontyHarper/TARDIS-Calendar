@@ -31,6 +31,8 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     var gradientStart: Double = Date().timeIntervalSince1970 - 24 * 60 * 60
     var gradientSpan: Double = 24 * 60 * 60 * 7
     
+    var progressViewIsShowing = false
+    
     // MARK: - Private Properties
     
     private var updateWhenCurrentDayChanges: AnyCancellable?
@@ -107,6 +109,7 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
             return
         }
         
+        progressViewIsShowing = true
         stateBools.solarDaysUpdateLocked = true
                 
         print("updating solar days")
@@ -300,7 +303,7 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
             // Make gradient size available for BackgroundView calculations.
             self.gradientStart = first
             self.gradientSpan = span
-            self.stateBools.showProgressView = false
+            self.progressViewIsShowing = false
         }
         
         closure()
