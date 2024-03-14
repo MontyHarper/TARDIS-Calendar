@@ -14,15 +14,26 @@ import SwiftUI
 class CalendarManager: ObservableObject {
     
     // List of calendars to connect to and their types; Persisted in UserDefaults
-    @Published var userCalendars: [String: String] = UserDefaults.standard.dictionary(forKey: UserDefaultKey.Calendars.rawValue) as? [String : String] ?? ["" : ""] {
-        
-        didSet {
-            UserDefaults.standard.set(userCalendars, forKey: UserDefaultKey.Calendars.rawValue)
-        }
-    }
+    @Published var userCalendars: [String : String] = UserDefaults.standard.dictionary(forKey: UserDefaultKey.Calendars.rawValue) as? [String : String] ?? ["" : ""]
     
     // List of all calendars in the Apple Calendar App
-    @Published var appleCalendars = [AppleCalendar]()
+    @Published var appleCalendars = [AppleCalendar]() {
+        didSet {
+            
+            var newUserCalendars = [String : String]()
+            for calendar in appleCalendars.filter({$0.isSelected}) {
+                newUserCalendars[calendar.title] = calendar.type
+            }
+            
+            UserDefaults.standard.set(userCalendars, forKey: UserDefaultKey.Calendars.rawValue)
+            
+            DispatchQueue.main.async {
+                self.userCalendars = newUserCalendars
+                print("user calendars changed: ", self.userCalendars)
+
+            }
+        }
+    }
     
     init() {
         updateCalendars(completion: {error in})
@@ -58,19 +69,10 @@ class CalendarManager: ObservableObject {
             newCalendars.append(newCalendar)
         }
         
-        // Reconstruct userCalendars; this is needed in case new calendars have been selected or previously selected calendars have been deleted or renamed.
-        var newUserCalendars: [String: String] = [:]
-        for calendar in newCalendars {
-            if calendar.isSelected {
-                newUserCalendars[calendar.title] = calendar.type
-            }
-        }
-        
         // Update on the main thread
         
         DispatchQueue.main.async {
             self.appleCalendars = newCalendars
-            self.userCalendars = newUserCalendars
             completion(nil)
         }
 

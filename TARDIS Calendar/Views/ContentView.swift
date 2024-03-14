@@ -21,6 +21,7 @@ struct ContentView: View {
     @StateObject private var screenStops = ScreenStops()
     @State private var stateBools = StateBools.shared
     @State private var inactivityTimer: Timer?
+    @State private var settingsIsVisible: Bool = UserDefaults.standard.value(forKey: UserDefaultKey.AppHasBeenLaunchedBefore.rawValue) == nil
     
     // TODO: - remove these or move them to a settings singleton
     // Constants that configure the UI. To mess with the look of the calendar, mess with these.
@@ -83,8 +84,11 @@ struct ContentView: View {
                 AlertView()
                 
                 
+                
             } // End of main ZStack
-
+            .sheet(isPresented: $settingsIsVisible) {
+                SettingsView(welcomeIsVisible: true)
+            }
             .onAppear {
                 eventManager.timeManager = timeManager
             }

@@ -16,6 +16,7 @@ struct ButtonModel: Identifiable {
     var color: Color
     var bottomText: String
     
+    // TODO: - this can't be a custom Type
     @State private var stateBools = StateBools.shared
    
     init(eventManager: EventManager, id: String) {

@@ -98,6 +98,7 @@ enum CalendarError: Error {
 enum UserDefaultKey: String {
     
     // Alphabetical Order
+    case AppHasBeenLaunchedBefore
     case AuthorizedForLocationAccess
     case Calendars
     case DateInternetWentDown

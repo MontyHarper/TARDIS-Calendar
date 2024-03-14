@@ -38,7 +38,6 @@ struct EventTimelineView: View {
                     .position(x: timeline.unitX(fromTime: event.startDate.timeIntervalSince1970) * dimensions.width, y: yOfTimeline * dimensions.height)
             }
             
-            
             // Circle representing current time.
             NowView()
                 .position(x: Timeline.nowLocation * dimensions.width, y: yOfTimeline * dimensions.height)

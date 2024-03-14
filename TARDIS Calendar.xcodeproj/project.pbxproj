@@ -52,6 +52,8 @@
 		F1EDCEF82B9FBDA100BB77F9 /* IconEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EDCEF72B9FBDA100BB77F9 /* IconEventView.swift */; };
 		F1EDCEFA2B9FBDBC00BB77F9 /* EventIsNowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EDCEF92B9FBDBC00BB77F9 /* EventIsNowView.swift */; };
 		F1EDCEFC2B9FBDD500BB77F9 /* ExpandedEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EDCEFB2B9FBDD500BB77F9 /* ExpandedEventView.swift */; };
+		F1EDCEFE2BA00B3300BB77F9 /* CalendarSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EDCEFD2BA00B3300BB77F9 /* CalendarSelectionView.swift */; };
+		F1EDCF002BA00B4800BB77F9 /* PhotoSeletionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EDCEFF2BA00B4800BB77F9 /* PhotoSeletionView.swift */; };
 		F1F9E49B2B11220C00DA4026 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1F9E49A2B11220C00DA4026 /* Enums.swift */; };
 /* End PBXBuildFile section */
 
@@ -103,6 +105,8 @@
 		F1EDCEF72B9FBDA100BB77F9 /* IconEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconEventView.swift; sourceTree = "<group>"; };
 		F1EDCEF92B9FBDBC00BB77F9 /* EventIsNowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventIsNowView.swift; sourceTree = "<group>"; };
 		F1EDCEFB2B9FBDD500BB77F9 /* ExpandedEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpandedEventView.swift; sourceTree = "<group>"; };
+		F1EDCEFD2BA00B3300BB77F9 /* CalendarSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSelectionView.swift; sourceTree = "<group>"; };
+		F1EDCEFF2BA00B4800BB77F9 /* PhotoSeletionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoSeletionView.swift; sourceTree = "<group>"; };
 		F1F9E49A2B11220C00DA4026 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -236,6 +240,8 @@
 			isa = PBXGroup;
 			children = (
 				F18D05022B0AA6B500E5C91E /* SettingsView.swift */,
+				F1EDCEFD2BA00B3300BB77F9 /* CalendarSelectionView.swift */,
+				F1EDCEFF2BA00B4800BB77F9 /* PhotoSeletionView.swift */,
 			);
 			path = "Settings Children";
 			sourceTree = "<group>";
@@ -367,6 +373,7 @@
 				F1B5FE182A735D2200CBBCE6 /* Extensions.swift in Sources */,
 				F1F9E49B2B11220C00DA4026 /* Enums.swift in Sources */,
 				F13BC5222B7C7C87008C491E /* SolarEventManager.swift in Sources */,
+				F1EDCEFE2BA00B3300BB77F9 /* CalendarSelectionView.swift in Sources */,
 				F122A2C32ADA4AD1002E82AE /* BackgroundView.swift in Sources */,
 				F1EDCEFA2B9FBDBC00BB77F9 /* EventIsNowView.swift in Sources */,
 				F1EDCEEF2B9BC56100BB77F9 /* OneFingerZoom.swift in Sources */,
@@ -382,6 +389,7 @@
 				F1D15B442A5FA758006F6A4E /* ContentView.swift in Sources */,
 				F19447AC2B61BE6200BDC03B /* ButtonMaker.swift in Sources */,
 				F18D04FD2B0824F500E5C91E /* LayoutValueKeys.swift in Sources */,
+				F1EDCF002BA00B4800BB77F9 /* PhotoSeletionView.swift in Sources */,
 				F18D04FB2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift in Sources */,
 				F1D15B422A5FA758006F6A4E /* TARDIS_CalendarApp.swift in Sources */,
 				F18D051F2B0BC01C00E5C91E /* CalendarManager.swift in Sources */,

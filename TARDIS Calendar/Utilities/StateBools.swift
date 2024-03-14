@@ -15,6 +15,9 @@ import Foundation
 // Names containing "Info" will pop up an alert with more info when a message is tapped.
 // Names containing "Alert" will put an alert on screen (without a preceding message).
 
+
+// TODO: should not be an observalbe object; should be local reasoning?
+
 class StateBools: ObservableObject {
      
     static var shared = StateBools()
@@ -41,7 +44,6 @@ class StateBools: ObservableObject {
             return 0
         }
     }
-    var newUser: Bool
     var noCalendarsAvailable = false
     var noCalendarsSelected: Bool {
         if let calendars = UserDefaults.standard.object(forKey: UserDefaultKey.Calendars.rawValue) as? [String:String] {
@@ -60,11 +62,9 @@ class StateBools: ObservableObject {
     var showMissingSolarDaysWarning: Bool { // If enough days are missing that the calendar will look wrong, show a warning.
         missingSolarDays >= 4
     }
-    var showSettings: Bool // Opens the settings page where user can select calendars to show.
     var showWarning: Bool { // Use to activate the AlertView, which will then show whichever warning is appropriate, with an attached alert for more information.
         noPermissionForCalendar || noCalendarsAvailable || noCalendarsSelected || internetIsDown || !authorizedForLocationAccess || showMissingSolarDaysWarning
     }
-    var showWelcome: Bool = false
     var solarDaysAvailable = false // When false, background returns a solid color.
     var solarDaysUpdateLocked = false
     var solarDaysUpdateWaiting = false
@@ -74,15 +74,6 @@ class StateBools: ObservableObject {
     
     private init() {
 
-        if UserDefaults.standard.bool(forKey: UserDefaultKey.NewUser.rawValue) {
-            newUser = false
-            showSettings = false
-        } else {
-            UserDefaults.standard.set(true, forKey: UserDefaultKey.NewUser.rawValue)
-            newUser = true
-            // Shows the settings view for a new user.
-            showSettings = true
-        }
         if UserDefaults.standard.bool(forKey: UserDefaultKey.UseDefaultNowIcon.rawValue) {
             useDefaultNowIcon = UserDefaults.standard.bool(forKey: UserDefaultKey.UseDefaultNowIcon.rawValue)
         } else {

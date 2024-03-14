@@ -11,7 +11,7 @@ import Combine
 import CoreLocation
 import SwiftUI
 
-
+// Combines data from solarDay into a single array of screen stops representing sunrise, sunset, and other solar events.
 class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     
