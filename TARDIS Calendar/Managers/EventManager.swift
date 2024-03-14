@@ -32,6 +32,7 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
     private var internetConnection: AnyCancellable?
     private var updateWhenCurrentDayChanges: AnyCancellable?
     private var stateBools = StateBools.shared
+    private var networkMonitor = NetworkMonitor()
     
     var warningTimer: Timer?
     
@@ -62,7 +63,8 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
         
         // This notification will update everything if the internet connection is lost and returns.
         internetConnection = NetworkMonitor().objectWillChange.sink {_ in
-            if !self.stateBools.internetIsDown {
+            print("EventManager says internet connection has changed.")
+            if NetworkMonitor.internetIsDown == false {
                 self.updateEverything()
             }
         }

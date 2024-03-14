@@ -14,24 +14,27 @@ import Foundation
 import Network
 
 class NetworkMonitor: ObservableObject {
+    
+    static var internetIsDown = true
+    
     private let networkMonitor = NWPathMonitor()
     private let workerQueue = DispatchQueue(label: "Monitor")
     
-    // "internetWasDown" saves the previous state of connection so it will persist across the app being inactive, so we can let the user know how long since information could have been updated.
+    // "internetWasDown" saves the previous state of connection so it will persist when the app is inactive, so we can let the user know how long information has not been updated.
     // Necessary because every time the app starts, the current connection status is registered as a change, even if it hasn't really changed.
-    var internetWasDown: Bool {
+    private var internetWasDown: Bool {
         UserDefaults.standard.bool(forKey: UserDefaultKey.InternetWasDown.rawValue)
     }
-    var internetIsDown = true
+
 
     init() {
         networkMonitor.pathUpdateHandler = { path in
-            self.internetIsDown = !(path.status == .satisfied)
+            NetworkMonitor.internetIsDown = (path.status != .satisfied)
             // If the connection is down and it was not down before, reset the time it went down.
-            if self.internetIsDown && !self.internetWasDown {
+            if NetworkMonitor.internetIsDown && self.internetWasDown == false {
                 UserDefaults.standard.set(Date(), forKey: UserDefaultKey.DateInternetWentDown.rawValue)
             }
-            UserDefaults.standard.set(self.internetIsDown, forKey: UserDefaultKey.InternetWasDown.rawValue)
+            UserDefaults.standard.set(NetworkMonitor.internetIsDown, forKey: UserDefaultKey.InternetWasDown.rawValue)
             Task {
                 await MainActor.run {
                     self.objectWillChange.send()

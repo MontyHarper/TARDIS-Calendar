@@ -28,14 +28,13 @@ class AlertViewModel {
         }
     }
     
-    var networkMonitor = NetworkMonitor()
-
     // Flag internet as down only if it's been down awhile. This way the user is not plagued with messages about trivial interruptions to the network. Change minSeconds to adjust the amount of time the connection needs to be lost before a notification pops up.
     var internetIsDown: Bool {
-        let minSeconds: Double = 2*60*60 // two hours
-        let down = networkMonitor.internetIsDown
+        // To avoid frequent or trivial warnings, inject a waiting period before showing a message that the internet is down.
+        let minSeconds: Double = 2 //*60*60 // Waiting period set for two hours
+        let down = NetworkMonitor.internetIsDown
         let downSince = UserDefaults.standard.object(forKey: UserDefaultKey.DateInternetWentDown.rawValue) as? Date ?? Date()
-        let downAwhile = downSince.timeIntervalSince1970 >= minSeconds
+        let downAwhile = (Date.now.timeIntervalSince1970 - downSince.timeIntervalSince1970) >= minSeconds
         // Note: downAwhile will still be true once the connection has re-established, so we need both bools to be true here.
         return down && downAwhile
     }

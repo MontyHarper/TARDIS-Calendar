@@ -74,8 +74,8 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
 
         // This notification will update solarDays if the internet connection is lost and returns.
         internetConnection = NetworkMonitor().objectWillChange.sink {_ in
-            print("internet connection has changed")
-            if !self.stateBools.internetIsDown {
+            print("SolarEventManager says internet connection has changed")
+            if NetworkMonitor.internetIsDown == false {
                 self.updateSolarDays()
             }
         }
@@ -101,6 +101,7 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     func updateSolarDays(all: Bool = false) {
         
+        print("update Solar Days was called")
         // This function may be triggered from multiple locations; locking it prevents data races. I'm sure there's a more elegant way to do this, but I don't know it yet!
         guard !stateBools.solarDaysUpdateLocked else {
             stateBools.solarDaysUpdateWaiting = true

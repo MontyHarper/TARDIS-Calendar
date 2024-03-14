@@ -15,7 +15,7 @@ struct AlertView: View {
     
     @State private var showAlert = false
     
-    var stateBools = AlertViewModel()
+    var alerts = AlertViewModel()
     @Environment(\.dimensions) private var dimensions
     var formatter = RelativeDateTimeFormatter()
     
@@ -25,7 +25,7 @@ struct AlertView: View {
         ZStack {
             
             // Shows a warning message which can then be tapped for more information.
-            if stateBools.someWarningIsShowing {
+            if alerts.someWarningIsShowing {
                 
                 Text(showText().0)
                     .foregroundColor(.red)
@@ -50,39 +50,39 @@ struct AlertView: View {
     // Provides a hierarchy: only one warning is shown at a time; each takes priority over the warnings below.
     func showText() -> (warning: String, alert: String) {
         
-        if stateBools.noPermissionForCalendar {
+        if alerts.noPermissionForCalendar {
             let warning = "This Calendar Is Empty"
             let alert = "To display events, please allow this app to access your Apple Calendar.\n\nFind TARDIS Calendar in your Settings App and change the permissions."
             return (warning: warning, alert: alert)
         }
         
-        if stateBools.noCalendarsAvailable {
+        if alerts.noCalendarsAvailable {
             let warning = "This Calendar Is Empty"
             let alert = "To display events, please make sure your Apple Calendars App is installed and up to date."
             return (warning: warning, alert: alert)
         }
         
-        if stateBools.noCalendarsSelected {
+        if alerts.noCalendarsSelected {
             let warning = "This Calendar Is Empty."
             let alert = "To display events, please tripple-tap the upper right hand corner to open Settings, go to \"Choose Calendars,\" and turn on the calendars you want to display. Make sure to also select a type for each calendar."
             return (warning: warning, alert: alert)
         }
         
-        if stateBools.internetIsDown {
+        if alerts.internetIsDown {
             let warning = "Check Internet Connection."
-            let alert = "Your internet connection has been down since: \n\n\(formatter.localizedString(for: stateBools.dateInternetWentDown, relativeTo: Date()))\n\nYour calendar may be missing recent information. \n\nPlease let a helper know."
+            let alert = "Your internet connection has been down since: \n\n\(formatter.localizedString(for: alerts.dateInternetWentDown, relativeTo: Date()))\n\nYour calendar may be missing recent information. \n\nPlease let a helper know."
             return (warning: warning, alert: alert)
         }
         
-        if stateBools.notAuthorizedForLocationAccess {
+        if alerts.notAuthorizedForLocationAccess {
             let warning = "Day and Night Are Not Showing Correctly."
             let alert = "Permission is needed to access your general location. This will allow sunrise and sunset times to display correctly in the background.\n\nPlease find TARDIS Calendar in your Settings App and change the permissions."
             return (warning: warning, alert: alert)
         }
         
-        if stateBools.missingSolarDaysAlertIsShowing {
+        if alerts.missingSolarDaysAlertIsShowing {
             let warning = "Day and Night Are Not Showing Correctly."
-            let alert = "It has been \(stateBools.missingSolarDays) days since you've been able to access sunrise and sunset information. Times depicted in the background are no longer accurate.\n\nYour internet connection seems to be good, and your permissions are set correctly, so there's nothing you can do but hope it goes away.\n\nPlease report this to monty@montyharper.com."
+            let alert = "It has been \(alerts.missingSolarDays) days since you've been able to access sunrise and sunset information. Times depicted in the background are no longer accurate.\n\nYour internet connection seems to be good, and your permissions are set correctly, so there's nothing you can do but hope it goes away.\n\nPlease report this to monty@montyharper.com."
             return (warning: warning, alert: alert)
         }
         
