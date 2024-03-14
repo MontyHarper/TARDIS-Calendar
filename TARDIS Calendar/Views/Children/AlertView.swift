@@ -16,7 +16,10 @@ struct AlertView: View {
     @State private var showAlert = false
     
     var alerts = AlertViewModel()
+    
     @Environment(\.dimensions) private var dimensions
+    @EnvironmentObject var eventManager: EventManager
+    
     var formatter = RelativeDateTimeFormatter()
     
     
@@ -25,7 +28,7 @@ struct AlertView: View {
         ZStack {
             
             // Shows a warning message which can then be tapped for more information.
-            if alerts.someWarningIsShowing {
+            if alerts.someWarningIsShowing || eventManager.events.isEmpty {
                 
                 Text(showText().0)
                     .foregroundColor(.red)
@@ -56,15 +59,15 @@ struct AlertView: View {
             return (warning: warning, alert: alert)
         }
         
-        if alerts.noCalendarsAvailable {
-            let warning = "This Calendar Is Empty"
-            let alert = "To display events, please make sure your Apple Calendars App is installed and up to date."
-            return (warning: warning, alert: alert)
-        }
-        
         if alerts.noCalendarsSelected {
             let warning = "This Calendar Is Empty."
             let alert = "To display events, please tripple-tap the upper right hand corner to open Settings, go to \"Choose Calendars,\" and turn on the calendars you want to display. Make sure to also select a type for each calendar."
+            return (warning: warning, alert: alert)
+        }
+        
+        if eventManager.events.isEmpty {
+            let warning = "This Calendar Is Empty"
+            let alert = "Please make sure your Apple Calendars App is installed and up to date and that the calendars you've selected to display do contain events."
             return (warning: warning, alert: alert)
         }
         

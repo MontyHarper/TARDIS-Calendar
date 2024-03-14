@@ -11,15 +11,13 @@ import EventKit
 class AlertViewModel {
     
     var someWarningIsShowing: Bool {
-        noPermissionForCalendar || noCalendarsAvailable || noCalendarsSelected || internetIsDown || notAuthorizedForLocationAccess || missingSolarDaysAlertIsShowing
+        noPermissionForCalendar || noCalendarsSelected || internetIsDown || notAuthorizedForLocationAccess || missingSolarDaysAlertIsShowing
     }
     
     var noPermissionForCalendar: Bool {
         !(EKEventStore.authorizationStatus(for: .event) == .authorized)
     }
-    
-    var noCalendarsAvailable: Bool = false // Figure this one out
-    
+        
     var noCalendarsSelected: Bool {
         if let calendars = UserDefaults.standard.object(forKey: UserDefaultKey.Calendars.rawValue) as? [String:String] {
             return calendars.isEmpty

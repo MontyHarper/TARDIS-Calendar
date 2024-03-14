@@ -36,11 +36,14 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     // MARK: - Private Properties
     
     private var updateWhenCurrentDayChanges: AnyCancellable?
-    private var stateBools = StateBools.shared
     private let locationManager = CLLocationManager()
     private let networkManager = NetworkManager()
     private var newSolarDays = [SolarDay]()
+    private var solarDaysUpdateLocked = false
+    private var solarDaysUpdateWaiting = false
+    private var solarDaysUpdateWaitingAll = false
     private var internetConnection: AnyCancellable?
+    
         
     private var formatter: DateFormatter {
         let formatter = DateFormatter()
@@ -103,15 +106,15 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         
         print("update Solar Days was called")
         // This function may be triggered from multiple locations; locking it prevents data races. I'm sure there's a more elegant way to do this, but I don't know it yet!
-        guard !stateBools.solarDaysUpdateLocked else {
-            stateBools.solarDaysUpdateWaiting = true
+        guard !solarDaysUpdateLocked else {
+            solarDaysUpdateWaiting = true
             // A single request for all should trigger the next update to update all.
-            if all {stateBools.solarDaysUpdateWaitingAll = true}
+            if all {solarDaysUpdateWaitingAll = true}
             return
         }
         
         progressViewIsShowing = true
-        stateBools.solarDaysUpdateLocked = true
+        solarDaysUpdateLocked = true
                 
         print("updating solar days")
         
@@ -158,9 +161,9 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
             self.updateScreenStops() {
                 
                 // Unlock updateSolarDays after ScreenStops have also been updated.
-                self.stateBools.solarDaysUpdateLocked = false
-                if self.stateBools.solarDaysUpdateWaiting {
-                    self.updateSolarDays(all: self.stateBools.solarDaysUpdateWaitingAll)
+                self.solarDaysUpdateLocked = false
+                if self.solarDaysUpdateWaiting {
+                    self.updateSolarDays(all: self.solarDaysUpdateWaitingAll)
                 }
                 return
             }

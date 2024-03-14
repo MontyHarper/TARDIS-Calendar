@@ -31,7 +31,6 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
     private let eventStore = EventStore.shared.store
     private var internetConnection: AnyCancellable?
     private var updateWhenCurrentDayChanges: AnyCancellable?
-    private var stateBools = StateBools.shared
     private var networkMonitor = NetworkMonitor()
     
     var warningTimer: Timer?
@@ -94,15 +93,9 @@ class EventManager: CalendarManager { // CalendarManager is an ObservableObject
                 
         updateCalendars() {error in
             
-            if let error = error {
+            guard error == nil else {
                 print("Calendar Error: ", error as Any)
-                switch error {
-                case .permissionDenied, .noAppleCalendars, .noUserDictionary:
-                    self.stateBools.noCalendarsAvailable = true
-                    return
-                default:
-                    self.stateBools.noCalendarsAvailable = false
-                }
+                return
             }
             
             // Keep these inside the updateCalendars closure so we know calendars are available before trying to update anything else.
