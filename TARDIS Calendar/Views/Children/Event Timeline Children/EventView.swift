@@ -14,9 +14,10 @@ struct EventView: View {
     
     let event: Event
     let shrinkFactor: Double
+    // This offset value keeps the event view centered over Now while the event is happening.
+    var offsetAmount: Double 
     
     @Environment(\.dimensions) private var dimensions
-    @Environment(\.timeline) private var timeline
     @EnvironmentObject var eventManager: EventManager
     
     // Each veiw has an arrow on the timeline; this places it correctly. Do not adjust.
@@ -25,14 +26,6 @@ struct EventView: View {
     
     // MARK: Calculated Properties
        
-    // This offset value keeps the event view centered over Now while the event is happening.
-    var offsetAmount: Double {
-        if event.isNow {
-            return dimensions.width * (Timeline.nowLocation - timeline.unitX(fromTime: event.startDate.timeIntervalSince1970))
-        } else {
-            return 0.0
-        }
-    }
         
     var color: Color {
         event.calendarColor
@@ -47,7 +40,7 @@ struct EventView: View {
     
     var body: some View {
         
- //       let _ = Self._printChanges()
+        let _ = Self._printChanges()
         
         // If the event has passed, present an empty view
         if event.endDate < Date() {

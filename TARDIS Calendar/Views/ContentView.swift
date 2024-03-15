@@ -19,7 +19,6 @@ struct ContentView: View {
     // State variables
     @StateObject private var timeManager = TimeManager()
     @StateObject private var screenStops = ScreenStops()
-    @State private var inactivityTimer: Timer?
     @State private var settingsIsVisible: Bool = UserDefaults.standard.value(forKey: UserDefaultKey.AppHasBeenLaunchedBefore.rawValue) == nil
     
     // TODO: - remove these or move them to a settings singleton
