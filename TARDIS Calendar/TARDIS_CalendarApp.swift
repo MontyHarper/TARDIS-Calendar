@@ -15,12 +15,14 @@ struct TARDIS_CalendarApp: App {
     
     var eventManager = EventManager()
     var solarEventManager = SolarEventManager()
+    var labelManager = LabelManager()
     
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(eventManager)
                 .environmentObject(solarEventManager)
+                .environmentObject(labelManager)
         }
         .onChange(of: scenePhase) {phase in
             switch phase {

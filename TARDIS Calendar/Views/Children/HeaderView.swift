@@ -13,6 +13,7 @@ struct HeaderView: View {
     @Environment(\.timeline) private var timeline
     @EnvironmentObject var eventManager: EventManager
     
+    
     var dateText: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, MMMM d, yyyy"

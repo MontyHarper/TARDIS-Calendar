@@ -9,14 +9,15 @@
 /* Begin PBXBuildFile section */
 		F10C32A32B16EA9000CCF83B /* AlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10C32A22B16EA9000CCF83B /* AlertView.swift */; };
 		F10C32A52B17601200CCF83B /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = F10C32A42B17601200CCF83B /* NetworkMonitor.swift */; };
-		F1102AFA2A6DDCA6007534C1 /* TimeTicks.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1102AF92A6DDCA6007534C1 /* TimeTicks.swift */; };
 		F119C6672A7B59A200B183F5 /* EventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F119C6662A7B59A200B183F5 /* EventView.swift */; };
 		F122A2C32ADA4AD1002E82AE /* BackgroundView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A2C22ADA4AD1002E82AE /* BackgroundView.swift */; };
 		F122A2C72ADA4B10002E82AE /* NowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A2C62ADA4B10002E82AE /* NowView.swift */; };
-		F122A2C92ADA4B20002E82AE /* TimeTickViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A2C82ADA4B20002E82AE /* TimeTickViews.swift */; };
+		F122A2C92ADA4B20002E82AE /* TimeTickLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A2C82ADA4B20002E82AE /* TimeTickLabelView.swift */; };
 		F122A3082ADF17C1002E82AE /* EventManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A3072ADF17C1002E82AE /* EventManager.swift */; };
 		F122A30E2AE02A54002E82AE /* Timeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A30D2AE02A54002E82AE /* Timeline.swift */; };
 		F12E6C712BA2B88A003C4BC1 /* AlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12E6C702BA2B88A003C4BC1 /* AlertViewModel.swift */; };
+		F12E6C752BA54F1C003C4BC1 /* LabelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12E6C742BA54F1C003C4BC1 /* LabelManager.swift */; };
+		F12E6C772BA5F650003C4BC1 /* TimeTickLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12E6C762BA5F650003C4BC1 /* TimeTickLabel.swift */; };
 		F13BC5222B7C7C87008C491E /* SolarEventManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13BC5212B7C7C87008C491E /* SolarEventManager.swift */; };
 		F13BC5242B7DAA20008C491E /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13BC5232B7DAA20008C491E /* NetworkManager.swift */; };
 		F13BC5262B81B973008C491E /* ScreenStops.swift in Sources */ = {isa = PBXBuildFile; fileRef = F13BC5252B81B973008C491E /* ScreenStops.swift */; };
@@ -60,15 +61,16 @@
 /* Begin PBXFileReference section */
 		F10C32A22B16EA9000CCF83B /* AlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertView.swift; sourceTree = "<group>"; };
 		F10C32A42B17601200CCF83B /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
-		F1102AF92A6DDCA6007534C1 /* TimeTicks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTicks.swift; sourceTree = "<group>"; };
 		F119C6662A7B59A200B183F5 /* EventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventView.swift; sourceTree = "<group>"; };
 		F119C6842A7CA56A00B183F5 /* TARDIS-Calendar-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "TARDIS-Calendar-Info.plist"; sourceTree = SOURCE_ROOT; };
 		F122A2C22ADA4AD1002E82AE /* BackgroundView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundView.swift; sourceTree = "<group>"; };
 		F122A2C62ADA4B10002E82AE /* NowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NowView.swift; sourceTree = "<group>"; };
-		F122A2C82ADA4B20002E82AE /* TimeTickViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTickViews.swift; sourceTree = "<group>"; };
+		F122A2C82ADA4B20002E82AE /* TimeTickLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTickLabelView.swift; sourceTree = "<group>"; };
 		F122A3072ADF17C1002E82AE /* EventManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventManager.swift; sourceTree = "<group>"; };
 		F122A30D2AE02A54002E82AE /* Timeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timeline.swift; sourceTree = "<group>"; };
 		F12E6C702BA2B88A003C4BC1 /* AlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertViewModel.swift; sourceTree = "<group>"; };
+		F12E6C742BA54F1C003C4BC1 /* LabelManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelManager.swift; sourceTree = "<group>"; };
+		F12E6C762BA5F650003C4BC1 /* TimeTickLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTickLabel.swift; sourceTree = "<group>"; };
 		F13BC5212B7C7C87008C491E /* SolarEventManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolarEventManager.swift; sourceTree = "<group>"; };
 		F13BC5232B7DAA20008C491E /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		F13BC5252B81B973008C491E /* ScreenStops.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenStops.swift; sourceTree = "<group>"; };
@@ -140,6 +142,7 @@
 				F19447AB2B61BE6200BDC03B /* ButtonMaker.swift */,
 				F19447AD2B61C23000BDC03B /* BannerMaker.swift */,
 				F13BC5252B81B973008C491E /* ScreenStops.swift */,
+				F12E6C742BA54F1C003C4BC1 /* LabelManager.swift */,
 				F13BC5412B8D3738008C491E /* TimeManager.swift */,
 				F13BC5212B7C7C87008C491E /* SolarEventManager.swift */,
 				F13BC5432B8D3A3A008C491E /* DayTracker.swift */,
@@ -153,6 +156,7 @@
 			children = (
 				F19149262AD2649000A31D5A /* SolarDay.swift */,
 				F19447A52B60CBE400BDC03B /* AppleCalendar.swift */,
+				F12E6C762BA5F650003C4BC1 /* TimeTickLabel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -162,7 +166,6 @@
 			children = (
 				F19447A12B5CC23700BDC03B /* Event.swift */,
 				F19447A92B61B80E00BDC03B /* ButtonModel.swift */,
-				F1102AF92A6DDCA6007534C1 /* TimeTicks.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -230,7 +233,7 @@
 			children = (
 				F166ACBA2B2750F800AE27E3 /* MarqueeView.swift */,
 				F1DED93C2B3624450023BF22 /* TimeTickBar.swift */,
-				F122A2C82ADA4B20002E82AE /* TimeTickViews.swift */,
+				F122A2C82ADA4B20002E82AE /* TimeTickLabelView.swift */,
 				F18D04FA2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift */,
 				F18D04FC2B0824F500E5C91E /* LayoutValueKeys.swift */,
 			);
@@ -367,6 +370,7 @@
 				F1DED93F2B3756660023BF22 /* ButtonBar.swift in Sources */,
 				F10C32A32B16EA9000CCF83B /* AlertView.swift in Sources */,
 				F18D04F92B06BA7400E5C91E /* CurrentDateView.swift in Sources */,
+				F12E6C772BA5F650003C4BC1 /* TimeTickLabel.swift in Sources */,
 				F10C32A52B17601200CCF83B /* NetworkMonitor.swift in Sources */,
 				F119C6672A7B59A200B183F5 /* EventView.swift in Sources */,
 				F1DED9412B3B164D0023BF22 /* EventTimelineView.swift in Sources */,
@@ -379,15 +383,15 @@
 				F1EDCEEF2B9BC56100BB77F9 /* OneFingerZoom.swift in Sources */,
 				F13BC5422B8D3738008C491E /* TimeManager.swift in Sources */,
 				F19447A82B60CD7900BDC03B /* EventStore.swift in Sources */,
-				F1102AFA2A6DDCA6007534C1 /* TimeTicks.swift in Sources */,
 				F166ACBB2B2750F800AE27E3 /* MarqueeView.swift in Sources */,
 				F13BC5262B81B973008C491E /* ScreenStops.swift in Sources */,
 				F13BC5442B8D3A3A008C491E /* DayTracker.swift in Sources */,
 				F19149272AD2649000A31D5A /* SolarDay.swift in Sources */,
-				F122A2C92ADA4B20002E82AE /* TimeTickViews.swift in Sources */,
+				F122A2C92ADA4B20002E82AE /* TimeTickLabelView.swift in Sources */,
 				F19447A62B60CBE400BDC03B /* AppleCalendar.swift in Sources */,
 				F1D15B442A5FA758006F6A4E /* ContentView.swift in Sources */,
 				F19447AC2B61BE6200BDC03B /* ButtonMaker.swift in Sources */,
+				F12E6C752BA54F1C003C4BC1 /* LabelManager.swift in Sources */,
 				F18D04FD2B0824F500E5C91E /* LayoutValueKeys.swift in Sources */,
 				F1EDCF002BA00B4800BB77F9 /* PhotoSeletionView.swift in Sources */,
 				F18D04FB2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift in Sources */,

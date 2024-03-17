@@ -11,41 +11,50 @@ struct TimeTickBar: View {
     
     @Environment(\.dimensions) private var dimensions
     @Environment(\.timeline) private var timeline
-
+    @EnvironmentObject var labelManager: LabelManager
+    
+    let switchToWeeks: Double = (40*60*60)/(1 - Timeline.nowLocation) // ~2 days
+    
+    var labels: [TimeTickLabel] {
+        labelManager.timeTickLabels.filter({
+            let span = timeline.span
+            if $0.absoluteTime < Date.now.timeIntervalSince1970 && $0.labelType != .now {
+                return false
+            } else {
+                switch $0.labelType {
+                case .weekday: return span > switchToWeeks
+                case .now: return true
+                case .relative: return span < switchToWeeks
+                case .hour: return span < switchToWeeks
+                }
+            }
+        })
+        .sorted() // Sort is REQUIRED for the HorizontalLayout view to work properly.
+    }
+    
     
     var body: some View {
-        
-        // TimeTick Markers
-        
+                
         Color(.clear)
             .frame(width: dimensions.width, height: dimensions.lineHeight)
             .background(.ultraThinMaterial)
             .frame(width: dimensions.width, height: dimensions.lineHeight * 1.5)
-
-        // These put the white marks for unlabeled time intervals - trying to see how we do without them.
-        
-//        .overlay{
-//            ForEach(
-//                TimeTick.array(timeline: timeline), id: \.self.xLocation) {tick in
-//                    TimeTickMarkerView(timeTick: tick)
-//                        .position(x: size.width * tick.xLocation)
-//                }
-//                .offset(y: 0.73 * size.lineHeight)
-//        }
-
         .overlay{
             // TimeTick Labels
             HorizontalLayoutNoOverlap{
-                ForEach(
-                    TimeTick.array(timeline: timeline), id: \.self.xLocation) {tick in
-                        TimeTickLabelView(timeTick: tick)
-                            .xPosition(tick.xLocation)
+                ForEach(labels, id: \.labelKey) {label in
+                    let xLocation = xLocation(label)
+                    TimeTickLabelView(labelText: label.labelText, xLocation: xLocation, isAtNowLocation: Timeline.nowLocation == xLocation)
+                            .xPosition(xLocation)
                     }
             }
             .frame(width: dimensions.width, height: dimensions.lineHeight)
 
         }
-        
+    }
+    
+    func xLocation(_ label: TimeTickLabel) -> Double {
+        label.labelKey == .Now ? Timeline.nowLocation : timeline.unitX(fromTime: label.absoluteTime)
     }
 }
 

@@ -5,8 +5,9 @@
 //  Created by Monty Harper on 11/17/23.
 //
 //  This Layout determines when two views overlap and removes overlapping views to off-screen.
-//  Thus as the user zooms in, labels will get thinned out so they don't overlap and become
-//  unreadable.
+//  Thus as the user zooms in, labels will get thinned out so they don't overlap and become unreadable.
+//
+//  *** The input array must be sorted in time for this view to work properly! ***
 //
 
 import Foundation

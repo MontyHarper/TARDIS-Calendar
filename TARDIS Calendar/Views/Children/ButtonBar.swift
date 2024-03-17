@@ -9,8 +9,6 @@ import Foundation
 import SwiftUI
 
 
-
-
 // MARK: Button View
 struct ButtonView: View {
     
