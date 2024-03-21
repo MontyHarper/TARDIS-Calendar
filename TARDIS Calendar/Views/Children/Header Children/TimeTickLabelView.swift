@@ -21,8 +21,6 @@ struct TimeTickLabelView: View {
     
     var body: some View {
                 
- //       let _ = Self._printChanges()
-
         VStack {
             Text(labelText)
                 .opacity(isAtNowLocation ? 1.0 : 0.5)

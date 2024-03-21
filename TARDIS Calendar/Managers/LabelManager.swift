@@ -21,37 +21,34 @@ class LabelManager: ObservableObject {
     
     init() {
         
-        Task {
-            await updateLabels()
-        }
+        updateLabels()
+        
         
         // This notification will update timeTickLabels when the date changes.
         let dayTracker = DayTracker()
         updateWhenCurrentDayChanges = dayTracker.$today
-            .sink { [weak self] _ in
-                guard let self = self else { return }
-                Task {
-                    await self.updateLabels()
-                }
-              }
+            .sink { _ in self.updateLabels() }
     }
     
     deinit {
         timer?.invalidate()
     }
     
-    func updateLabels() async {
+    func updateLabels() {
         
         var newLabels = [TimeTickLabel]()
-        
+                
         for key in LabelKey.allCases {
             
-            let newLabel = await TimeTickLabel(labelType: key.type(), labelKey: key)
+            let newLabel = TimeTickLabel(labelType: key.type(), labelKey: key)
             newLabels.append(newLabel)
         }
         
-        timeTickLabels = newLabels
         
+        DispatchQueue.main.async {
+            self.timeTickLabels = newLabels
+            
+        }
     }
 }
 

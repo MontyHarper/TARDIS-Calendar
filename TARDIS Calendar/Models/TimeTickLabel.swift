@@ -16,13 +16,13 @@ struct TimeTickLabel: Comparable {
     var offset: Double = 0.0
     var absoluteTime: Double = 0.0
     
-    init(labelType: LabelType, labelKey: LabelKey) async {
+    init(labelType: LabelType, labelKey: LabelKey) {
         self.labelType = labelType
         self.labelKey = labelKey
         let rawText = labelKey.rawValue
         self.labelText = rawText.last == "2" ? String(rawText.dropLast()) : rawText
-        self.offset = await calculateOffset()
-        self.absoluteTime = await calculateAbsoluteTime()
+        self.offset = calculateOffset()
+        self.absoluteTime = calculateAbsoluteTime()
     }
     
     // MARK: - Methods
@@ -30,7 +30,7 @@ struct TimeTickLabel: Comparable {
     // Recalculations must be done once per day in order to keep labels matched with current days showing onscreen.
     // Updates are triggered from the LabelManager.
     
-    func calculateOffset() async -> Double {
+    func calculateOffset() -> Double {
         
         let today = Timeline.calendar.component(.weekday, from: Date.now)
         
@@ -81,7 +81,7 @@ struct TimeTickLabel: Comparable {
         
     }
     
-    func calculateAbsoluteTime() async -> Double {
+    func calculateAbsoluteTime() -> Double {
         
         let now = Date.now.timeIntervalSince1970
         let startOfDay = Timeline.calendar.startOfDay(for: Date.now).timeIntervalSince1970

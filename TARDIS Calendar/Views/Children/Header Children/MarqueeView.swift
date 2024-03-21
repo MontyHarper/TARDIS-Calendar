@@ -15,20 +15,23 @@ struct MarqueeView: View {
     var body: some View {
                     
         TimelineView(.animation) {context in
-                Text(controller.frame(context.date).text)
-                    .padding()
-                    .lineLimit(1)
-                    .font(Font(controller.marqueeFont))
-                    .foregroundColor(.primary)
-                    .offset(x: controller.frame(context.date).offset, y: 0.0)
-                    .fixedSize(horizontal: true, vertical: false)
-                    .onLongPressGesture(minimumDuration: 0.05, maximumDistance: 20.0) {
-                        controller.togglePause()
-                    }
-            }
-            .task {
-                print("New MarqueeView: ", Date().timeIntervalSince1970)
-            }
+            Text(controller.frame(context.date).text)
+                .transaction { transaction in
+                    transaction.animation = nil
+                }
+                .padding()
+                .lineLimit(1)
+                .font(Font(controller.marqueeFont))
+                .foregroundColor(.primary)
+                .offset(x: controller.frame(context.date).offset, y: 0.0)
+                .fixedSize(horizontal: true, vertical: false)
+                .onLongPressGesture(minimumDuration: 0.05, maximumDistance: 20.0) {
+                    controller.togglePause()
+                }
+        }
+        .task {
+            print("New MarqueeView: ", Date().timeIntervalSince1970)
+        }
     }
 }
 
