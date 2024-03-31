@@ -86,6 +86,7 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         // This notification will update solarDays when the date changes.
         let dayTracker = DayTracker()
         updateWhenCurrentDayChanges = dayTracker.$today.sink { _ in
+            print("Date has changed")
             self.updateSolarDays()
         }
         
@@ -163,6 +164,8 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
                 // Unlock updateSolarDays after ScreenStops have also been updated.
                 self.solarDaysUpdateLocked = false
                 if self.solarDaysUpdateWaiting {
+                    self.solarDaysUpdateWaiting = false
+                    print("paused update coming through")
                     self.updateSolarDays(all: self.solarDaysUpdateWaitingAll)
                 }
                 return
@@ -240,7 +243,7 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         let latitude = newLocation.coordinate.latitude
         UserDefaults.standard.set(longitude, forKey: UserDefaultKey.Longitude.rawValue)
         UserDefaults.standard.set(latitude, forKey: UserDefaultKey.Latitude.rawValue)
-        
+        print("location updated")
         updateSolarDays(all: true)
     }
     
@@ -252,7 +255,7 @@ class SolarEventManager: NSObject, ObservableObject, CLLocationManagerDelegate {
         
         let access = (status == .authorizedAlways || status == .authorizedWhenInUse)
         UserDefaults.standard.set(access, forKey: UserDefaultKey.AuthorizedForLocationAccess.rawValue)
-        
+        print("location manager: authorization change")
         updateSolarDays()
     }
     
