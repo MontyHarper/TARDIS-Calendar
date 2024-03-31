@@ -10,6 +10,7 @@ import SwiftUI
 struct EventIsNowView: View {
     
     @Environment(\.dimensions) var dimensions
+    @Environment(\.timeline) var timeline
     
     var event: Event
     
@@ -52,7 +53,7 @@ struct EventIsNowView: View {
                 }
                 
                 // Relative Time
-                Text(event.relativeTimeDescription(event.endDate))
+                Text(event.relativeTimeDescription(event.endDate, from: Date(timeIntervalSince1970: timeline.now)))
                     .font(.system(size: dimensions.fontSizeMedium))
                     .multilineTextAlignment(.center)
                 Text("TAP TO DISMISS")

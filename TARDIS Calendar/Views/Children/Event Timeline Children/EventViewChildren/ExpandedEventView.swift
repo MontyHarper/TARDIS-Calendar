@@ -13,6 +13,7 @@ struct ExpandedEventView: View {
     
     @Environment(\.dimensions) var dimensions
     @EnvironmentObject var eventManager: EventManager
+    @Environment(\.timeline) var timeline
     
     var body: some View {
         ZStack {
@@ -51,7 +52,7 @@ struct ExpandedEventView: View {
                 }
                 
                 // Relative Time
-                Text(event.relativeTimeDescription(event.startDate))
+                Text(event.relativeTimeDescription(event.startDate, from: Date(timeIntervalSince1970: timeline.now)))
                     .font(.system(size: dimensions.fontSizeMedium))
                     .multilineTextAlignment(.center)
                 

@@ -112,12 +112,12 @@ struct Event: Identifiable, Comparable {
     
     // I'm thinking this works better than the others; gives a more accurate estimate, and works either for time "from now" or time "remaining" in an event.
     
-    func relativeTimeDescription(_ date: Date) -> String {
-        guard event.endDate > Date() else {
+    func relativeTimeDescription(_ date: Date, from now: Date) -> String {
+        guard event.endDate > now else {
             return ""
         }
         
-        let components = Timeline.calendar.dateComponents([.day, .hour, .minute], from: Date(), to: event.startDate > Date() ? event.startDate : event.endDate)
+        let components = Timeline.calendar.dateComponents([.day, .hour, .minute], from: now, to: event.startDate > Date() ? event.startDate : event.endDate)
         
         let days = components.day ?? 0
         let hours = components.hour ?? 0
@@ -182,7 +182,7 @@ struct Event: Identifiable, Comparable {
                 description += "less than \((minutes + 1).lowerName()) minute" + plural
             }
         }
-        return description + (event.startDate > Date() ? " from now" : " remaining")
+        return description + (event.startDate > now ? " from now" : " remaining")
     }
     
     
