@@ -84,7 +84,9 @@ struct HeaderView: View {
                     
                         if showMarquee {
                             if let marquee = eventManager.bannerMaker.marquee {
-                                MarqueeView(controller: marquee)
+                                
+                                    MarqueeView(controller: marquee)
+                                
                             }
                         } else if let showText = marqueeText {
                             Text(" ★ \(showText)")

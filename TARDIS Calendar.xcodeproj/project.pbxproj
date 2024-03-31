@@ -28,7 +28,6 @@
 		F166ACBB2B2750F800AE27E3 /* MarqueeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F166ACBA2B2750F800AE27E3 /* MarqueeView.swift */; };
 		F18D04F52B0009D300E5C91E /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = F18D04F42B0009D300E5C91E /* README.md */; };
 		F18D04F72B06B35100E5C91E /* ArrowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18D04F62B06B35100E5C91E /* ArrowView.swift */; };
-		F18D04F92B06BA7400E5C91E /* CurrentDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18D04F82B06BA7400E5C91E /* CurrentDateView.swift */; };
 		F18D04FB2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18D04FA2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift */; };
 		F18D04FD2B0824F500E5C91E /* LayoutValueKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18D04FC2B0824F500E5C91E /* LayoutValueKeys.swift */; };
 		F18D05032B0AA6B500E5C91E /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F18D05022B0AA6B500E5C91E /* SettingsView.swift */; };
@@ -81,7 +80,6 @@
 		F166ACBA2B2750F800AE27E3 /* MarqueeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarqueeView.swift; sourceTree = "<group>"; };
 		F18D04F42B0009D300E5C91E /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = "TARDIS Calendar/README.md"; sourceTree = SOURCE_ROOT; };
 		F18D04F62B06B35100E5C91E /* ArrowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrowView.swift; sourceTree = "<group>"; };
-		F18D04F82B06BA7400E5C91E /* CurrentDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrentDateView.swift; sourceTree = "<group>"; };
 		F18D04FA2B08237F00E5C91E /* HorizontalLayoutNoOverlap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HorizontalLayoutNoOverlap.swift; sourceTree = "<group>"; };
 		F18D04FC2B0824F500E5C91E /* LayoutValueKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutValueKeys.swift; sourceTree = "<group>"; };
 		F18D05022B0AA6B500E5C91E /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -257,7 +255,6 @@
 				F1EDCEF62B9FBD6400BB77F9 /* EventViewChildren */,
 				F18D04F62B06B35100E5C91E /* ArrowView.swift */,
 				F122A2C62ADA4B10002E82AE /* NowView.swift */,
-				F18D04F82B06BA7400E5C91E /* CurrentDateView.swift */,
 			);
 			path = "Event Timeline Children";
 			sourceTree = "<group>";
@@ -369,7 +366,6 @@
 				F19447A22B5CC23700BDC03B /* Event.swift in Sources */,
 				F1DED93F2B3756660023BF22 /* ButtonBar.swift in Sources */,
 				F10C32A32B16EA9000CCF83B /* AlertView.swift in Sources */,
-				F18D04F92B06BA7400E5C91E /* CurrentDateView.swift in Sources */,
 				F12E6C772BA5F650003C4BC1 /* TimeTickLabel.swift in Sources */,
 				F10C32A52B17601200CCF83B /* NetworkMonitor.swift in Sources */,
 				F119C6672A7B59A200B183F5 /* EventView.swift in Sources */,

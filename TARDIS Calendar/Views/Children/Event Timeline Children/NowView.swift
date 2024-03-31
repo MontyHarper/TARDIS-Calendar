@@ -14,9 +14,10 @@ import SwiftUI
 struct NowView: View {
          
     @Environment(\.dimensions) private var dimensions
-
+    @Environment(\.timeline) private var timeline
+        
     var timeText: String {
-        Date().formatted(date: .omitted, time: .shortened)
+        Date(timeIntervalSince1970: timeline.now).formatted(date: .omitted, time: .shortened)
     }
     var dayOfWeekText: String {
         Date().formatted(Date.FormatStyle().weekday(.wide))

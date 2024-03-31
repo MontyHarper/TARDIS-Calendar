@@ -14,11 +14,8 @@ struct MarqueeView: View {
     
     var body: some View {
                     
-        TimelineView(.animation) {context in
+        TimelineView(.periodic(from: Date.now, by: 0.01667)) {context in
             Text(controller.frame(context.date).text)
-                .transaction { transaction in
-                    transaction.animation = nil
-                }
                 .padding()
                 .lineLimit(1)
                 .font(Font(controller.marqueeFont))
