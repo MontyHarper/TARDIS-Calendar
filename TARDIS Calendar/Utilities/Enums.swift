@@ -122,6 +122,11 @@ enum Constants {
         static let nowPosition = 0.2
     }
     
+    enum Defaults {
+        static let longitude = -97.058570
+        static let latitude = 36.110170
+    }
+    
 }
 
 

@@ -15,6 +15,7 @@
 		F122A2C92ADA4B20002E82AE /* TimeTickLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A2C82ADA4B20002E82AE /* TimeTickLabelView.swift */; };
 		F122A3082ADF17C1002E82AE /* EventManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A3072ADF17C1002E82AE /* EventManager.swift */; };
 		F122A30E2AE02A54002E82AE /* Timeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = F122A30D2AE02A54002E82AE /* Timeline.swift */; };
+		F126A8CB2BE5EA1E00C4528C /* SolarEventManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F126A8CA2BE5EA1E00C4528C /* SolarEventManagerTests.swift */; };
 		F12E6C712BA2B88A003C4BC1 /* AlertViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12E6C702BA2B88A003C4BC1 /* AlertViewModel.swift */; };
 		F12E6C752BA54F1C003C4BC1 /* LabelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12E6C742BA54F1C003C4BC1 /* LabelManager.swift */; };
 		F12E6C772BA5F650003C4BC1 /* TimeTickLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F12E6C762BA5F650003C4BC1 /* TimeTickLabel.swift */; };
@@ -57,6 +58,16 @@
 		F1F9E49B2B11220C00DA4026 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1F9E49A2B11220C00DA4026 /* Enums.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		F126A8CC2BE5EA1E00C4528C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F1D15B362A5FA758006F6A4E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F1D15B3D2A5FA758006F6A4E;
+			remoteInfo = "TARDIS Calendar";
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		F10C32A22B16EA9000CCF83B /* AlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertView.swift; sourceTree = "<group>"; };
 		F10C32A42B17601200CCF83B /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
@@ -67,6 +78,8 @@
 		F122A2C82ADA4B20002E82AE /* TimeTickLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTickLabelView.swift; sourceTree = "<group>"; };
 		F122A3072ADF17C1002E82AE /* EventManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventManager.swift; sourceTree = "<group>"; };
 		F122A30D2AE02A54002E82AE /* Timeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timeline.swift; sourceTree = "<group>"; };
+		F126A8C82BE5EA1E00C4528C /* TARDIS CalendarTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "TARDIS CalendarTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F126A8CA2BE5EA1E00C4528C /* SolarEventManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolarEventManagerTests.swift; sourceTree = "<group>"; };
 		F12E6C702BA2B88A003C4BC1 /* AlertViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertViewModel.swift; sourceTree = "<group>"; };
 		F12E6C742BA54F1C003C4BC1 /* LabelManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabelManager.swift; sourceTree = "<group>"; };
 		F12E6C762BA5F650003C4BC1 /* TimeTickLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeTickLabel.swift; sourceTree = "<group>"; };
@@ -111,6 +124,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		F126A8C52BE5EA1E00C4528C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F1D15B3B2A5FA758006F6A4E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -149,6 +169,14 @@
 			path = Managers;
 			sourceTree = "<group>";
 		};
+		F126A8C92BE5EA1E00C4528C /* TARDIS CalendarTests */ = {
+			isa = PBXGroup;
+			children = (
+				F126A8CA2BE5EA1E00C4528C /* SolarEventManagerTests.swift */,
+			);
+			path = "TARDIS CalendarTests";
+			sourceTree = "<group>";
+		};
 		F194479F2B5CC17600BDC03B /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -172,6 +200,7 @@
 			isa = PBXGroup;
 			children = (
 				F1D15B402A5FA758006F6A4E /* TARDIS Calendar */,
+				F126A8C92BE5EA1E00C4528C /* TARDIS CalendarTests */,
 				F1D15B3F2A5FA758006F6A4E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -180,6 +209,7 @@
 			isa = PBXGroup;
 			children = (
 				F1D15B3E2A5FA758006F6A4E /* TARDIS Calendar.app */,
+				F126A8C82BE5EA1E00C4528C /* TARDIS CalendarTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -284,6 +314,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		F126A8C72BE5EA1E00C4528C /* TARDIS CalendarTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F126A8CE2BE5EA1E00C4528C /* Build configuration list for PBXNativeTarget "TARDIS CalendarTests" */;
+			buildPhases = (
+				F126A8C42BE5EA1E00C4528C /* Sources */,
+				F126A8C52BE5EA1E00C4528C /* Frameworks */,
+				F126A8C62BE5EA1E00C4528C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F126A8CD2BE5EA1E00C4528C /* PBXTargetDependency */,
+			);
+			name = "TARDIS CalendarTests";
+			productName = "TARDIS CalendarTests";
+			productReference = F126A8C82BE5EA1E00C4528C /* TARDIS CalendarTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		F1D15B3D2A5FA758006F6A4E /* TARDIS Calendar */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F1D15B4C2A5FA75B006F6A4E /* Build configuration list for PBXNativeTarget "TARDIS Calendar" */;
@@ -311,6 +359,10 @@
 				LastSwiftUpdateCheck = 1400;
 				LastUpgradeCheck = 1400;
 				TargetAttributes = {
+					F126A8C72BE5EA1E00C4528C = {
+						CreatedOnToolsVersion = 14.0.1;
+						TestTargetID = F1D15B3D2A5FA758006F6A4E;
+					};
 					F1D15B3D2A5FA758006F6A4E = {
 						CreatedOnToolsVersion = 14.0.1;
 					};
@@ -330,11 +382,19 @@
 			projectRoot = "";
 			targets = (
 				F1D15B3D2A5FA758006F6A4E /* TARDIS Calendar */,
+				F126A8C72BE5EA1E00C4528C /* TARDIS CalendarTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		F126A8C62BE5EA1E00C4528C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F1D15B3C2A5FA758006F6A4E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -348,6 +408,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		F126A8C42BE5EA1E00C4528C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F126A8CB2BE5EA1E00C4528C /* SolarEventManagerTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F1D15B3A2A5FA758006F6A4E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -402,7 +470,51 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		F126A8CD2BE5EA1E00C4528C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F1D15B3D2A5FA758006F6A4E /* TARDIS Calendar */;
+			targetProxy = F126A8CC2BE5EA1E00C4528C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		F126A8CF2BE5EA1E00C4528C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W692UH5R35;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.montyharper.TARDIS-CalendarTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TARDIS Calendar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TARDIS Calendar";
+			};
+			name = Debug;
+		};
+		F126A8D02BE5EA1E00C4528C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = W692UH5R35;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.montyharper.TARDIS-CalendarTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TARDIS Calendar.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TARDIS Calendar";
+			};
+			name = Release;
+		};
 		F1D15B4A2A5FA75B006F6A4E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -592,6 +704,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		F126A8CE2BE5EA1E00C4528C /* Build configuration list for PBXNativeTarget "TARDIS CalendarTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F126A8CF2BE5EA1E00C4528C /* Debug */,
+				F126A8D02BE5EA1E00C4528C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F1D15B392A5FA758006F6A4E /* Build configuration list for PBXProject "TARDIS Calendar" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

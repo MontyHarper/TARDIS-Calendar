@@ -76,7 +76,6 @@ struct ContentView: View {
                 AlertView()
                 
                 
-                
             } // End of main ZStack
             .sheet(isPresented: $settingsIsVisible) {
                 SettingsView(welcomeIsVisible: true)

@@ -11,11 +11,7 @@ import Foundation
 
 class DayTracker: ObservableObject {
     
-    @Published var today: Int = Timeline.calendar.dateComponents([.day], from: Date()).day! {
-        didSet {
-            print("day number: ", today)
-        }
-    }
+    @Published var today: Int = Timeline.calendar.dateComponents([.day], from: Date()).day! 
     
     private var timer: Timer?
     let calendar = Timeline.calendar
@@ -31,15 +27,17 @@ class DayTracker: ObservableObject {
     func setNewTimer() {
         timer?.invalidate()
 
-        let tomorrow = calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: Date())!).timeIntervalSince1970
-        let seconds = tomorrow - Date().timeIntervalSince1970 + 5.0
+        let tomorrow = calendar.startOfDay(for: calendar.date(byAdding: .day, value: 1, to: Date.now)!).timeIntervalSince1970
+        let seconds = tomorrow - Date.now.timeIntervalSince1970 + 5.0
+        print("DayTracker timer set for :", seconds, " seconds.")
         timer = Timer.scheduledTimer(withTimeInterval: seconds, repeats: false) {_ in
             self.updateToday()
         }
     }
     
     func updateToday() {
-        today = Timeline.calendar.dateComponents([.day], from: Date()).day!
+        today = Timeline.calendar.dateComponents([.day], from: Date.now).day!
+        today += 1
         setNewTimer()
     }
 }
