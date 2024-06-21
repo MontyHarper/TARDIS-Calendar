@@ -37,25 +37,6 @@ struct HeaderView: View {
     var dateFont: UIFont {
         UIFont.systemFont(ofSize: dimensions.fontSizeMedium, weight: .black)
     }
-    var marqueeFont: UIFont? {
-        eventManager.bannerMaker.marquee?.marqueeFont
-    }
-    var marqueeText: String? {
-        return eventManager.bannerMaker.marquee?.bannerText
-    }
-    var marqueeTextWidth: CGFloat? {
-        marqueeText?.size(withAttributes: [.font: marqueeFont as Any]).width
-    }
-    var marqueeWidth: Double {
-        min(dimensions.width * 0.85, (marqueeTextWidth ?? dimensions.width * 0.85) * 1.1)
-    }
-    private var showMarquee: Bool {
-        if let marqueeTextWidth = marqueeTextWidth {
-            return (marqueeTextWidth > marqueeWidth)
-        } else {
-            return false
-        }
-    }
     
     var body: some View {
         
@@ -80,31 +61,20 @@ struct HeaderView: View {
                     .frame(height: dimensions.fontSizeMedium * 1.5, alignment: .bottom)
                 
                 // Row 2: marquee text
-                ZStack {
-                    
-                        if showMarquee {
-                            if let marquee = eventManager.bannerMaker.marquee {
-                                
-                                    MarqueeView(controller: marquee)
-                                
-                            }
-                        } else if let showText = marqueeText {
-                            Text(" ★ \(showText)")
-                                .font(Font(marqueeFont!))
-                        } else {
-                            EmptyView()
-                        }
-                }
-                .frame(width: marqueeWidth, height: dimensions.lineHeight, alignment: .center)
-                .background(Color(hue: 0.0, saturation: 0.0, brightness: 1.0, opacity: 0.5))
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-
                 
+                if let marquee = eventManager.bannerMaker.marquee {
+                    
+                    MarqueeView(controller: marquee)
+                    
+                } else {
+                    EmptyView()
+                }
+                                
                 // Row 3: TimeTicks
                 TimeTickBar()
             }
-            
-            
+                
+                
         } // End of ZStack
     }
 }

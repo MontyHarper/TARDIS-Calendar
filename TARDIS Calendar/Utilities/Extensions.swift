@@ -73,3 +73,83 @@ extension Int {
     }
 }
 
+
+extension Date {
+    
+    var relativeTimeDescription: String {
+        
+        let nowRange = Date().addingTimeInterval(-10)...Date().addingTimeInterval(10)
+        
+        if nowRange.contains(self) {
+            return "Now"
+        } else {
+            
+            let components = Timeline.calendar.dateComponents([.day, .hour, .minute], from: Date(), to: self)
+            
+            let days = abs(components.day ?? 0)
+            let hours = abs(components.hour ?? 0)
+            let minutes = abs(components.minute ?? 0)
+            var description = ""
+            
+            if days >= 1 {
+                let plural = (days == 1) ? "" : "s"
+                switch hours {
+                case 0..<3:
+                    description += "about \(days.lowerName()) day" + plural
+                case 3..<9:
+                    description += "more than \(days.lowerName()) day" + plural
+                case 9..<15:
+                    description += "about \(days.lowerName()) and a half days"
+                case 15..<21:
+                    description += "less than \((days + 1).lowerName()) days"
+                case 21..<24:
+                    description += "about \((days + 1).lowerName()) days"
+                default:
+                    description += "\(days.lowerName()) day" + plural
+                }
+            } else if hours >= 1 {
+                let plural = (hours == 1) ? "" : "s"
+                switch hours {
+                case 0..<11:
+                    switch minutes {
+                    case 0..<5:
+                        description += "about \(hours.lowerName()) hour" + plural
+                    case 5..<20:
+                        description += "more than \(hours.lowerName()) hour" + plural
+                    case 20..<40:
+                        description += "about \(hours.lowerName()) and a half hours"
+                    case 40..<55:
+                        description += "less than \((hours + 1).lowerName()) hours"
+                    case 55..<60:
+                        description += "about \((hours + 1).lowerName()) hours"
+                    default:
+                        description += "\(hours.lowerName()) hour" + plural
+                    }
+                case 11..<13:
+                    description += "about half a day"
+                case 13..<22:
+                    description += "less than a day"
+                case 22..<24:
+                    description += "about one day"
+                default:
+                    description += "\(hours.lowerName()) hour" + plural
+                }
+            } else {
+                let plural = (minutes == 0) ? "" : "s"
+                switch minutes {
+                case 0..<20:
+                    description += "less than \((minutes + 1).lowerName()) minute" + plural
+                case 20..<40:
+                    description += "about half an hour"
+                case 40..<55:
+                    description += "less than an hour"
+                case 55..<60:
+                    description += "about an hour"
+                default:
+                    description += "less than \((minutes + 1).lowerName()) minute" + plural
+                }
+            }
+            return description + (self > Date() ? " from now" : " ago")
+        }
+    }
+}

@@ -12,7 +12,7 @@ import SwiftUI
 class BannerMaker {
     
     var banners = [EKEvent]()
-    var bannerText = ""
+    var currentBanners = [EKEvent]()
     var refreshDate = Timeline.maxDay
     var marquee: MarqueeViewModel?
     let eventStore = EventStore.shared.store
@@ -32,7 +32,6 @@ class BannerMaker {
         
         print("Updating Banners")
         
-        bannerText = ""
         var newRefreshDate = Timeline.maxDay
         
         guard let eventManager = eventManager else {
@@ -48,7 +47,6 @@ class BannerMaker {
         
         if calendarsToSearch.isEmpty {
             
-            bannerText = ""
             marquee = nil
             
         } else {
@@ -58,10 +56,11 @@ class BannerMaker {
             
             // Store the search results
             banners = eventStore.events(matching: findEKEvents)
+            currentBanners = []
             
             for banner in banners {
                 if banner.startDate < Date() && banner.endDate > Date() {
-                    bannerText += banner.title + "  ★  "
+                    currentBanners.append(banner)
                 }
                 if banner.startDate > Date() && banner.startDate < newRefreshDate {
                     newRefreshDate = banner.startDate
@@ -72,8 +71,13 @@ class BannerMaker {
             } // End of loop
             
             refreshDate = newRefreshDate
+            currentBanners = currentBanners.sorted(by: {$0.endDate < $1.endDate})
             
-            marquee = MarqueeViewModel(bannerText, fontSize: 24 )
+            if currentBanners.isEmpty {
+                marquee = nil
+            } else {
+                marquee = MarqueeViewModel(currentBanners, fontSize: 24, refreshDate: refreshDate )
+            }
             
             resetTimer(triggerDate: refreshDate)
         }
